@@ -2,6 +2,7 @@
 import { getEmDashEntry, getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
+import TourTeaser from "../components/TourTeaser.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
 const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
@@ -18,64 +19,74 @@ const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 ---
 
-<Base title={pageTitle} description={pageDescription}>
+<Base
+	title={pageTitle}
+	description={pageDescription}
+	overlayHeader={Boolean(home?.data.hero_image)}
+>
 	{
 		home ? (
 			<>
-				<section>
+				<section class="hero">
 					{home.data.hero_image && (
-						<div {...home.edit.hero_image}>
+						<div class="hero__media" {...home.edit.hero_image}>
 							<Image image={home.data.hero_image} />
 						</div>
 					)}
-					<h1 {...home.edit.hero_title}>{home.data.hero_title}</h1>
-					{home.data.hero_subtitle && (
-						<p {...home.edit.hero_subtitle}>{home.data.hero_subtitle}</p>
-					)}
+					<div class="hero__veil" aria-hidden="true" />
+					<div class="hero__content">
+						<h1 class="hero__brand" {...home.edit.hero_title}>
+							{home.data.hero_title}
+						</h1>
+						{home.data.hero_subtitle && (
+							<p class="hero__lede" {...home.edit.hero_subtitle}>
+								{home.data.hero_subtitle}
+							</p>
+						)}
+						{home.data.tour_cta_label && (
+							<p class="hero__actions">
+								<a class="hero__cta" href="/tours" {...home.edit.tour_cta_label}>
+									{home.data.tour_cta_label}
+								</a>
+							</p>
+						)}
+					</div>
 				</section>
 
-				<section>
-					<h2 {...home.edit.tour_title}>{home.data.tour_title}</h2>
-					{home.data.tour_subtitle && (
-						<p {...home.edit.tour_subtitle}>{home.data.tour_subtitle}</p>
-					)}
+				<section class="tour-section">
+					<header class="tour-section__intro">
+						<h2 class="tour-section__title" {...home.edit.tour_title}>
+							{home.data.tour_title}
+						</h2>
+						{home.data.tour_subtitle && (
+							<p class="tour-section__subtitle" {...home.edit.tour_subtitle}>
+								{home.data.tour_subtitle}
+							</p>
+						)}
+					</header>
 
 					{featuredTours.length === 0 ? (
-						<p>Nessun tour in evidenza.</p>
+						<p class="tour-section__empty">Nessun tour in evidenza.</p>
 					) : (
-						<ul>
-							{featuredTours.map((tour) => (
-								<li>
-									<a href={`/tours/${tour.id}`}>
-										{tour.data.featured_image && (
-											<div>
-												<Image image={tour.data.featured_image} />
-											</div>
-										)}
-										<h3>{tour.data.title}</h3>
-									</a>
-									{tour.data.excerpt && <p>{tour.data.excerpt}</p>}
-									{(tour.data.destination ||
-										tour.data.duration ||
-										tour.data.price) && (
-										<p>
-											{[
-												tour.data.destination,
-												tour.data.duration,
-												tour.data.price,
-											]
-												.filter(Boolean)
-												.join(" · ")}
-										</p>
-									)}
-								</li>
+						<div class="tour-section__list">
+							{featuredTours.map((tour, index) => (
+								<TourTeaser
+									href={`/tours/${tour.id}`}
+									title={tour.data.title}
+									excerpt={tour.data.excerpt}
+									destination={tour.data.destination}
+									duration={tour.data.duration}
+									price={tour.data.price}
+									image={tour.data.featured_image}
+									index={index}
+								/>
 							))}
-						</ul>
+						</div>
 					)}
 
 					{home.data.tour_cta_label && (
-						<p>
-							<a href="/tours" {...home.edit.tour_cta_label}>
+						<p class="tour-section__footer">
+							<a class="text-link" href="/tours" {...home.edit.tour_cta_label}>
 								{home.data.tour_cta_label}
 							</a>
 						</p>
@@ -83,10 +94,159 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 				</section>
 			</>
 		) : (
-			<p>
-				Homepage non configurata.{" "}
-				<a href="/_emdash/admin/content/homepage">Apri l’admin</a>.
-			</p>
+			<section class="tour-section">
+				<p>
+					Homepage non configurata.{" "}
+					<a href="/_emdash/admin/content/homepage">Apri l’admin</a>.
+				</p>
+			</section>
 		)
 	}
 </Base>
+
+<style>
+	.hero {
+		position: relative;
+		isolation: isolate;
+		min-height: 100svh;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		color: #fff;
+		overflow: hidden;
+		background: var(--color-ink);
+	}
+
+	.hero__media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+
+	.hero__media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		animation: media-drift 4.5s var(--ease-out) both;
+	}
+
+	.hero__veil {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: linear-gradient(
+			180deg,
+			rgb(20 35 58 / 0.35) 0%,
+			rgb(20 35 58 / 0.18) 40%,
+			rgb(20 35 58 / 0.82) 100%
+		);
+		animation: fade-in 900ms var(--ease-out) both;
+	}
+
+	.hero__content {
+		position: relative;
+		z-index: 2;
+		width: min(100% - 2rem, var(--content));
+		margin-inline: auto;
+		padding: 0 0 var(--space-6);
+		padding-top: 8rem;
+		display: grid;
+		gap: var(--space-3);
+	}
+
+	.hero__brand {
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: clamp(2.75rem, 7vw + 1rem, 4.75rem);
+		font-weight: 520;
+		line-height: 0.95;
+		letter-spacing: -0.035em;
+		text-wrap: balance;
+		animation: rise-in 900ms var(--ease-out) both;
+		text-shadow: 0 0.4rem 2rem rgb(20 35 58 / 0.45);
+	}
+
+	.hero__lede {
+		max-width: 28rem;
+		font-size: var(--text-lg);
+		line-height: 1.45;
+		color: #fff;
+		animation: rise-in 900ms var(--ease-out) 120ms both;
+	}
+
+	.hero__actions {
+		margin-top: var(--space-2);
+		animation: rise-in 900ms var(--ease-out) 220ms both;
+	}
+
+	.hero__cta {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.85rem;
+		padding: 0.7rem 1.25rem;
+		border: 1px solid rgb(255 255 255 / 0.55);
+		border-radius: var(--radius);
+		text-decoration: none;
+		font-size: var(--text-sm);
+		font-weight: 650;
+		letter-spacing: 0.02em;
+		background: rgb(255 255 255 / 0.1);
+		backdrop-filter: blur(8px);
+		transition:
+			background 200ms var(--ease-out),
+			border-color 200ms var(--ease-out),
+			transform 200ms var(--ease-out);
+	}
+
+	.hero__cta:hover {
+		background: rgb(255 255 255 / 0.2);
+		border-color: #fff;
+		transform: translateY(-1px);
+	}
+
+	.tour-section {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: var(--space-7) 0;
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	.tour-section__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 34rem;
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.tour-section__title {
+		font-size: var(--text-2xl);
+	}
+
+	.tour-section__subtitle {
+		color: var(--color-ink-soft);
+		font-size: var(--text-lg);
+	}
+
+	.tour-section__list {
+		display: grid;
+		gap: var(--space-6);
+	}
+
+	.tour-section__empty,
+	.tour-section__footer {
+		color: var(--color-ink-soft);
+	}
+
+	.text-link {
+		font-weight: 650;
+		color: var(--color-sea-deep);
+		text-underline-offset: 0.28em;
+	}
+
+	@media (max-width: 720px) {
+		.hero__content {
+			padding-top: calc(var(--space-7) + 4rem);
+		}
+	}
+</style>

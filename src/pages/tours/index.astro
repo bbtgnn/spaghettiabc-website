@@ -1,7 +1,7 @@
 ---
 import { getEmDashCollection } from "emdash";
-import { Image } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
+import TourTeaser from "../../components/TourTeaser.astro";
 
 const cursor = Astro.url.searchParams.get("cursor") || undefined;
 const {
@@ -16,53 +16,107 @@ const {
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 ---
 
-<Base title="Tour">
-	<h1>Tour</h1>
-
-	{
-		tours.length === 0 ? (
-			<p>
-				Nessun tour ancora.{" "}
-				<a href="/_emdash/admin/content/tours/new">Creane uno</a>.
+<Base title="Tour" description="Tutti i nostri itinerari">
+	<section class="tours-page">
+		<header class="tours-page__intro">
+			<p class="tours-page__eyebrow">Itinerari</p>
+			<h1 class="tours-page__title">Tour</h1>
+			<p class="tours-page__lede">
+				Viaggi pensati per conoscere l’Italia a ritmo lento.
 			</p>
-		) : (
-			<ul>
-				{tours.map((tour) => (
-					<li>
-						<a href={`/tours/${tour.id}`}>
-							{tour.data.featured_image && (
-								<div {...tour.edit.featured_image}>
-									<Image image={tour.data.featured_image} />
-								</div>
-							)}
-							<h2 {...tour.edit.title}>{tour.data.title}</h2>
-						</a>
-						{tour.data.excerpt && (
-							<p {...tour.edit.excerpt}>{tour.data.excerpt}</p>
-						)}
-						{(tour.data.destination ||
-							tour.data.duration ||
-							tour.data.price) && (
-							<p>
-								{[tour.data.destination, tour.data.duration, tour.data.price]
-									.filter(Boolean)
-									.join(" · ")}
-							</p>
-						)}
-					</li>
-				))}
-			</ul>
-		)
-	}
+		</header>
 
-	<nav aria-label="Pagination">
-		{cursor && <a href="/tours">Prima pagina</a>}
 		{
-			nextCursor && (
-				<a href={`/tours?cursor=${encodeURIComponent(nextCursor)}`}>
-					Pagina successiva
-				</a>
+			tours.length === 0 ? (
+				<p class="tours-page__empty">
+					Nessun tour ancora.{" "}
+					<a href="/_emdash/admin/content/tours/new">Creane uno</a>.
+				</p>
+			) : (
+				<div class="tours-page__list">
+					{tours.map((tour, index) => (
+						<TourTeaser
+							href={`/tours/${tour.id}`}
+							title={tour.data.title}
+							excerpt={tour.data.excerpt}
+							destination={tour.data.destination}
+							duration={tour.data.duration}
+							price={tour.data.price}
+							image={tour.data.featured_image}
+							edit={tour.edit}
+							index={index}
+						/>
+					))}
+				</div>
 			)
 		}
-	</nav>
+
+		<nav class="tours-page__pager" aria-label="Paginazione">
+			{cursor && <a href="/tours">Prima pagina</a>}
+			{
+				nextCursor && (
+					<a href={`/tours?cursor=${encodeURIComponent(nextCursor)}`}>
+						Pagina successiva
+					</a>
+				)
+			}
+		</nav>
+	</section>
 </Base>
+
+<style>
+	.tours-page {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: calc(var(--space-7) + 1rem) 0 var(--space-7);
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	.tours-page__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 36rem;
+		padding-bottom: var(--space-3);
+		border-bottom: 1px solid var(--color-line);
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.tours-page__eyebrow {
+		font-size: var(--text-xs);
+		font-weight: 650;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-sea);
+	}
+
+	.tours-page__title {
+		font-size: var(--text-3xl);
+	}
+
+	.tours-page__lede {
+		font-size: var(--text-lg);
+		color: var(--color-ink-soft);
+	}
+
+	.tours-page__list {
+		display: grid;
+		gap: var(--space-6);
+		padding-top: var(--space-2);
+	}
+
+	.tours-page__empty,
+	.tours-page__pager {
+		color: var(--color-ink-soft);
+	}
+
+	.tours-page__pager {
+		display: flex;
+		gap: var(--space-4);
+		font-weight: 600;
+	}
+
+	.tours-page__pager a {
+		color: var(--color-sea-deep);
+	}
+</style>
