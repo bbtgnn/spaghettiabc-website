@@ -2,15 +2,131 @@
 	"$schema": "https://emdashcms.com/seed.schema.json",
 	"version": "1",
 	"meta": {
-		"name": "Starter",
-		"description": "A minimal EmDash starter with posts and pages",
-		"author": "EmDash"
+		"name": "Spaghetti ABC",
+		"description": "Travel site with homepage and tours",
+		"author": "Spaghetti ABC"
 	},
 	"settings": {
-		"title": "My Site",
-		"tagline": "Built with EmDash"
+		"title": "Spaghetti ABC",
+		"tagline": "Viaggi e tour"
 	},
 	"collections": [
+		{
+			"slug": "tours",
+			"label": "Tours",
+			"labelSingular": "Tour",
+			"urlPattern": "/tours/{slug}",
+			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured Image",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "destination",
+					"label": "Destination",
+					"type": "string",
+					"searchable": true
+				},
+				{
+					"slug": "duration",
+					"label": "Duration",
+					"type": "string"
+				},
+				{
+					"slug": "price",
+					"label": "Price",
+					"type": "string"
+				},
+				{
+					"slug": "gallery",
+					"label": "Gallery",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "image",
+								"label": "Image",
+								"type": "image",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "homepage",
+			"label": "Homepage",
+			"labelSingular": "Homepage",
+			"routable": false,
+			"supports": ["drafts", "revisions", "preview", "seo"],
+			"titleField": "hero_title",
+			"fields": [
+				{
+					"slug": "hero_image",
+					"label": "Hero image",
+					"type": "image"
+				},
+				{
+					"slug": "hero_title",
+					"label": "Hero title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "hero_subtitle",
+					"label": "Hero subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "tour_title",
+					"label": "Tour section title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "tour_subtitle",
+					"label": "Tour section subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "featured_tours",
+					"label": "Featured tours",
+					"type": "reference",
+					"validation": {
+						"targetCollection": "tours",
+						"multiple": true
+					}
+				},
+				{
+					"slug": "tour_cta_label",
+					"label": "Tour CTA label",
+					"type": "string"
+				}
+			]
+		},
 		{
 			"slug": "posts",
 			"label": "Posts",
@@ -114,8 +230,8 @@
 				},
 				{
 					"type": "custom",
-					"label": "Posts",
-					"url": "/posts"
+					"label": "Tour",
+					"url": "/tours"
 				},
 				{
 					"type": "custom",
@@ -153,6 +269,95 @@
 		}
 	],
 	"content": {
+		"tours": [
+			{
+				"id": "tour-tuscany",
+				"slug": "toscana-classica",
+				"status": "published",
+				"data": {
+					"title": "Toscana classica",
+					"excerpt": "Colline, borghi e cucina tra Firenze, Siena e la Val d’Orcia.",
+					"destination": "Toscana",
+					"duration": "7 giorni",
+					"price": "da €1.290",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1600&h=1067&fit=crop",
+							"alt": "Paesaggio toscano con cipressi",
+							"filename": "toscana-classica.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Un itinerario tra Firenze, Siena e i borghi della Val d’Orcia, con degustazioni e passeggate tra i vigneti.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						}
+					]
+				}
+			},
+			{
+				"id": "tour-amalfi",
+				"slug": "costiera-amalfitana",
+				"status": "published",
+				"data": {
+					"title": "Costiera Amalfitana",
+					"excerpt": "Sentieri, mare e limoneti tra Amalfi, Positano e Ravello.",
+					"destination": "Campania",
+					"duration": "5 giorni",
+					"price": "da €980",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=1600&h=1067&fit=crop",
+							"alt": "Veduta della Costiera Amalfitana",
+							"filename": "costiera-amalfitana.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Giornate sul mare e nei borghi sospesi sulla scogliera, con tempo per nuotare e assaggiare la cucina locale.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						}
+					]
+				}
+			}
+		],
+		"homepage": [
+			{
+				"id": "home",
+				"status": "published",
+				"data": {
+					"hero_title": "Spaghetti ABC",
+					"hero_subtitle": "Tour e viaggi in Italia",
+					"hero_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1920&h=1080&fit=crop",
+							"alt": "Canale veneziano al tramonto",
+							"filename": "homepage-hero.jpg"
+						}
+					},
+					"tour_title": "I nostri tour",
+					"tour_subtitle": "Itinerari selezionati per scoprire l’Italia",
+					"tour_cta_label": "Vedi tutti i tour",
+					"featured_tours": ["$ref:tour-tuscany", "$ref:tour-amalfi"]
+				}
+			}
+		],
 		"pages": [
 			{
 				"id": "about",

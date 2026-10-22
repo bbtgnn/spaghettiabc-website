@@ -1,0 +1,94 @@
+---
+import {
+	getEmDashEntry,
+	getSeoMeta,
+	decodeSlug,
+	getSiteSettings,
+} from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+
+const slug = decodeSlug(Astro.params.slug);
+
+if (!slug) {
+	return Astro.rewrite("/404");
+}
+
+const { entry: tour, cacheHint } = await getEmDashEntry("tours", slug);
+
+if (!tour) {
+	return Astro.rewrite("/404");
+}
+
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const seo = getSeoMeta(tour, {
+	siteTitle,
+	siteUrl: Astro.url.origin,
+	path: Astro.url.pathname.replace(/\/$/, ""),
+});
+
+const gallery = tour.data.gallery ?? [];
+---
+
+<Base
+	title={seo.title}
+	pageTitle={seo.ogTitle}
+	description={seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={{ collection: "tours", id: tour.data.id, slug }}
+>
+	<article>
+		{
+			tour.data.featured_image && (
+				<div {...tour.edit.featured_image}>
+					<Image image={tour.data.featured_image} />
+				</div>
+			)
+		}
+
+		<h1 {...tour.edit.title}>{tour.data.title}</h1>
+
+		{
+			(tour.data.destination || tour.data.duration || tour.data.price) && (
+				<p>
+					{[tour.data.destination, tour.data.duration, tour.data.price]
+						.filter(Boolean)
+						.join(" · ")}
+				</p>
+			)
+		}
+
+		{
+			tour.data.excerpt && (
+				<p {...tour.edit.excerpt}>{tour.data.excerpt}</p>
+			)
+		}
+
+		<PortableText value={tour.data.content} />
+
+		{
+			gallery.length > 0 && (
+				<section>
+					<h2>Gallery</h2>
+					<ul>
+						{gallery.map((row) =>
+							row.image ? (
+								<li>
+									<Image image={row.image} />
+								</li>
+							) : null,
+						)}
+					</ul>
+				</section>
+			)
+		}
+
+		<p>
+			<a href="/tours">← Tutti i tour</a>
+		</p>
+	</article>
+</Base>

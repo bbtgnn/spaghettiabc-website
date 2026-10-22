@@ -1,50 +1,92 @@
 ---
-import { getEmDashCollection, getSiteSettings } from "emdash";
+import { getEmDashEntry, getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
-	orderBy: { published_at: "desc" },
-	limit: 10,
+const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
+	references: { featured_tours: true },
 });
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
 const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 	await getSiteSettings(),
 );
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const featuredTours = home?.references?.featured_tours?.entries ?? [];
+const pageTitle = home?.data.hero_title ?? siteTitle;
+const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 ---
 
-<Base title={siteTitle} description={siteTagline}>
-	<h1>Recent Posts</h1>
-
+<Base title={pageTitle} description={pageDescription}>
 	{
-		posts.length === 0 ? (
-			<p>
-				No posts yet. <a href="/_emdash/admin/content/posts/new">Create one</a>.
-			</p>
+		home ? (
+			<>
+				<section>
+					{home.data.hero_image && (
+						<div {...home.edit.hero_image}>
+							<Image image={home.data.hero_image} />
+						</div>
+					)}
+					<h1 {...home.edit.hero_title}>{home.data.hero_title}</h1>
+					{home.data.hero_subtitle && (
+						<p {...home.edit.hero_subtitle}>{home.data.hero_subtitle}</p>
+					)}
+				</section>
+
+				<section>
+					<h2 {...home.edit.tour_title}>{home.data.tour_title}</h2>
+					{home.data.tour_subtitle && (
+						<p {...home.edit.tour_subtitle}>{home.data.tour_subtitle}</p>
+					)}
+
+					{featuredTours.length === 0 ? (
+						<p>Nessun tour in evidenza.</p>
+					) : (
+						<ul>
+							{featuredTours.map((tour) => (
+								<li>
+									<a href={`/tours/${tour.id}`}>
+										{tour.data.featured_image && (
+											<div>
+												<Image image={tour.data.featured_image} />
+											</div>
+										)}
+										<h3>{tour.data.title}</h3>
+									</a>
+									{tour.data.excerpt && <p>{tour.data.excerpt}</p>}
+									{(tour.data.destination ||
+										tour.data.duration ||
+										tour.data.price) && (
+										<p>
+											{[
+												tour.data.destination,
+												tour.data.duration,
+												tour.data.price,
+											]
+												.filter(Boolean)
+												.join(" · ")}
+										</p>
+									)}
+								</li>
+							))}
+						</ul>
+					)}
+
+					{home.data.tour_cta_label && (
+						<p>
+							<a href="/tours" {...home.edit.tour_cta_label}>
+								{home.data.tour_cta_label}
+							</a>
+						</p>
+					)}
+				</section>
+			</>
 		) : (
-			<ul>
-				{posts.map((post) => (
-					<li>
-						<a href={`/posts/${post.id}`}>
-							{post.data.featured_image && (
-								<div {...post.edit.featured_image}><Image image={post.data.featured_image} /></div>
-							)}
-							<h2 {...post.edit.title}>{post.data.title}</h2>
-						</a>
-						{post.data.excerpt && <p {...post.edit.excerpt}>{post.data.excerpt}</p>}
-						{post.data.publishedAt && (
-							<time datetime={post.data.publishedAt.toISOString()}>
-								{post.data.publishedAt.toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
-							</time>
-						)}
-					</li>
-				))}
-			</ul>
+			<p>
+				Homepage non configurata.{" "}
+				<a href="/_emdash/admin/content/homepage">Apri l’admin</a>.
+			</p>
 		)
 	}
 </Base>
