@@ -1,0 +1,157 @@
+---
+import { getEmDashEntry, getSeoMeta, getSiteSettings } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+
+const { entry: training, cacheHint } = await getEmDashEntry("training", "training");
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const seo = training
+	? getSeoMeta(training, {
+			siteTitle,
+			siteUrl: Astro.url.origin,
+			path: "/training",
+		})
+	: {
+			title: `Formazione · ${siteTitle}`,
+			ogTitle: "Formazione",
+			description: "Formazione per aziende — contenuto non ancora disponibile.",
+			canonical: undefined,
+			ogImage: undefined,
+		};
+---
+
+<Base
+	title={seo.title}
+	pageTitle={seo.ogTitle}
+	description={seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={training
+		? { collection: "training", id: training.data.id, slug: training.id }
+		: undefined}
+>
+	{
+		training ? (
+			<article class="training-page">
+				<header class="training-page__header">
+					{training.data.cover && (
+						<div class="training-page__cover" {...training.edit.cover}>
+							<Image image={training.data.cover} />
+						</div>
+					)}
+					<div class="training-page__intro">
+						<h1 class="training-page__title" {...training.edit.title}>
+							{training.data.title}
+						</h1>
+						{training.data.subtitle && (
+							<p class="training-page__subtitle" {...training.edit.subtitle}>
+								{training.data.subtitle}
+							</p>
+						)}
+						{training.data.excerpt && (
+							<p class="training-page__excerpt" {...training.edit.excerpt}>
+								{training.data.excerpt}
+							</p>
+						)}
+					</div>
+				</header>
+
+				{training.data.content && (
+					<div class="training-page__content" {...training.edit.content}>
+						<PortableText value={training.data.content} />
+					</div>
+				)}
+			</article>
+		) : (
+			<section class="training-page training-page--empty">
+				<h1>Formazione</h1>
+				<p>
+					La Formazione non è ancora disponibile.{" "}
+					<a href="/_emdash/admin/content/training">Apri l’admin</a>.
+				</p>
+			</section>
+		)
+	}
+</Base>
+
+<style>
+	.training-page {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: var(--space-7) 0;
+		display: grid;
+		gap: var(--space-6);
+	}
+
+	.training-page__header {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: var(--space-5);
+		align-items: center;
+		animation: rise-in 800ms var(--ease-out) both;
+	}
+
+	.training-page__cover {
+		overflow: hidden;
+		border-radius: var(--radius);
+		background: var(--color-foam);
+	}
+
+	.training-page__cover :global(img) {
+		width: 100%;
+		height: auto;
+		object-fit: cover;
+		aspect-ratio: 4 / 3;
+	}
+
+	.training-page__intro {
+		display: grid;
+		gap: var(--space-3);
+		max-width: 34rem;
+	}
+
+	.training-page__title {
+		font-size: var(--text-3xl);
+		text-wrap: balance;
+	}
+
+	.training-page__subtitle {
+		font-size: var(--text-xl);
+		color: var(--color-sea);
+	}
+
+	.training-page__excerpt {
+		font-size: var(--text-lg);
+		color: var(--color-ink-soft);
+	}
+
+	.training-page__content {
+		max-width: var(--measure);
+		font-size: var(--text-lg);
+		color: var(--color-ink-soft);
+		animation: rise-in 700ms var(--ease-out) 80ms both;
+	}
+
+	.training-page__content :global(p) {
+		margin-bottom: 1.1em;
+	}
+
+	.training-page--empty {
+		color: var(--color-ink-soft);
+	}
+
+	.training-page--empty a {
+		font-weight: 650;
+		color: var(--color-sea-deep);
+	}
+
+	@media (max-width: 800px) {
+		.training-page__header {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

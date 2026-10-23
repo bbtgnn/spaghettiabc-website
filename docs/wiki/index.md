@@ -5,11 +5,16 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 ## Decisions
 
 - [Libro CMS model](./decisions/libro-cms-model.md) — collection `book`, Sezione Libro duplicata in homepage, URL `/puglia-the-book` (2026-10-23)
+- [Formazione CMS model](./decisions/formazione-cms-model.md) — collection `training`, Sezione Formazione duplicata, URL `/training` (2026-10-23)
+- [Collaborazioni CMS model](./decisions/collaborazioni-cms-model.md) — collection `collaborations`, loghi+testimonianze sulla landing, URL `/collaborazioni` (2026-10-23)
+- [Newsletter homepage section](./decisions/newsletter-homepage-section.md) — UI-only iscrizione in home, no collection/provider (2026-10-23)
 - [Homepage + Tours schema](./decisions/homepage-tours-schema.md) — first CMS slice before Libro (2026-10-23)
 
 ## Operations
 
 - [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts` (2026-10-23)
+- [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — when lists must not be duplicated on homepage (2026-10-23)
+- [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps; CLI upload ritual (SSRF blocks loopback `$media`) (2026-10-23)
 
 ## Domain language
 

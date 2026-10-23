@@ -19,17 +19,11 @@ On 2026-10-23 Chiara locked:
 6. **Collection slug** is `book` (singular), not `books`.
 7. **Book detail page** is undesigned: placeholder fields only (`title`, `subtitle`, `cover`, `excerpt`, `content`); refine later.
 
-## Implementation snapshot (uncommitted as of 2026-10-23)
+## Implementation snapshot
 
-As of working tree on branch `feature/homepage-tours-schema` (HEAD then `c93c6d2`, book work uncommitted), the implementer reported:
+As of `spaghettiabc-website@51eaca3` (2026-10-23): collection `book`, homepage Sezione Libro, `/puglia-the-book`, glossary + wiki landed on `feature/homepage-tours-schema`.
 
-- `seed/seed.json` — collection `book` + homepage book fields + demo entry `puglia-the-book`
-- `src/pages/index.astro` — Sezione Libro after Sezione Tour; CTA href `/puglia-the-book`
-- `src/pages/puglia-the-book.astro` — placeholder detail page
-- `emdash-env.d.ts` — hand-synced Book types (see [EmDash types paths](../ops/emdash-types-paths.md))
-- Seed applied locally with `--on-conflict update --skip-media`; `/` and `/puglia-the-book` returned 200
-
-Deviations noted by implementer: `routable: false` on `book` (URL owned by Astro page); no `scheduling` support; media skip left image files undownloaded.
+*(Supersedes earlier same-day note that book work was still uncommitted.)*
 
 ## Explicitly out of scope (2026-10-23)
 

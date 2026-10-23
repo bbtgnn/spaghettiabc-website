@@ -144,6 +144,61 @@
 					"slug": "book_cta_label",
 					"label": "Book CTA label",
 					"type": "string"
+				},
+				{
+					"slug": "training_title",
+					"label": "Training section title",
+					"type": "string"
+				},
+				{
+					"slug": "training_subtitle",
+					"label": "Training section subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "training_image",
+					"label": "Training section image",
+					"type": "image"
+				},
+				{
+					"slug": "training_cta_label",
+					"label": "Training CTA label",
+					"type": "string"
+				},
+				{
+					"slug": "collaborations_title",
+					"label": "Collaborations section title",
+					"type": "string"
+				},
+				{
+					"slug": "collaborations_subtitle",
+					"label": "Collaborations section subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "collaborations_cta_label",
+					"label": "Collaborations CTA label",
+					"type": "string"
+				},
+				{
+					"slug": "newsletter_title",
+					"label": "Newsletter section title",
+					"type": "string"
+				},
+				{
+					"slug": "newsletter_subtitle",
+					"label": "Newsletter section subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "newsletter_button_label",
+					"label": "Newsletter button label",
+					"type": "string"
+				},
+				{
+					"slug": "newsletter_email_placeholder",
+					"label": "Newsletter email placeholder",
+					"type": "string"
 				}
 			]
 		},
@@ -182,6 +237,145 @@
 					"label": "Content",
 					"type": "portableText",
 					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "training",
+			"label": "Formazione",
+			"labelSingular": "Formazione",
+			"routable": false,
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"titleField": "title",
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "cover",
+					"label": "Cover",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "collaborations",
+			"label": "Collaborazioni",
+			"labelSingular": "Collaborazioni",
+			"routable": false,
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"titleField": "title",
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "logos",
+					"label": "Logos",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "logo",
+								"label": "Logo",
+								"type": "image",
+								"required": true
+							},
+							{
+								"slug": "name",
+								"label": "Name",
+								"type": "string"
+							}
+						]
+					}
+				},
+				{
+					"slug": "testimonials",
+					"label": "Testimonials",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "author",
+								"label": "Author",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "role_or_company",
+								"label": "Role or company",
+								"type": "string"
+							},
+							{
+								"slug": "quote",
+								"label": "Quote",
+								"type": "text",
+								"required": true
+							},
+							{
+								"slug": "rating",
+								"label": "Rating",
+								"type": "number"
+							}
+						]
+					}
+				},
+				{
+					"slug": "gallery",
+					"label": "Gallery",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "image",
+								"label": "Image",
+								"type": "image",
+								"required": true
+							}
+						]
+					}
 				}
 			]
 		},
@@ -422,7 +616,24 @@
 							"alt": "Paesaggio pugliese al tramonto",
 							"filename": "homepage-book.jpg"
 						}
-					}
+					},
+					"training_title": "Formazione",
+					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
+					"training_cta_label": "Scopri la formazione",
+					"training_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1556910103-1c0279aa1bd5?w=1600&h=1067&fit=crop",
+							"alt": "Tavola apparecchiata per un incontro intorno al cibo",
+							"filename": "homepage-training.jpg"
+						}
+					},
+					"collaborations_title": "Collaborazioni",
+					"collaborations_subtitle": "Partner e testimonianze di chi ha lavorato con Flavia intorno al cibo e alla cultura italiana",
+					"collaborations_cta_label": "Scopri le collaborazioni",
+					"newsletter_title": "Newsletter",
+					"newsletter_subtitle": "Ricette di stagione, eventi e novità — direttamente dalla cucina di Flavia",
+					"newsletter_button_label": "Iscriviti",
+					"newsletter_email_placeholder": "La tua email"
 				}
 			}
 		],
@@ -466,6 +677,206 @@
 								}
 							],
 							"_key": "k2"
+						}
+					]
+				}
+			}
+		],
+		"training": [
+			{
+				"id": "training",
+				"slug": "training",
+				"status": "published",
+				"data": {
+					"title": "Formazione per aziende",
+					"subtitle": "Cultura del cibo per team e professionisti",
+					"excerpt": "Percorsi e incontri costruiti intorno alla cultura del cibo — placeholder da sostituire.",
+					"cover": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
+							"alt": "Tavolo apparecchiato, placeholder formazione",
+							"filename": "training-cover.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questa è la landing Formazione. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione dei percorsi per aziende e professionisti.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Qui andranno formato degli incontri, pubblici di riferimento e modalità di contatto.",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						}
+					]
+				}
+			}
+		],
+		"collaborations": [
+			{
+				"id": "collaborazioni",
+				"slug": "collaborazioni",
+				"status": "published",
+				"data": {
+					"title": "Collaborazioni",
+					"subtitle": "Progetti e partnership intorno alla cultura del cibo",
+					"excerpt": "Marchi, editori e organizzazioni con cui Flavia ha lavorato — placeholder da sostituire con i partner reali.",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questa è la landing Collaborazioni. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione dei progetti e dei riconoscimenti.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Qui andranno i dettagli delle collaborazioni e le fotografie dei progetti. I loghi reali arriveranno dallo zip partner.",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						}
+					],
+					"logos": [
+						{
+							"name": "Ciccolella",
+							"logo": {
+								"$media": {
+									"url": "http://127.0.0.1:8765/logo_ciccolella.webp",
+									"alt": "Logo Ciccolella",
+									"filename": "logo_ciccolella.webp"
+								}
+							}
+						},
+						{
+							"name": "Evolio Expo",
+							"logo": {
+								"$media": {
+									"url": "http://127.0.0.1:8765/logo_evolio_expo.webp",
+									"alt": "Logo Evolio Expo",
+									"filename": "logo_evolio_expo.webp"
+								}
+							}
+						},
+						{
+							"name": "FIOI",
+							"logo": {
+								"$media": {
+									"url": "http://127.0.0.1:8765/logo_fioi.webp",
+									"alt": "Logo FIOI",
+									"filename": "logo_fioi.webp"
+								}
+							}
+						},
+						{
+							"name": "Gambero Rosso",
+							"logo": {
+								"$media": {
+									"url": "http://127.0.0.1:8765/logo_gambero_rosso.webp",
+									"alt": "Logo Gambero Rosso",
+									"filename": "logo_gambero_rosso.webp"
+								}
+							}
+						},
+						{
+							"name": "Slow Food",
+							"logo": {
+								"$media": {
+									"url": "http://127.0.0.1:8765/logo_slow_food.webp",
+									"alt": "Logo Slow Food",
+									"filename": "logo_slow_food.webp"
+								}
+							}
+						},
+						{
+							"name": "TEDx",
+							"logo": {
+								"$media": {
+									"url": "http://127.0.0.1:8765/logo_tedx.webp",
+									"alt": "Logo TEDx",
+									"filename": "logo_tedx.webp"
+								}
+							}
+						}
+					],
+					"testimonials": [
+						{
+							"author": "Elena Martini",
+							"role_or_company": "Responsabile comunicazione, casa editrice",
+							"quote": "Lavorare con Flavia significa entrare in una storia vera del cibo italiano: precisione, calore e un gusto che resta.",
+							"rating": 5
+						},
+						{
+							"author": "Marco Bianchi",
+							"role_or_company": "Direttore marketing, brand agroalimentare",
+							"quote": "Ha saputo raccontare il nostro prodotto con rispetto per la materia e attenzione al pubblico. Una collaborazione che ripeteremmo subito.",
+							"rating": 5
+						},
+						{
+							"author": "Giulia Conti",
+							"role_or_company": "Curatrice eventi culturali",
+							"quote": "Gli incontri che abbiamo costruito insieme erano caldi e professionali: cultura del cibo senza retorica, solo presenza e cura.",
+							"rating": 5
+						},
+						{
+							"author": "Andrea Russo",
+							"role_or_company": "Fondatore, startup hospitality",
+							"quote": "Flavia porta esperienza e leggerezza. Il team ha imparato a guardare la tavola come un linguaggio, non solo come un servizio.",
+							"rating": 5
+						}
+					],
+					"gallery": [
+						{
+							"image": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&h=800&fit=crop",
+									"alt": "Tavolo apparecchiato durante una collaborazione",
+									"filename": "collaborazioni-gallery-1.jpg"
+								}
+							}
+						},
+						{
+							"image": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1556910103-1c0279aa1bd5?w=1200&h=800&fit=crop",
+									"alt": "Momento di lavoro in cucina, placeholder",
+									"filename": "collaborazioni-gallery-2.jpg"
+								}
+							}
+						},
+						{
+							"image": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1200&h=800&fit=crop",
+									"alt": "Dettaglio di un progetto culinario, placeholder",
+									"filename": "collaborazioni-gallery-3.jpg"
+								}
+							}
 						}
 					]
 				}
