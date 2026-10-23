@@ -92,6 +92,36 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 						</p>
 					)}
 				</section>
+
+				<section class="book-section">
+					<header class="book-section__intro">
+						{home.data.book_title && (
+							<h2 class="book-section__title" {...home.edit.book_title}>
+								{home.data.book_title}
+							</h2>
+						)}
+						{home.data.book_subtitle && (
+							<p class="book-section__subtitle" {...home.edit.book_subtitle}>
+								{home.data.book_subtitle}
+							</p>
+						)}
+					</header>
+
+					<div class="book-section__layout">
+						{home.data.book_image && (
+							<div class="book-section__media" {...home.edit.book_image}>
+								<Image image={home.data.book_image} />
+							</div>
+						)}
+						{home.data.book_cta_label && (
+							<p class="book-section__cta">
+								<a class="text-link" href="/puglia-the-book" {...home.edit.book_cta_label}>
+									{home.data.book_cta_label}
+								</a>
+							</p>
+						)}
+					</div>
+				</section>
 			</>
 		) : (
 			<section class="tour-section">
@@ -238,10 +268,78 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		color: var(--color-ink-soft);
 	}
 
+	.book-section {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: 0 0 var(--space-7);
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	.book-section__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 34rem;
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.book-section__title {
+		font-size: var(--text-2xl);
+	}
+
+	.book-section__subtitle {
+		color: var(--color-ink-soft);
+		font-size: var(--text-lg);
+	}
+
+	.book-section__layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: var(--space-4);
+		align-items: end;
+		animation: rise-in 700ms var(--ease-out) 100ms both;
+	}
+
+	.book-section__media {
+		overflow: hidden;
+		border-radius: var(--radius);
+		min-height: 16rem;
+		background: var(--color-foam);
+	}
+
+	.book-section__media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		aspect-ratio: 4 / 3;
+		transition: transform 700ms var(--ease-out);
+	}
+
+	.book-section__media:hover :global(img) {
+		transform: scale(1.04);
+	}
+
+	.book-section__cta {
+		margin: 0;
+		padding-block: var(--space-2);
+	}
+
 	.text-link {
 		font-weight: 650;
 		color: var(--color-sea-deep);
 		text-underline-offset: 0.28em;
+	}
+
+	@media (max-width: 800px) {
+		.book-section__layout {
+			grid-template-columns: 1fr;
+			gap: var(--space-3);
+			align-items: start;
+		}
+
+		.book-section__media {
+			min-height: 0;
+		}
 	}
 
 	@media (max-width: 720px) {

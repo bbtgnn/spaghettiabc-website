@@ -5,6 +5,23 @@
 
 import type { BylineSummary, ContentBylineCredit, TaxonomyTerm, PortableTextBlock, ReferencePage } from "emdash";
 
+export interface Book {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  subtitle?: string;
+  cover?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
+  excerpt?: string;
+  content?: PortableTextBlock[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Homepage {
   id: string;
   slug: string | null;
@@ -15,6 +32,10 @@ export interface Homepage {
   tour_title: string;
   tour_subtitle?: string;
   tour_cta_label?: string;
+  book_title?: string;
+  book_subtitle?: string;
+  book_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
+  book_cta_label?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -79,6 +100,7 @@ export interface HomepageReferences {
 
 declare module "emdash" {
   interface EmDashCollections {
+    book: Book;
     homepage: Homepage;
     pages: Page;
     posts: Post;

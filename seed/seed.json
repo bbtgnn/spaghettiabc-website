@@ -124,6 +124,64 @@
 					"slug": "tour_cta_label",
 					"label": "Tour CTA label",
 					"type": "string"
+				},
+				{
+					"slug": "book_title",
+					"label": "Book section title",
+					"type": "string"
+				},
+				{
+					"slug": "book_subtitle",
+					"label": "Book section subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "book_image",
+					"label": "Book section image",
+					"type": "image"
+				},
+				{
+					"slug": "book_cta_label",
+					"label": "Book CTA label",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "book",
+			"label": "Libro",
+			"labelSingular": "Libro",
+			"routable": false,
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "cover",
+					"label": "Cover",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
 				}
 			]
 		},
@@ -354,7 +412,62 @@
 					"tour_title": "I nostri tour",
 					"tour_subtitle": "Itinerari selezionati per scoprire l’Italia",
 					"tour_cta_label": "Vedi tutti i tour",
-					"featured_tours": ["$ref:tour-tuscany", "$ref:tour-amalfi"]
+					"featured_tours": ["$ref:tour-tuscany", "$ref:tour-amalfi"],
+					"book_title": "Il libro",
+					"book_subtitle": "Puglia raccontata attraverso luoghi, sapori e incontri",
+					"book_cta_label": "Scopri il libro",
+					"book_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&h=1067&fit=crop",
+							"alt": "Paesaggio pugliese al tramonto",
+							"filename": "homepage-book.jpg"
+						}
+					}
+				}
+			}
+		],
+		"book": [
+			{
+				"id": "puglia-the-book",
+				"slug": "puglia-the-book",
+				"status": "published",
+				"data": {
+					"title": "Puglia",
+					"subtitle": "The Book",
+					"excerpt": "Un racconto di viaggio tra oliveti, mare e borghi bianchi — placeholder da sostituire.",
+					"cover": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=1200&h=1600&fit=crop",
+							"alt": "Copertina placeholder del libro Puglia",
+							"filename": "puglia-the-book-cover.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questa è la pagina del Libro canonico. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Qui andranno capitoli, anteprime e dettagli di pubblicazione.",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						}
+					]
 				}
 			}
 		],
