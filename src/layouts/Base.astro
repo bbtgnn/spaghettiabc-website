@@ -4,6 +4,7 @@ import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import LiveSearch from "emdash/ui/search";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import "../styles/theme.css";
 
 interface Props {
 	title: string;
@@ -11,12 +12,21 @@ interface Props {
 	description?: string | null;
 	image?: string | null;
 	canonical?: string | null;
+	/** Transparent nav over a full-bleed hero */
+	overlayHeader?: boolean;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
 }
 
-const { title, pageTitle, description, image, canonical, content } =
-	Astro.props;
+const {
+	title,
+	pageTitle,
+	description,
+	image,
+	canonical,
+	overlayHeader = false,
+	content,
+} = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
 	getMenuWithCacheHint("primary"),
@@ -49,10 +59,14 @@ const pageCtx = createPublicPageContext({
 	content,
 	siteName: siteTitle,
 });
+
+const headerClass = overlayHeader
+	? "site-header site-header--on-media"
+	: "site-header site-header--solid";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="it">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -62,40 +76,61 @@ const pageCtx = createPublicPageContext({
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 
-		<header>
-			<nav>
-				<a href="/">
+		<header class={headerClass}>
+			<div class="site-header__inner">
+				<a class="site-brand" href="/">
 					{
 						siteLogo ? (
 							<img
 								src={siteLogo.url}
 								alt={siteLogo.alt || siteTitle}
-								style="height:48px;width:auto;margin:-8px 0;display:block;"
 							/>
 						) : (
 							siteTitle
 						)
 					}
 				</a>
-				{
-					menu?.items.map((item) => (
-						<a
-							href={item.url}
-							target={item.target}
-							rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
-						>
-							{item.label}
-						</a>
-					))
-				}
-				<LiveSearch placeholder="Search..." collections={["posts", "pages"]} />
-			</nav>
+				<nav class="site-nav" aria-label="Principale">
+					{
+						menu?.items.map((item) => (
+							<a
+								href={item.url}
+								target={item.target}
+								rel={
+									item.target === "_blank"
+										? "noopener noreferrer"
+										: undefined
+								}
+							>
+								{item.label}
+							</a>
+						))
+					}
+					<div class="site-search">
+						<LiveSearch
+							placeholder="Cerca..."
+							collections={["tours", "pages", "posts"]}
+						/>
+					</div>
+				</nav>
+			</div>
 		</header>
 
-		<main>
+		<main class="site-main">
 			<slot />
 		</main>
 
 		<EmDashBodyEnd page={pageCtx} />
 	</body>
 </html>
+
+<style>
+	.site-header--solid {
+		position: sticky;
+		top: 0;
+		backdrop-filter: blur(10px);
+		background: color-mix(in srgb, var(--color-paper) 88%, transparent);
+		border-bottom: 1px solid var(--color-line);
+		padding-bottom: var(--space-3);
+	}
+</style>

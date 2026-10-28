@@ -1,0 +1,160 @@
+---
+import { getEmDashEntry, getSeoMeta, getSiteSettings } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
+
+const { entry: book, cacheHint } = await getEmDashEntry("book", "puglia-the-book");
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const seo = book
+	? getSeoMeta(book, {
+			siteTitle,
+			siteUrl: Astro.url.origin,
+			path: "/puglia-the-book",
+		})
+	: {
+			title: `Il libro · ${siteTitle}`,
+			ogTitle: "Il libro",
+			description: "Il libro di Puglia — contenuto non ancora disponibile.",
+			canonical: undefined,
+			ogImage: undefined,
+		};
+---
+
+<Base
+	title={seo.title}
+	pageTitle={seo.ogTitle}
+	description={seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={book ? { collection: "book", id: book.data.id, slug: book.id } : undefined}
+>
+	{
+		book ? (
+			<article class="book-page">
+				<header class="book-page__header">
+					{book.data.cover && (
+						<div class="book-page__cover" {...book.edit.cover}>
+							<Image image={book.data.cover} />
+						</div>
+					)}
+					<div class="book-page__intro">
+						<h1 class="book-page__title" {...book.edit.title}>
+							{book.data.title}
+						</h1>
+						{book.data.subtitle && (
+							<p class="book-page__subtitle" {...book.edit.subtitle}>
+								{book.data.subtitle}
+							</p>
+						)}
+						{book.data.excerpt && (
+							<p class="book-page__excerpt" {...book.edit.excerpt}>
+								{book.data.excerpt}
+							</p>
+						)}
+					</div>
+				</header>
+
+				{book.data.content && (
+					<div class="book-page__content" {...book.edit.content}>
+						<PortableText value={book.data.content} />
+					</div>
+				)}
+			</article>
+		) : (
+			<section class="book-page book-page--empty">
+				<h1>Il libro</h1>
+				<p>
+					Il Libro non è ancora disponibile.{" "}
+					<a href="/_emdash/admin/content/book">Apri l’admin</a>.
+				</p>
+			</section>
+		)
+	}
+</Base>
+
+<style>
+	.book-page {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: var(--space-7) 0;
+		display: grid;
+		gap: var(--space-6);
+	}
+
+	.book-page__header {
+		display: grid;
+		grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+		gap: var(--space-5);
+		align-items: center;
+		animation: rise-in 800ms var(--ease-out) both;
+	}
+
+	.book-page__cover {
+		overflow: hidden;
+		border-radius: var(--radius);
+		background: var(--color-foam);
+		max-width: 22rem;
+	}
+
+	.book-page__cover :global(img) {
+		width: 100%;
+		height: auto;
+		object-fit: cover;
+		aspect-ratio: 3 / 4;
+	}
+
+	.book-page__intro {
+		display: grid;
+		gap: var(--space-3);
+		max-width: 34rem;
+	}
+
+	.book-page__title {
+		font-size: var(--text-3xl);
+		text-wrap: balance;
+	}
+
+	.book-page__subtitle {
+		font-size: var(--text-xl);
+		color: var(--color-sea);
+	}
+
+	.book-page__excerpt {
+		font-size: var(--text-lg);
+		color: var(--color-ink-soft);
+	}
+
+	.book-page__content {
+		max-width: var(--measure);
+		font-size: var(--text-lg);
+		color: var(--color-ink-soft);
+		animation: rise-in 700ms var(--ease-out) 80ms both;
+	}
+
+	.book-page__content :global(p) {
+		margin-bottom: 1.1em;
+	}
+
+	.book-page--empty {
+		color: var(--color-ink-soft);
+	}
+
+	.book-page--empty a {
+		font-weight: 650;
+		color: var(--color-sea-deep);
+	}
+
+	@media (max-width: 800px) {
+		.book-page__header {
+			grid-template-columns: 1fr;
+		}
+
+		.book-page__cover {
+			max-width: 16rem;
+		}
+	}
+</style>

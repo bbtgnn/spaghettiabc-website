@@ -1,50 +1,839 @@
 ---
-import { getEmDashCollection, getSiteSettings } from "emdash";
+import { getEmDashEntry, getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
+import TourTeaser from "../components/TourTeaser.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
-	orderBy: { published_at: "desc" },
-	limit: 10,
+const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
+	references: { featured_tours: true },
 });
+const { entry: collaborations, cacheHint: collaborationsCacheHint } =
+	await getEmDashEntry("collaborations", "collaborazioni");
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+	Astro.cache.set(collaborationsCacheHint);
+}
+
 const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 	await getSiteSettings(),
 );
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const featuredTours = home?.references?.featured_tours?.entries ?? [];
+const collaborationLogos = collaborations?.data.logos ?? [];
+const collaborationTestimonials = collaborations?.data.testimonials ?? [];
+const pageTitle = home?.data.hero_title ?? siteTitle;
+const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 ---
 
-<Base title={siteTitle} description={siteTagline}>
-	<h1>Recent Posts</h1>
-
+<Base
+	title={pageTitle}
+	description={pageDescription}
+	overlayHeader={Boolean(home?.data.hero_image)}
+>
 	{
-		posts.length === 0 ? (
-			<p>
-				No posts yet. <a href="/_emdash/admin/content/posts/new">Create one</a>.
-			</p>
-		) : (
-			<ul>
-				{posts.map((post) => (
-					<li>
-						<a href={`/posts/${post.id}`}>
-							{post.data.featured_image && (
-								<div {...post.edit.featured_image}><Image image={post.data.featured_image} /></div>
-							)}
-							<h2 {...post.edit.title}>{post.data.title}</h2>
-						</a>
-						{post.data.excerpt && <p {...post.edit.excerpt}>{post.data.excerpt}</p>}
-						{post.data.publishedAt && (
-							<time datetime={post.data.publishedAt.toISOString()}>
-								{post.data.publishedAt.toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
-							</time>
+		home ? (
+			<>
+				<section class="hero">
+					{home.data.hero_image && (
+						<div class="hero__media" {...home.edit.hero_image}>
+							<Image image={home.data.hero_image} />
+						</div>
+					)}
+					<div class="hero__veil" aria-hidden="true" />
+					<div class="hero__content">
+						<h1 class="hero__brand" {...home.edit.hero_title}>
+							{home.data.hero_title}
+						</h1>
+						{home.data.hero_subtitle && (
+							<p class="hero__lede" {...home.edit.hero_subtitle}>
+								{home.data.hero_subtitle}
+							</p>
 						)}
-					</li>
-				))}
-			</ul>
+						{home.data.tour_cta_label && (
+							<p class="hero__actions">
+								<a class="hero__cta" href="/tours" {...home.edit.tour_cta_label}>
+									{home.data.tour_cta_label}
+								</a>
+							</p>
+						)}
+					</div>
+				</section>
+
+				<section class="tour-section">
+					<header class="tour-section__intro">
+						<h2 class="tour-section__title" {...home.edit.tour_title}>
+							{home.data.tour_title}
+						</h2>
+						{home.data.tour_subtitle && (
+							<p class="tour-section__subtitle" {...home.edit.tour_subtitle}>
+								{home.data.tour_subtitle}
+							</p>
+						)}
+					</header>
+
+					{featuredTours.length === 0 ? (
+						<p class="tour-section__empty">Nessun tour in evidenza.</p>
+					) : (
+						<div class="tour-section__list">
+							{featuredTours.map((tour, index) => (
+								<TourTeaser
+									href={`/tours/${tour.id}`}
+									title={tour.data.title}
+									excerpt={tour.data.excerpt}
+									destination={tour.data.destination}
+									duration={tour.data.duration}
+									price={tour.data.price}
+									image={tour.data.featured_image}
+									index={index}
+								/>
+							))}
+						</div>
+					)}
+
+					{home.data.tour_cta_label && (
+						<p class="tour-section__footer">
+							<a class="text-link" href="/tours" {...home.edit.tour_cta_label}>
+								{home.data.tour_cta_label}
+							</a>
+						</p>
+					)}
+				</section>
+
+				<section class="book-section">
+					<header class="book-section__intro">
+						{home.data.book_title && (
+							<h2 class="book-section__title" {...home.edit.book_title}>
+								{home.data.book_title}
+							</h2>
+						)}
+						{home.data.book_subtitle && (
+							<p class="book-section__subtitle" {...home.edit.book_subtitle}>
+								{home.data.book_subtitle}
+							</p>
+						)}
+					</header>
+
+					<div class="book-section__layout">
+						{home.data.book_image && (
+							<div class="book-section__media" {...home.edit.book_image}>
+								<Image image={home.data.book_image} />
+							</div>
+						)}
+						{home.data.book_cta_label && (
+							<p class="book-section__cta">
+								<a class="text-link" href="/puglia-the-book" {...home.edit.book_cta_label}>
+									{home.data.book_cta_label}
+								</a>
+							</p>
+						)}
+					</div>
+				</section>
+
+				<section class="training-section">
+					<header class="training-section__intro">
+						{home.data.training_title && (
+							<h2 class="training-section__title" {...home.edit.training_title}>
+								{home.data.training_title}
+							</h2>
+						)}
+						{home.data.training_subtitle && (
+							<p class="training-section__subtitle" {...home.edit.training_subtitle}>
+								{home.data.training_subtitle}
+							</p>
+						)}
+					</header>
+
+					<div class="training-section__layout">
+						{home.data.training_image && (
+							<div class="training-section__media" {...home.edit.training_image}>
+								<Image image={home.data.training_image} />
+							</div>
+						)}
+						{home.data.training_cta_label && (
+							<p class="training-section__cta">
+								<a class="text-link" href="/training" {...home.edit.training_cta_label}>
+									{home.data.training_cta_label}
+								</a>
+							</p>
+						)}
+					</div>
+				</section>
+
+				<section class="collaborations-section">
+					<header class="collaborations-section__intro">
+						{home.data.collaborations_title && (
+							<h2 class="collaborations-section__title" {...home.edit.collaborations_title}>
+								{home.data.collaborations_title}
+							</h2>
+						)}
+						{home.data.collaborations_subtitle && (
+							<p class="collaborations-section__subtitle" {...home.edit.collaborations_subtitle}>
+								{home.data.collaborations_subtitle}
+							</p>
+						)}
+					</header>
+
+					{collaborationLogos.length > 0 && (
+						<ul class="collaborations-section__logos" {...collaborations?.edit.logos}>
+							{collaborationLogos.map((item) => (
+								<li class="collaborations-section__logo">
+									{item.logo && <Image image={item.logo} />}
+									{item.name && <span class="visually-hidden">{item.name}</span>}
+								</li>
+							))}
+						</ul>
+					)}
+
+					{collaborationTestimonials.length > 0 && (
+						<ul class="collaborations-section__testimonials" {...collaborations?.edit.testimonials}>
+							{collaborationTestimonials.map((item) => {
+								const rating = Number(item.rating) || 5;
+								return (
+									<li class="testimonial-card">
+										<div
+											class="testimonial-card__rating"
+											role="img"
+											aria-label={`Valutazione: ${rating} su 5`}
+										>
+											{Array.from({ length: 5 }, (_, i) => (
+												<span
+													class:list={[
+														"testimonial-card__star",
+														i < rating && "testimonial-card__star--filled",
+													]}
+													aria-hidden="true"
+												>
+													★
+												</span>
+											))}
+										</div>
+										<blockquote class="testimonial-card__quote">
+											<p>{item.quote}</p>
+										</blockquote>
+										<p class="testimonial-card__author">
+											<span class="testimonial-card__name">{item.author}</span>
+											{item.role_or_company && (
+												<span class="testimonial-card__role">{item.role_or_company}</span>
+											)}
+										</p>
+									</li>
+								);
+							})}
+						</ul>
+					)}
+
+					{home.data.collaborations_cta_label && (
+						<p class="collaborations-section__cta">
+							<a
+								class="text-link"
+								href="/collaborazioni"
+								{...home.edit.collaborations_cta_label}
+							>
+								{home.data.collaborations_cta_label}
+							</a>
+						</p>
+					)}
+				</section>
+
+				<section class="newsletter-section" aria-labelledby="newsletter-heading">
+					<header class="newsletter-section__intro">
+						{home.data.newsletter_title && (
+							<h2
+								id="newsletter-heading"
+								class="newsletter-section__title"
+								{...home.edit.newsletter_title}
+							>
+								{home.data.newsletter_title}
+							</h2>
+						)}
+						{home.data.newsletter_subtitle && (
+							<p class="newsletter-section__subtitle" {...home.edit.newsletter_subtitle}>
+								{home.data.newsletter_subtitle}
+							</p>
+						)}
+					</header>
+
+					<form class="newsletter-form" id="newsletter-form" novalidate>
+						<div class="newsletter-form__field">
+							<label class="newsletter-form__label" for="newsletter-email">
+								Email
+							</label>
+							<input
+								class="newsletter-form__input"
+								type="email"
+								id="newsletter-email"
+								name="email"
+								autocomplete="email"
+								placeholder={home.data.newsletter_email_placeholder ?? "La tua email"}
+								{...home.edit.newsletter_email_placeholder}
+							/>
+						</div>
+						<button
+							class="newsletter-form__submit"
+							type="submit"
+							{...home.edit.newsletter_button_label}
+						>
+							{home.data.newsletter_button_label ?? "Iscriviti"}
+						</button>
+						<p class="newsletter-form__status" id="newsletter-status" role="status" aria-live="polite" hidden></p>
+					</form>
+
+					<p class="newsletter-section__note">
+						L’iscrizione non è ancora attiva: per ora nessun dato viene inviato.
+					</p>
+				</section>
+			</>
+		) : (
+			<section class="tour-section">
+				<p>
+					Homepage non configurata.{" "}
+					<a href="/_emdash/admin/content/homepage">Apri l’admin</a>.
+				</p>
+			</section>
 		)
 	}
 </Base>
+
+<style>
+	.hero {
+		position: relative;
+		isolation: isolate;
+		min-height: 100svh;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		color: #fff;
+		overflow: hidden;
+		background: var(--color-ink);
+	}
+
+	.hero__media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+
+	.hero__media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		animation: media-drift 4.5s var(--ease-out) both;
+	}
+
+	.hero__veil {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: linear-gradient(
+			180deg,
+			rgb(20 35 58 / 0.35) 0%,
+			rgb(20 35 58 / 0.18) 40%,
+			rgb(20 35 58 / 0.82) 100%
+		);
+		animation: fade-in 900ms var(--ease-out) both;
+	}
+
+	.hero__content {
+		position: relative;
+		z-index: 2;
+		width: min(100% - 2rem, var(--content));
+		margin-inline: auto;
+		padding: 0 0 var(--space-6);
+		padding-top: 8rem;
+		display: grid;
+		gap: var(--space-3);
+	}
+
+	.hero__brand {
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: clamp(2.75rem, 7vw + 1rem, 4.75rem);
+		font-weight: 520;
+		line-height: 0.95;
+		letter-spacing: -0.035em;
+		text-wrap: balance;
+		animation: rise-in 900ms var(--ease-out) both;
+		text-shadow: 0 0.4rem 2rem rgb(20 35 58 / 0.45);
+	}
+
+	.hero__lede {
+		max-width: 28rem;
+		font-size: var(--text-lg);
+		line-height: 1.45;
+		color: #fff;
+		animation: rise-in 900ms var(--ease-out) 120ms both;
+	}
+
+	.hero__actions {
+		margin-top: var(--space-2);
+		animation: rise-in 900ms var(--ease-out) 220ms both;
+	}
+
+	.hero__cta {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.85rem;
+		padding: 0.7rem 1.25rem;
+		border: 1px solid rgb(255 255 255 / 0.55);
+		border-radius: var(--radius);
+		text-decoration: none;
+		font-size: var(--text-sm);
+		font-weight: 650;
+		letter-spacing: 0.02em;
+		background: rgb(255 255 255 / 0.1);
+		backdrop-filter: blur(8px);
+		transition:
+			background 200ms var(--ease-out),
+			border-color 200ms var(--ease-out),
+			transform 200ms var(--ease-out);
+	}
+
+	.hero__cta:hover {
+		background: rgb(255 255 255 / 0.2);
+		border-color: #fff;
+		transform: translateY(-1px);
+	}
+
+	.tour-section {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: var(--space-7) 0;
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	.tour-section__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 34rem;
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.tour-section__title {
+		font-size: var(--text-2xl);
+	}
+
+	.tour-section__subtitle {
+		color: var(--color-ink-soft);
+		font-size: var(--text-lg);
+	}
+
+	.tour-section__list {
+		display: grid;
+		gap: var(--space-6);
+	}
+
+	.tour-section__empty,
+	.tour-section__footer {
+		color: var(--color-ink-soft);
+	}
+
+	.book-section {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: 0 0 var(--space-7);
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	.book-section__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 34rem;
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.book-section__title {
+		font-size: var(--text-2xl);
+	}
+
+	.book-section__subtitle {
+		color: var(--color-ink-soft);
+		font-size: var(--text-lg);
+	}
+
+	.book-section__layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: var(--space-4);
+		align-items: end;
+		animation: rise-in 700ms var(--ease-out) 100ms both;
+	}
+
+	.book-section__media {
+		overflow: hidden;
+		border-radius: var(--radius);
+		min-height: 16rem;
+		background: var(--color-foam);
+	}
+
+	.book-section__media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		aspect-ratio: 4 / 3;
+		transition: transform 700ms var(--ease-out);
+	}
+
+	.book-section__media:hover :global(img) {
+		transform: scale(1.04);
+	}
+
+	.book-section__cta {
+		margin: 0;
+		padding-block: var(--space-2);
+	}
+
+	.training-section {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: 0 0 var(--space-7);
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	.training-section__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 34rem;
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.training-section__title {
+		font-size: var(--text-2xl);
+	}
+
+	.training-section__subtitle {
+		color: var(--color-ink-soft);
+		font-size: var(--text-lg);
+	}
+
+	.training-section__layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+		gap: var(--space-4);
+		align-items: end;
+		animation: rise-in 700ms var(--ease-out) 100ms both;
+	}
+
+	.training-section__media {
+		overflow: hidden;
+		border-radius: var(--radius);
+		min-height: 16rem;
+		background: var(--color-foam);
+	}
+
+	.training-section__media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		aspect-ratio: 4 / 3;
+		transition: transform 700ms var(--ease-out);
+	}
+
+	.training-section__media:hover :global(img) {
+		transform: scale(1.04);
+	}
+
+	.training-section__cta {
+		margin: 0;
+		padding-block: var(--space-2);
+	}
+
+	.collaborations-section {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: 0 0 var(--space-7);
+		display: grid;
+		gap: var(--space-5);
+	}
+
+	.collaborations-section__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 34rem;
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.collaborations-section__title {
+		font-size: var(--text-2xl);
+	}
+
+	.collaborations-section__subtitle {
+		color: var(--color-ink-soft);
+		font-size: var(--text-lg);
+	}
+
+	.collaborations-section__logos {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: var(--space-4);
+		align-items: center;
+		animation: rise-in 700ms var(--ease-out) 80ms both;
+	}
+
+	.collaborations-section__logo {
+		display: grid;
+		place-items: center;
+		min-height: 4.5rem;
+		padding: var(--space-3);
+		background: color-mix(in srgb, var(--color-foam) 70%, #fff);
+		border-radius: var(--radius);
+	}
+
+	.collaborations-section__logo :global(img) {
+		max-height: 3rem;
+		width: auto;
+		max-width: 100%;
+		object-fit: contain;
+		filter: grayscale(0.15);
+		opacity: 0.9;
+	}
+
+	.collaborations-section__testimonials {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: var(--space-4);
+		animation: rise-in 700ms var(--ease-out) 120ms both;
+	}
+
+	.testimonial-card {
+		display: grid;
+		gap: var(--space-3);
+		padding: var(--space-4);
+		background: color-mix(in srgb, var(--color-foam) 55%, #fff);
+		border-radius: var(--radius);
+		border: 1px solid var(--color-line);
+	}
+
+	.testimonial-card__rating {
+		display: flex;
+		gap: 0.15rem;
+		color: var(--color-sun);
+		font-size: var(--text-sm);
+		letter-spacing: 0.04em;
+	}
+
+	.testimonial-card__star {
+		opacity: 0.28;
+	}
+
+	.testimonial-card__star--filled {
+		opacity: 1;
+	}
+
+	.testimonial-card__quote {
+		margin: 0;
+	}
+
+	.testimonial-card__quote p {
+		margin: 0;
+		font-size: var(--text-base);
+		color: var(--color-ink-soft);
+		text-wrap: pretty;
+	}
+
+	.testimonial-card__author {
+		margin: 0;
+		display: grid;
+		gap: 0.15rem;
+	}
+
+	.testimonial-card__name {
+		font-weight: 650;
+		color: var(--color-ink);
+	}
+
+	.testimonial-card__role {
+		font-size: var(--text-sm);
+		color: var(--color-sea);
+	}
+
+	.collaborations-section__cta {
+		margin: 0;
+	}
+
+	.newsletter-section {
+		width: min(100% - 2rem, var(--content));
+		margin: 0 auto;
+		padding: 0 0 var(--space-7);
+		display: grid;
+		gap: var(--space-4);
+		animation: rise-in 700ms var(--ease-out) both;
+	}
+
+	.newsletter-section__intro {
+		display: grid;
+		gap: var(--space-2);
+		max-width: 34rem;
+	}
+
+	.newsletter-section__title {
+		font-size: var(--text-2xl);
+		color: var(--color-ink);
+	}
+
+	.newsletter-section__subtitle {
+		color: var(--color-ink-soft);
+		font-size: var(--text-lg);
+	}
+
+	.newsletter-form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		align-items: end;
+		max-width: 32rem;
+	}
+
+	.newsletter-form__field {
+		flex: 1 1 14rem;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	.newsletter-form__label {
+		font-size: var(--text-sm);
+		font-weight: 650;
+		color: var(--color-sea-deep);
+	}
+
+	.newsletter-form__input {
+		width: 100%;
+		min-height: 2.85rem;
+		padding: 0.65rem 0.9rem;
+		border: 1px solid var(--color-line);
+		border-radius: var(--radius);
+		background: color-mix(in srgb, var(--color-foam) 65%, #fff);
+		color: var(--color-ink);
+		font: inherit;
+		font-size: var(--text-base);
+	}
+
+	.newsletter-form__input::placeholder {
+		color: color-mix(in srgb, var(--color-ink-soft) 70%, transparent);
+	}
+
+	.newsletter-form__input:focus {
+		outline: 2px solid var(--color-sea);
+		outline-offset: 2px;
+		border-color: var(--color-sea);
+	}
+
+	.newsletter-form__submit {
+		min-height: 2.85rem;
+		padding: 0.7rem 1.35rem;
+		border: 1px solid var(--color-sea-deep);
+		border-radius: var(--radius);
+		background: var(--color-sea);
+		color: #fff;
+		font: inherit;
+		font-size: var(--text-sm);
+		font-weight: 650;
+		letter-spacing: 0.02em;
+		cursor: pointer;
+		transition:
+			background 200ms var(--ease-out),
+			border-color 200ms var(--ease-out),
+			transform 200ms var(--ease-out);
+	}
+
+	.newsletter-form__submit:hover {
+		background: var(--color-sea-deep);
+		transform: translateY(-1px);
+	}
+
+	.newsletter-form__submit:focus-visible {
+		outline: 2px solid var(--color-sun);
+		outline-offset: 3px;
+	}
+
+	.newsletter-form__status {
+		flex: 1 1 100%;
+		margin: 0;
+		font-size: var(--text-sm);
+		color: var(--color-sea-deep);
+	}
+
+	.newsletter-section__note {
+		margin: 0;
+		max-width: 32rem;
+		font-size: var(--text-sm);
+		color: var(--color-ink-soft);
+	}
+
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	.text-link {
+		font-weight: 650;
+		color: var(--color-sea-deep);
+		text-underline-offset: 0.28em;
+	}
+
+	@media (max-width: 800px) {
+		.book-section__layout,
+		.training-section__layout {
+			grid-template-columns: 1fr;
+			gap: var(--space-3);
+			align-items: start;
+		}
+
+		.book-section__media,
+		.training-section__media {
+			min-height: 0;
+		}
+
+		.collaborations-section__logos {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.collaborations-section__testimonials {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.hero__content {
+			padding-top: calc(var(--space-7) + 4rem);
+		}
+
+		.newsletter-form {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.newsletter-form__submit {
+			width: 100%;
+		}
+	}
+</style>
+
+<script>
+	const form = document.getElementById("newsletter-form");
+	const status = document.getElementById("newsletter-status");
+
+	form?.addEventListener("submit", (event) => {
+		event.preventDefault();
+		if (!status) return;
+		status.hidden = false;
+		status.textContent =
+			"Grazie per l’interesse: l’iscrizione alla Newsletter arriverà a breve. Per ora non inviamo né salviamo la tua email.";
+	});
+</script>
