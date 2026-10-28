@@ -14,7 +14,7 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 
 - [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts` (2026-10-23)
 - [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — when lists must not be duplicated on homepage (2026-10-23)
-- [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps; CLI upload ritual (SSRF blocks loopback `$media`) (2026-10-23)
+- [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps; GitHub raw `$media` URLs (2026-10-28 fix for [#3](https://github.com/bbtgnn/spaghettiabc-website/issues/3); loopback SSRF noted 2026-10-23)
 
 ## Domain language
 
