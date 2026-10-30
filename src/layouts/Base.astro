@@ -12,7 +12,7 @@ interface Props {
 	description?: string | null;
 	image?: string | null;
 	canonical?: string | null;
-	/** Transparent nav over a full-bleed hero */
+	/** Kept for call-site compatibility; header is always sticky in Atelier mode */
 	overlayHeader?: boolean;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
@@ -24,7 +24,6 @@ const {
 	description,
 	image,
 	canonical,
-	overlayHeader = false,
 	content,
 } = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
@@ -46,6 +45,7 @@ const titleIncludesSiteName =
 const fullTitle = titleIncludesSiteName ? title : `${title} — ${siteTitle}`;
 const pageDescription = description ?? siteTagline;
 const menu = menuResult.data;
+const currentPath = Astro.url.pathname;
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -60,9 +60,10 @@ const pageCtx = createPublicPageContext({
 	siteName: siteTitle,
 });
 
-const headerClass = overlayHeader
-	? "site-header site-header--on-media"
-	: "site-header site-header--solid";
+const isActive = (url: string) => {
+	if (url === "/") return currentPath === "/";
+	return currentPath === url || currentPath.startsWith(`${url}/`);
+};
 ---
 
 <!doctype html>
@@ -70,15 +71,28 @@ const headerClass = overlayHeader
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#f4f4f2" />
 		<title>{fullTitle}</title>
 		<EmDashHead page={pageCtx} />
+		<script is:inline>
+			(() => {
+				try {
+					const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+					if (!reduce) document.documentElement.setAttribute("data-motion", "on");
+				} catch {
+					/* no-op */
+				}
+			})();
+		</script>
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 
-		<header class={headerClass}>
+		<a class="sr-only" href="#main-content">Vai al contenuto</a>
+
+		<header class="site-header">
 			<div class="site-header__inner">
-				<a class="site-brand" href="/">
+				<a class="site-brand" href="/" aria-label={`${siteTitle}, home`}>
 					{
 						siteLogo ? (
 							<img
@@ -101,6 +115,7 @@ const headerClass = overlayHeader
 										? "noopener noreferrer"
 										: undefined
 								}
+								aria-current={isActive(item.url) ? "page" : undefined}
 							>
 								{item.label}
 							</a>
@@ -116,21 +131,32 @@ const headerClass = overlayHeader
 			</div>
 		</header>
 
-		<main class="site-main">
+		<main class="site-main" id="main-content">
 			<slot />
 		</main>
 
 		<EmDashBodyEnd page={pageCtx} />
+
+		<script is:inline>
+			(() => {
+				if (document.documentElement.getAttribute("data-motion") !== "on") return;
+				const nodes = document.querySelectorAll("[data-reveal]");
+				if (!nodes.length || !("IntersectionObserver" in window)) {
+					nodes.forEach((el) => el.classList.add("is-in"));
+					return;
+				}
+				const io = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (!entry.isIntersecting) continue;
+							entry.target.classList.add("is-in");
+							io.unobserve(entry.target);
+						}
+					},
+					{ rootMargin: "0px 0px -8% 0px", threshold: 0.12 },
+				);
+				nodes.forEach((el) => io.observe(el));
+			})();
+		</script>
 	</body>
 </html>
-
-<style>
-	.site-header--solid {
-		position: sticky;
-		top: 0;
-		backdrop-filter: blur(10px);
-		background: color-mix(in srgb, var(--color-paper) 88%, transparent);
-		border-bottom: 1px solid var(--color-line);
-		padding-bottom: var(--space-3);
-	}
-</style>
