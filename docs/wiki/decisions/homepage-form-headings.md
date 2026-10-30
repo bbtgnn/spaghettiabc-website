@@ -57,8 +57,6 @@ For a **non-empty** local `data.db`, preferred non-destructive path used on 2026
 bunx emdash seed seed/seed.json --no-content --on-conflict=update
 ```
 
-That run created the six `form_heading_*` fields and refreshed labels/widgets. EmDash seed **append** new fields at the end of `sort_order`; it does **not** interleave them to match `seed.json` order. Chiara then saw all headings at the bottom of the Homepage editor.
-
-**Field order fix (2026-10-28):** set `_emdash_fields.sort_order` to the homepage field array order in `seed/seed.json` via `bun scripts/reorder-homepage-fields.mjs` (local SQLite helper; content untouched). Reload the Homepage entry in admin after running it.
+That run created the six `form_heading_*` fields and refreshed labels/widgets. EmDash seed **appends** new fields at the end of `sort_order`; it does **not** interleave them to match `seed.json` order. On 2026-10-28 Chiara saw all headings at the bottom of the Homepage editor until `_emdash_fields.sort_order` was corrected to match the homepage field array in `seed/seed.json` (content untouched). A fresh empty DB / first-boot seed does not need that fix.
 
 Do not run destructive seed/import flows against a DB that holds content you need unless you have exported backup (`bunx emdash export-seed` per [EmDash CLI skill](../../../.agents/skills/emdash-cli/SKILL.md)).
