@@ -767,7 +767,7 @@
 							"name": "Ciccolella",
 							"logo": {
 								"$media": {
-									"url": "http://127.0.0.1:8765/logo_ciccolella.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_ciccolella.webp",
 									"alt": "Logo Ciccolella",
 									"filename": "logo_ciccolella.webp"
 								}
@@ -777,7 +777,7 @@
 							"name": "Evolio Expo",
 							"logo": {
 								"$media": {
-									"url": "http://127.0.0.1:8765/logo_evolio_expo.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_evolio_expo.webp",
 									"alt": "Logo Evolio Expo",
 									"filename": "logo_evolio_expo.webp"
 								}
@@ -787,7 +787,7 @@
 							"name": "FIOI",
 							"logo": {
 								"$media": {
-									"url": "http://127.0.0.1:8765/logo_fioi.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_fioi.webp",
 									"alt": "Logo FIOI",
 									"filename": "logo_fioi.webp"
 								}
@@ -797,7 +797,7 @@
 							"name": "Gambero Rosso",
 							"logo": {
 								"$media": {
-									"url": "http://127.0.0.1:8765/logo_gambero_rosso.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_gambero_rosso.webp",
 									"alt": "Logo Gambero Rosso",
 									"filename": "logo_gambero_rosso.webp"
 								}
@@ -807,7 +807,7 @@
 							"name": "Slow Food",
 							"logo": {
 								"$media": {
-									"url": "http://127.0.0.1:8765/logo_slow_food.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_slow_food.webp",
 									"alt": "Logo Slow Food",
 									"filename": "logo_slow_food.webp"
 								}
@@ -817,7 +817,7 @@
 							"name": "TEDx",
 							"logo": {
 								"$media": {
-									"url": "http://127.0.0.1:8765/logo_tedx.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_tedx.webp",
 									"alt": "Logo TEDx",
 									"filename": "logo_tedx.webp"
 								}
