@@ -9,6 +9,7 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Collaborazioni CMS model](./decisions/collaborazioni-cms-model.md) — collection `collaborations`, loghi+testimonianze sulla landing, URL `/collaborazioni` (2026-10-23)
 - [Newsletter homepage section](./decisions/newsletter-homepage-section.md) — UI-only iscrizione in home, no collection/provider (2026-10-23)
 - [Homepage + Tours schema](./decisions/homepage-tours-schema.md) — first CMS slice before Libro (2026-10-23)
+- [Homepage form headings](./decisions/homepage-form-headings.md) — CMS editor section titles for Homepage only ([#5](https://github.com/bbtgnn/spaghettiabc-website/issues/5), 2026-10-28)
 
 ## Operations
 

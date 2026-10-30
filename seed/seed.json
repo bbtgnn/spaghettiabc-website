@@ -84,36 +84,52 @@
 			"titleField": "hero_title",
 			"fields": [
 				{
+					"slug": "form_heading_hero",
+					"label": "Hero",
+					"type": "boolean",
+					"required": false,
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
 					"slug": "hero_image",
-					"label": "Hero image",
+					"label": "Immagine",
 					"type": "image"
 				},
 				{
 					"slug": "hero_title",
-					"label": "Hero title",
+					"label": "Titolo",
 					"type": "string",
 					"required": true,
 					"searchable": true
 				},
 				{
 					"slug": "hero_subtitle",
-					"label": "Hero subtitle",
+					"label": "Sottotitolo",
 					"type": "string"
 				},
 				{
+					"slug": "form_heading_tour",
+					"label": "Tour",
+					"type": "boolean",
+					"required": false,
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
 					"slug": "tour_title",
-					"label": "Tour section title",
+					"label": "Titolo",
 					"type": "string",
 					"required": true
 				},
 				{
 					"slug": "tour_subtitle",
-					"label": "Tour section subtitle",
+					"label": "Sottotitolo",
 					"type": "string"
 				},
 				{
 					"slug": "featured_tours",
-					"label": "Featured tours",
+					"label": "Tour in evidenza",
 					"type": "reference",
 					"validation": {
 						"targetCollection": "tours",
@@ -122,82 +138,114 @@
 				},
 				{
 					"slug": "tour_cta_label",
-					"label": "Tour CTA label",
+					"label": "Testo CTA",
 					"type": "string"
 				},
 				{
+					"slug": "form_heading_book",
+					"label": "Libro",
+					"type": "boolean",
+					"required": false,
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
 					"slug": "book_title",
-					"label": "Book section title",
+					"label": "Titolo",
 					"type": "string"
 				},
 				{
 					"slug": "book_subtitle",
-					"label": "Book section subtitle",
+					"label": "Sottotitolo",
 					"type": "string"
 				},
 				{
 					"slug": "book_image",
-					"label": "Book section image",
+					"label": "Immagine",
 					"type": "image"
 				},
 				{
 					"slug": "book_cta_label",
-					"label": "Book CTA label",
+					"label": "Testo CTA",
 					"type": "string"
 				},
 				{
+					"slug": "form_heading_training",
+					"label": "Formazione",
+					"type": "boolean",
+					"required": false,
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
 					"slug": "training_title",
-					"label": "Training section title",
+					"label": "Titolo",
 					"type": "string"
 				},
 				{
 					"slug": "training_subtitle",
-					"label": "Training section subtitle",
+					"label": "Sottotitolo",
 					"type": "string"
 				},
 				{
 					"slug": "training_image",
-					"label": "Training section image",
+					"label": "Immagine",
 					"type": "image"
 				},
 				{
 					"slug": "training_cta_label",
-					"label": "Training CTA label",
+					"label": "Testo CTA",
 					"type": "string"
 				},
 				{
+					"slug": "form_heading_collaborations",
+					"label": "Collaborazioni",
+					"type": "boolean",
+					"required": false,
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
 					"slug": "collaborations_title",
-					"label": "Collaborations section title",
+					"label": "Titolo",
 					"type": "string"
 				},
 				{
 					"slug": "collaborations_subtitle",
-					"label": "Collaborations section subtitle",
+					"label": "Sottotitolo",
 					"type": "string"
 				},
 				{
 					"slug": "collaborations_cta_label",
-					"label": "Collaborations CTA label",
+					"label": "Testo CTA",
 					"type": "string"
 				},
 				{
+					"slug": "form_heading_newsletter",
+					"label": "Newsletter",
+					"type": "boolean",
+					"required": false,
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
 					"slug": "newsletter_title",
-					"label": "Newsletter section title",
+					"label": "Titolo",
 					"type": "string"
 				},
 				{
 					"slug": "newsletter_subtitle",
-					"label": "Newsletter section subtitle",
+					"label": "Sottotitolo",
 					"type": "string"
 				},
 				{
 					"slug": "newsletter_button_label",
-					"label": "Newsletter button label",
+					"label": "Testo pulsante",
 					"type": "string"
 				},
 				{
 					"slug": "newsletter_email_placeholder",
-					"label": "Newsletter email placeholder",
+					"label": "Placeholder email",
 					"type": "string"
 				}
 			]
