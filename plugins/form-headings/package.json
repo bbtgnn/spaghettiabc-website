@@ -1,0 +1,14 @@
+{
+  "name": "@spaghettiabc/form-headings",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./admin": "./src/admin.tsx"
+  },
+  "peerDependencies": {
+    "emdash": "^1.3.0",
+    "react": "^19.0.0"
+  }
+}
