@@ -1,0 +1,86 @@
+/* DEV-only font pairing preview (#9). Imported from Base.astro when DEV.
+   Prod baseline faces (Fraunces, Source Serif 4) load from theme.css. */
+
+@import "@fontsource-variable/newsreader/wght.css";
+@import "@fontsource-variable/lora/wght.css";
+@import "@fontsource-variable/literata/wght.css";
+@import "@fontsource/cormorant-garamond/latin-400.css";
+@import "@fontsource/cormorant-garamond/latin-500.css";
+@import "@fontsource/cormorant-garamond/latin-600.css";
+@import "@fontsource/cormorant-garamond/latin-700.css";
+@import "@fontsource/cormorant-garamond/latin-ext-400.css";
+@import "@fontsource/cormorant-garamond/latin-ext-500.css";
+@import "@fontsource/cormorant-garamond/latin-ext-600.css";
+@import "@fontsource/cormorant-garamond/latin-ext-700.css";
+@import "@fontsource/tsukimi-rounded/latin.css";
+@import "@fontsource/tsukimi-rounded/latin-ext.css";
+@import "@fontsource/fira-sans/latin-400.css";
+@import "@fontsource/fira-sans/latin-500.css";
+@import "@fontsource/fira-sans/latin-600.css";
+@import "@fontsource/fira-sans/latin-700.css";
+@import "@fontsource/fira-sans/latin-ext-400.css";
+@import "@fontsource/fira-sans/latin-ext-500.css";
+@import "@fontsource/fira-sans/latin-ext-600.css";
+@import "@fontsource/fira-sans/latin-ext-700.css";
+
+:root {
+	--font-newsreader: "Newsreader Variable", "Newsreader", Georgia,
+		"Times New Roman", serif;
+	--font-lora: "Lora Variable", "Lora", Georgia, "Times New Roman", serif;
+	--font-literata: "Literata Variable", "Literata", Georgia, "Times New Roman",
+		serif;
+	--font-cormorant: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+	--font-tsukimi: "Tsukimi Rounded", "Helvetica Neue", Helvetica, Arial,
+		sans-serif;
+	--font-fira-sans: "Fira Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Display — non-Fraunces faces restore the heavier title/brand weights;
+   Fraunces keeps the prod :root lightening (display 400 / brand 400) */
+html[data-font-display="newsreader"] {
+	--font-display: var(--font-newsreader);
+	--font-display-weight: 500;
+	--font-brand-weight: 500;
+}
+
+html[data-font-display="fraunces"] {
+	--font-display: var(--font-fraunces);
+	--font-display-weight: 400;
+	--font-brand-weight: 400;
+}
+
+html[data-font-display="lora"] {
+	--font-display: var(--font-lora);
+	--font-display-weight: 500;
+	--font-brand-weight: 500;
+}
+
+html[data-font-display="cormorant"] {
+	--font-display: var(--font-cormorant);
+	--font-display-weight: 500;
+	--font-brand-weight: 500;
+}
+
+/* Body */
+html[data-font-body="source-serif-4"] {
+	--font-body: var(--font-source-serif);
+	--font-sans: var(--font-body);
+}
+
+html[data-font-body="literata"] {
+	--font-body: var(--font-literata);
+	--font-sans: var(--font-body);
+}
+
+/* UI — "body" follows current body stack; apply after body rules */
+html[data-font-ui="body"] {
+	--font-ui: var(--font-body);
+}
+
+html[data-font-ui="tsukimi"] {
+	--font-ui: var(--font-tsukimi);
+}
+
+html[data-font-ui="fira-sans"] {
+	--font-ui: var(--font-fira-sans);
+}

@@ -72,6 +72,12 @@ export interface Homepage {
   newsletter_subtitle?: string;
   newsletter_button_label?: string;
   newsletter_email_placeholder?: string;
+  form_heading_hero?: boolean;
+  form_heading_tour?: boolean;
+  form_heading_book?: boolean;
+  form_heading_training?: boolean;
+  form_heading_collaborations?: boolean;
+  form_heading_newsletter?: boolean;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;

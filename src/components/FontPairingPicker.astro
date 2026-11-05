@@ -1,0 +1,347 @@
+---
+/**
+ * DEV-only font pairing preview (#9). Stripped from production builds.
+ * Matrix: rows = body, columns = display; separate Font UI control.
+ */
+const DISPLAY = [
+	{ id: "newsreader", label: "Newsreader" },
+	{ id: "fraunces", label: "Fraunces" },
+	{ id: "lora", label: "Lora" },
+	{ id: "cormorant", label: "Cormorant Garamond" },
+] as const;
+
+const BODY = [
+	{ id: "source-serif-4", label: "Source Serif 4" },
+	{ id: "literata", label: "Literata" },
+] as const;
+
+const UI = [
+	{ id: "body", label: "Come testo" },
+	{ id: "tsukimi", label: "Tsukimi Rounded" },
+	{ id: "fira-sans", label: "Fira Sans" },
+] as const;
+---
+
+<div class="font-pairing-picker" role="region" aria-label="Anteprima font">
+	<p class="font-pairing-picker__title">Abbinamento font</p>
+
+	<div class="font-pairing-picker__matrix-wrap">
+		<table class="font-pairing-picker__matrix">
+			<thead>
+				<tr>
+					<th scope="col" class="font-pairing-picker__corner">
+						<span class="sr-only">Corpo \ Display</span>
+						<span aria-hidden="true">Corpo ↓ / Titoli →</span>
+					</th>
+					{
+						DISPLAY.map((d) => (
+							<th scope="col">{d.label}</th>
+						))
+					}
+				</tr>
+			</thead>
+			<tbody>
+				{
+					BODY.map((body) => (
+						<tr>
+							<th scope="row">{body.label}</th>
+							{DISPLAY.map((display) => (
+								<td>
+									<button
+										type="button"
+										class="font-pairing-picker__cell"
+										data-display={display.id}
+										data-body={body.id}
+										aria-label={`${body.label} + ${display.label}`}
+										aria-pressed="false"
+									>
+										<span class="font-pairing-picker__cell-mark" aria-hidden="true"
+										></span>
+									</button>
+								</td>
+							))}
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="font-pairing-picker__ui">
+		<label class="font-pairing-picker__ui-label" for="font-ui-select">
+			Font UI
+		</label>
+		<select id="font-ui-select" class="font-pairing-picker__select">
+			{
+				UI.map((opt) => (
+					<option value={opt.id}>{opt.label}</option>
+				))
+			}
+		</select>
+	</div>
+</div>
+
+<script>
+	const KEY_DISPLAY = "spaghettiabc-font-display";
+	const KEY_BODY = "spaghettiabc-font-body";
+	const KEY_UI = "spaghettiabc-font-ui";
+
+	const DEFAULT_DISPLAY = "fraunces";
+	const DEFAULT_BODY = "source-serif-4";
+	const DEFAULT_UI = "body";
+
+	const VALID_DISPLAY = ["newsreader", "fraunces", "lora", "cormorant"];
+	const VALID_BODY = ["source-serif-4", "literata"];
+	const VALID_UI = ["body", "tsukimi", "fira-sans"];
+
+	const root = document.documentElement;
+	const picker = document.querySelector(".font-pairing-picker");
+	const cells = picker?.querySelectorAll(".font-pairing-picker__cell");
+	const uiSelect = document.getElementById("font-ui-select");
+
+	const read = (key: string, valid: string[], fallback: string) => {
+		try {
+			const stored = localStorage.getItem(key);
+			if (stored && valid.includes(stored)) return stored;
+		} catch {
+			/* no-op */
+		}
+		return fallback;
+	};
+
+	const write = (key: string, value: string) => {
+		try {
+			localStorage.setItem(key, value);
+		} catch {
+			/* no-op */
+		}
+	};
+
+	/** Serif UI → sentence case + metrics; sans UI → uppercase (see theme.css). */
+	const syncUiCase = () => {
+		const ui = root.getAttribute("data-font-ui") ?? DEFAULT_UI;
+		/* UI=body is always serif (Source Serif 4 / Literata); tsukimi & fira-sans are sans */
+		const uiSerif = ui === "body";
+		root.setAttribute("data-font-ui-case", uiSerif ? "serif" : "sans");
+	};
+
+	const applyPairing = (display: string, body: string) => {
+		const nextDisplay = VALID_DISPLAY.includes(display)
+			? display
+			: DEFAULT_DISPLAY;
+		const nextBody = VALID_BODY.includes(body) ? body : DEFAULT_BODY;
+		root.setAttribute("data-font-display", nextDisplay);
+		root.setAttribute("data-font-body", nextBody);
+		write(KEY_DISPLAY, nextDisplay);
+		write(KEY_BODY, nextBody);
+		syncUiCase();
+
+		cells?.forEach((cell) => {
+			if (!(cell instanceof HTMLButtonElement)) return;
+			const selected =
+				cell.dataset.display === nextDisplay &&
+				cell.dataset.body === nextBody;
+			cell.setAttribute("aria-pressed", selected ? "true" : "false");
+			cell.classList.toggle("is-selected", selected);
+		});
+	};
+
+	const applyUi = (ui: string) => {
+		const next = VALID_UI.includes(ui) ? ui : DEFAULT_UI;
+		root.setAttribute("data-font-ui", next);
+		write(KEY_UI, next);
+		syncUiCase();
+		if (uiSelect instanceof HTMLSelectElement) {
+			uiSelect.value = next;
+		}
+	};
+
+	const initialDisplay = read(KEY_DISPLAY, VALID_DISPLAY, DEFAULT_DISPLAY);
+	const initialBody = read(KEY_BODY, VALID_BODY, DEFAULT_BODY);
+	const initialUi = read(KEY_UI, VALID_UI, DEFAULT_UI);
+
+	applyPairing(initialDisplay, initialBody);
+	applyUi(initialUi);
+
+	cells?.forEach((cell) => {
+		cell.addEventListener("click", () => {
+			if (!(cell instanceof HTMLButtonElement)) return;
+			applyPairing(cell.dataset.display ?? "", cell.dataset.body ?? "");
+		});
+	});
+
+	if (uiSelect instanceof HTMLSelectElement) {
+		uiSelect.addEventListener("change", () => {
+			applyUi(uiSelect.value);
+		});
+	}
+</script>
+
+<style>
+	.font-pairing-picker {
+		position: fixed;
+		z-index: 10000;
+		right: max(0.5rem, env(safe-area-inset-right));
+		bottom: max(0.5rem, env(safe-area-inset-bottom));
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.55rem 0.6rem 0.65rem;
+		background: var(--surface);
+		border: 1px solid var(--line-strong);
+		color: var(--ink);
+		width: min(22rem, calc(100vw - 1rem));
+		max-height: min(70svh, 28rem);
+		overflow: auto;
+		box-shadow: 0 8px 24px color-mix(in oklab, var(--ink) 12%, transparent);
+		pointer-events: auto;
+	}
+
+	.font-pairing-picker__title {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--muted);
+	}
+
+	.font-pairing-picker__matrix-wrap {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.font-pairing-picker__matrix {
+		width: 100%;
+		border-collapse: collapse;
+		table-layout: fixed;
+		font-size: 0.625rem;
+		line-height: 1.2;
+	}
+
+	.font-pairing-picker__matrix th,
+	.font-pairing-picker__matrix td {
+		padding: 0.2rem;
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	.font-pairing-picker__matrix thead th {
+		font-family: var(--font-ui);
+		font-weight: 500;
+		letter-spacing: 0.02em;
+		color: var(--muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding-bottom: 0.35rem;
+	}
+
+	.font-pairing-picker__matrix tbody th {
+		font-family: var(--font-ui);
+		font-weight: 500;
+		text-align: left;
+		color: var(--muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding-right: 0.35rem;
+		width: 5.5rem;
+	}
+
+	.font-pairing-picker__corner {
+		width: 5.5rem;
+		font-size: 0.55rem !important;
+		text-align: left !important;
+		white-space: normal !important;
+	}
+
+	.font-pairing-picker__cell {
+		display: grid;
+		place-items: center;
+		width: 100%;
+		aspect-ratio: 1;
+		min-width: 1.75rem;
+		min-height: 1.75rem;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--canvas);
+		cursor: pointer;
+		transition:
+			background 160ms ease,
+			border-color 160ms ease,
+			box-shadow 160ms ease;
+	}
+
+	.font-pairing-picker__cell:hover,
+	.font-pairing-picker__cell:focus-visible {
+		border-color: var(--line-strong);
+		outline: none;
+	}
+
+	.font-pairing-picker__cell:focus-visible {
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+	}
+
+	.font-pairing-picker__cell.is-selected {
+		border-color: var(--accent);
+		background: color-mix(in oklab, var(--accent) 14%, var(--canvas));
+	}
+
+	.font-pairing-picker__cell-mark {
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 50%;
+		background: transparent;
+	}
+
+	.font-pairing-picker__cell.is-selected .font-pairing-picker__cell-mark {
+		background: var(--accent);
+	}
+
+	.font-pairing-picker__ui {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		padding-top: 0.15rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.font-pairing-picker__ui-label {
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--muted);
+	}
+
+	.font-pairing-picker__select {
+		font-family: var(--font-ui);
+		font-size: 0.8125rem;
+		line-height: 1.3;
+		padding: 0.35rem 0.5rem;
+		background: var(--canvas);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		min-width: 0;
+		width: 100%;
+		color: var(--ink);
+	}
+
+	@media (max-width: 480px) {
+		.font-pairing-picker {
+			left: max(0.5rem, env(safe-area-inset-left));
+			right: max(0.5rem, env(safe-area-inset-right));
+			width: auto;
+		}
+
+		.font-pairing-picker__matrix tbody th,
+		.font-pairing-picker__corner {
+			width: 4.25rem;
+		}
+
+		.font-pairing-picker__cell {
+			min-width: 1.5rem;
+			min-height: 1.5rem;
+		}
+	}
+</style>

@@ -35,110 +35,99 @@ const {
 	index = 0,
 } = Astro.props;
 
-const meta = [destination, duration, price].filter(Boolean).join(" · ");
+const indexLabel = String(index + 1).padStart(2, "0");
+const meta = [destination, duration].filter(Boolean).join(" · ");
 ---
 
-<article class="tour-teaser" style={`--i: ${index}`}>
+<article
+	class="tour-teaser"
+	data-reveal
+	style={`--reveal-delay: ${index * 110}ms`}
+>
 	<a class="tour-teaser__link" href={href}>
 		{
 			image && (
-				<div class="tour-teaser__media" {...edit?.featured_image}>
-					<Image image={image} />
+				<div class="tour-teaser__media" data-reveal="mask" {...edit?.featured_image}>
+					<div>
+						<Image image={image} />
+					</div>
 				</div>
 			)
 		}
-		<div class="tour-teaser__body">
-			{meta && <p class="tour-teaser__meta">{meta}</p>}
-			<h3 class="tour-teaser__title" {...edit?.title}>{title}</h3>
-			{
-				excerpt && (
-					<p class="tour-teaser__excerpt" {...edit?.excerpt}>
-						{excerpt}
-					</p>
-				)
-			}
-			<span class="tour-teaser__cta">Scopri il tour</span>
+		<div class="tour-teaser__meta-row">
+			<span class="mono tour-teaser__index">{indexLabel}</span>
+			{meta && <p class="label tour-teaser__meta">{meta}</p>}
 		</div>
+		<h3 class="type-h3 tour-teaser__title" {...edit?.title}>{title}</h3>
+		{
+			excerpt && (
+				<p class="type-body tour-teaser__excerpt" {...edit?.excerpt}>
+					{excerpt}
+				</p>
+			)
+		}
+		{
+			price && (
+				<p class="mono tour-teaser__price">{price}</p>
+			)
+		}
 	</a>
 </article>
 
 <style>
-	.tour-teaser {
-		animation: rise-in 700ms var(--ease-out) both;
-		animation-delay: calc(120ms + var(--i) * 90ms);
-	}
-
 	.tour-teaser__link {
 		display: grid;
-		grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-		gap: var(--space-4);
-		align-items: stretch;
+		gap: 0.85rem;
 		text-decoration: none;
 		color: inherit;
 	}
 
 	.tour-teaser__media {
 		overflow: hidden;
-		border-radius: var(--radius);
-		min-height: 14rem;
-		background: var(--color-foam);
+		background: var(--surface);
 	}
 
 	.tour-teaser__media :global(img) {
 		width: 100%;
-		height: 100%;
-		object-fit: cover;
 		aspect-ratio: 4 / 3;
-		transition: transform 700ms var(--ease-out);
+		object-fit: cover;
+		transition: transform 1100ms var(--ease-out-expo);
 	}
 
 	.tour-teaser__link:hover .tour-teaser__media :global(img) {
 		transform: scale(1.04);
 	}
 
-	.tour-teaser__body {
+	.tour-teaser__meta-row {
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		gap: var(--space-2);
-		padding-block: var(--space-2);
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-top: 0.85rem;
+		border-top: 1px solid var(--line);
+		transition: border-color 280ms ease;
 	}
 
-	.tour-teaser__meta {
-		font-size: var(--text-xs);
-		font-weight: 600;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--color-sea);
+	.tour-teaser__link:hover .tour-teaser__meta-row {
+		border-top-color: var(--accent);
+	}
+
+	.tour-teaser__index {
+		font-size: 0.6875rem;
+		color: var(--muted);
 	}
 
 	.tour-teaser__title {
-		font-size: var(--text-xl);
+		margin: 0;
 	}
 
 	.tour-teaser__excerpt {
 		max-width: 34rem;
-		color: var(--color-ink-soft);
+		font-size: 0.9375rem;
 	}
 
-	.tour-teaser__cta {
-		margin-top: var(--space-2);
-		font-size: var(--text-sm);
-		font-weight: 650;
-		color: var(--color-sea-deep);
-		text-decoration: underline;
-		text-underline-offset: 0.28em;
-		text-decoration-thickness: 1px;
-	}
-
-	@media (max-width: 800px) {
-		.tour-teaser__link {
-			grid-template-columns: 1fr;
-			gap: var(--space-3);
-		}
-
-		.tour-teaser__media {
-			min-height: 0;
-		}
+	.tour-teaser__price {
+		font-size: 0.8125rem;
+		color: var(--ink);
 	}
 </style>
