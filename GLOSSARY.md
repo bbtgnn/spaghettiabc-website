@@ -13,12 +13,16 @@ Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non le
 _Avoid_: pagina libro, scheda libro, reference al Libro
 
 **Tour**:
-Un’esperienza/itinerario vendibile, con pagina dedicata e possibile presenza in evidenza in homepage.
-_Avoid_: viaggio, pacchetto (salvo uso marketing in copy)
+Esperienza guidata di cibo in un paese della Puglia (sapori locali; Flavia guida). Non è un itinerario di viaggio plurigiornaliero in Italia. Campo `destination` = nome del paese.
+_Avoid_: viaggio, pacchetto (salvo copy marketing), itinerario (come termine definitorio)
+
+**Catalogo Tour**:
+La pagina `/tours` che elenca tutte le entry Tour.
+_Avoid_: lista tour; non usare «catalogo» per indicare una collection CMS
 
 **Sezione Tour**:
-Blocco della homepage che elenca Tour in evidenza e rimanda all’archivio tour.
-_Avoid_: lista tour, catalogo (nel senso di collection)
+Blocco della homepage che elenca Tour in evidenza e rimanda al Catalogo Tour.
+_Avoid_: lista tour; chiamare questo blocco «Catalogo Tour»
 
 **Formazione**:
 L’offerta B2B di Flavia: percorsi e incontri per aziende e professionisti intorno alla cultura del cibo, presentata come una sola landing sul sito (collection `training`, entry/URL `/training`). I singoli percorsi non sono entry separate finché non si decide un catalogo.
