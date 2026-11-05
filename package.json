@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@spaghettiabc/form-headings": "file:./plugins/form-headings",
+    "@spaghettiabc/google-reviews": "file:./plugins/google-reviews",
     "@astrojs/node": "^11.1.5",
     "@astrojs/react": "^7.0.0",
     "@fontsource-variable/fraunces": "^5.3.0",

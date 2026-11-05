@@ -14,7 +14,7 @@
 
 - Admin branding / chrome outside the Homepage form
 - Issue #3 (logos)
-- Issue #4 (Google reviews)
+- Issue #4 (Google reviews) — implemented separately; see [google-reviews-places.md](./google-reviews-places.md)
 
 ## Audience (2026-10-28)
 
@@ -43,6 +43,7 @@ Primary reader: **content editors** (Flavia), not developers.
 | `form_heading_book` | Libro | `book_*` |
 | `form_heading_training` | Formazione | `training_*` |
 | `form_heading_collaborations` | Collaborazioni | `collaborations_*` |
+| `form_heading_reviews` | Recensioni Google | `reviews_*` |
 | `form_heading_newsletter` | Newsletter | `newsletter_*` |
 
 Markers: `type: boolean`, `required: false`, `defaultValue: false`. The widget displays `label` as the heading; it does not expose a toggle.
