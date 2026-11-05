@@ -173,6 +173,24 @@ const pageCtx = createPublicPageContext({
 				);
 				nodes.forEach((el) => io.observe(el));
 			})();
+
+			/* Horizontal rails (overflow-x) otherwise trap trackpad vertical scroll. */
+			(() => {
+				const tracks = document.querySelectorAll(".tour-rail__track");
+				for (const track of tracks) {
+					track.addEventListener(
+						"wheel",
+						(event) => {
+							if (event.shiftKey) return;
+							if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+							if (event.deltaY === 0) return;
+							event.preventDefault();
+							window.scrollBy({ top: event.deltaY, left: 0, behavior: "instant" });
+						},
+						{ passive: false },
+					);
+				}
+			})();
 		</script>
 	</body>
 </html>

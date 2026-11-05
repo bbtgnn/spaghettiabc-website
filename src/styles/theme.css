@@ -606,7 +606,9 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	display: flex;
 	gap: 1.25rem;
 	overflow-x: auto;
+	overflow-y: hidden;
 	overscroll-behavior-x: contain;
+	overscroll-behavior-y: auto;
 	scroll-snap-type: x mandatory;
 	scroll-padding-inline: var(--gutter);
 	padding-inline: var(--gutter);
