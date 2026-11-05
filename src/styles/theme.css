@@ -674,18 +674,9 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	min-height: 60svh;
 }
 
-@media (max-width: 720px) {
-	.site-header__inner {
-		height: auto;
-		min-height: 4.5rem;
-		padding-block: 0.85rem;
-		flex-direction: column;
-		align-items: flex-start;
-	}
-
+@media (max-width: 767px) {
 	.site-nav {
-		justify-content: flex-start;
-		gap: 0.75rem 1.25rem;
+		display: none;
 	}
 }
 

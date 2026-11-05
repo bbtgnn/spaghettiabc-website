@@ -1,0 +1,505 @@
+---
+interface MenuItem {
+	label: string;
+	url: string;
+	target?: string | null;
+}
+
+interface Props {
+	siteTitle: string;
+	siteLogo?: { url?: string; alt?: string | null } | null;
+	items?: MenuItem[] | null;
+	currentPath: string;
+}
+
+const { siteTitle, siteLogo, items = [], currentPath } = Astro.props;
+const navItems = items ?? [];
+
+const isActive = (url: string) => {
+	if (url === "/") return currentPath === "/";
+	return currentPath === url || currentPath.startsWith(`${url}/`);
+};
+---
+
+<header class="site-header">
+	<div class="site-header__inner">
+		<a class="site-brand" href="/" aria-label={`${siteTitle}, home`}>
+			{
+				siteLogo?.url ? (
+					<img src={siteLogo.url} alt={siteLogo.alt || siteTitle} />
+				) : (
+					siteTitle
+				)
+			}
+		</a>
+
+		<nav class="site-nav" aria-label="Principale">
+			{
+				navItems.map((item) => (
+					<a
+						href={item.url}
+						target={item.target ?? undefined}
+						rel={
+							item.target === "_blank" ? "noopener noreferrer" : undefined
+						}
+						aria-current={isActive(item.url) ? "page" : undefined}
+					>
+						{item.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<button
+			type="button"
+			class="site-header__menu-toggle"
+			aria-controls="mobile-menu"
+			aria-expanded="false"
+			aria-haspopup="dialog"
+			data-mobile-menu-open
+		>
+			<span class="sr-only">Apri menu</span>
+			<span class="site-header__burger" aria-hidden="true">
+				<span></span>
+				<span></span>
+			</span>
+		</button>
+	</div>
+</header>
+
+<div
+	id="mobile-menu"
+	class="mobile-menu"
+	role="dialog"
+	aria-modal="true"
+	aria-label="Menu del sito"
+	data-mobile-menu
+	hidden
+>
+	<div class="mobile-menu__panel">
+		<div class="mobile-menu__bar">
+			<span class="mobile-menu__title">Menu</span>
+			<button type="button" class="mobile-menu__close" data-mobile-menu-close>
+				<span class="sr-only">Chiudi menu</span>
+				<svg
+					width="18"
+					height="18"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.25"
+					aria-hidden="true"
+				>
+					<path d="M5 5l14 14"></path>
+					<path d="M19 5L5 19"></path>
+				</svg>
+			</button>
+		</div>
+
+		<ul class="mobile-menu__list">
+			{
+				navItems.map((item, index) => (
+					<li class="menu-item" style={`--i:${index}`}>
+						<a
+							href={item.url}
+							target={item.target ?? undefined}
+							rel={
+								item.target === "_blank"
+									? "noopener noreferrer"
+									: undefined
+							}
+							class:list={[!isActive(item.url) && "is-muted"]}
+							aria-current={isActive(item.url) ? "page" : undefined}
+							data-mobile-menu-link
+						>
+							<span class="mono mobile-menu__index">
+								{String(index + 1).padStart(2, "0")}
+							</span>
+							<span class="type-h3">{item.label}</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</div>
+
+<style>
+	.site-header__menu-toggle {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		margin-right: -0.5rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		transition: color 220ms ease;
+	}
+
+	.site-header__menu-toggle:hover {
+		color: var(--accent);
+	}
+
+	.site-header__menu-toggle:focus-visible {
+		color: var(--accent);
+		outline: 2px solid var(--accent);
+		outline-offset: 3px;
+	}
+
+	.site-header__burger {
+		display: flex;
+		width: 1.125rem;
+		flex-direction: column;
+		gap: 5px;
+	}
+
+	.site-header__burger span {
+		display: block;
+		height: 1px;
+		width: 100%;
+		background: currentColor;
+	}
+
+	@media (max-width: 767px) {
+		.site-header__menu-toggle {
+			display: inline-flex;
+		}
+	}
+
+	.mobile-menu {
+		position: fixed;
+		inset: 0;
+		z-index: 60;
+		height: 100dvh;
+		background: var(--canvas);
+	}
+
+	.mobile-menu[hidden] {
+		display: none;
+	}
+
+	.mobile-menu.is-closing {
+		pointer-events: none;
+	}
+
+	.mobile-menu .menu-item {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+
+	.mobile-menu__panel {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		padding: 0 var(--gutter) 2rem;
+	}
+
+	.mobile-menu__bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 4.5rem;
+		flex-shrink: 0;
+	}
+
+	.mobile-menu__title {
+		font-size: 0.9375rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		text-transform: uppercase;
+		color: var(--title);
+	}
+
+	.mobile-menu__close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		margin-right: -0.5rem;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--ink);
+		cursor: pointer;
+		transition: color 220ms ease;
+	}
+
+	.mobile-menu__close:hover {
+		color: var(--accent);
+	}
+
+	.mobile-menu__close:focus-visible {
+		color: var(--accent);
+		outline: 2px solid var(--accent);
+		outline-offset: 3px;
+	}
+
+	.mobile-menu__list {
+		margin: 1.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		border-top: 1px solid var(--line);
+	}
+
+	.menu-item {
+		border-bottom: 1px solid var(--line);
+	}
+
+	.menu-item a {
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+		padding-block: 1.25rem;
+		text-decoration: none;
+		color: var(--ink);
+		transition: color 240ms ease;
+	}
+
+	.menu-item a.is-muted {
+		color: var(--muted);
+	}
+
+	.menu-item a:hover {
+		color: var(--accent);
+	}
+
+	.menu-item a:focus-visible {
+		color: var(--accent);
+		outline: 2px solid var(--accent);
+		outline-offset: 3px;
+	}
+
+	.mobile-menu__index {
+		font-size: 0.6875rem;
+		color: var(--accent);
+	}
+
+	@media (min-width: 768px) {
+		.mobile-menu {
+			display: none !important;
+		}
+	}
+</style>
+
+<script is:inline>
+	(() => {
+		const menu = document.querySelector("[data-mobile-menu]");
+		const openButton = document.querySelector("[data-mobile-menu-open]");
+		const closeButton = document.querySelector("[data-mobile-menu-close]");
+
+		if (!menu || !openButton || !closeButton) return;
+
+		const focusableSelector =
+			"a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex='-1'])";
+		const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+		const reduceMotion = () =>
+			window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+		let lastFocused = null;
+		let isClosing = false;
+		/** @type {Animation[]} */
+		let activeAnims = [];
+
+		function menuItems() {
+			return Array.from(menu.querySelectorAll(".menu-item"));
+		}
+
+		function cancelAnims() {
+			activeAnims.forEach((anim) => anim.cancel());
+			activeAnims = [];
+		}
+
+		function getFocusable() {
+			return Array.from(menu.querySelectorAll(focusableSelector)).filter(
+				(node) => node.offsetParent !== null,
+			);
+		}
+
+		function setBackgroundInert(enabled) {
+			for (const el of document.body.children) {
+				if (el === menu) continue;
+				if (enabled) el.setAttribute("inert", "");
+				else el.removeAttribute("inert");
+			}
+		}
+
+		function playOpen() {
+			cancelAnims();
+			if (reduceMotion() || !menu.animate) return;
+
+			activeAnims.push(
+				menu.animate(
+					[
+						{ opacity: 0, clipPath: "inset(0 0 100% 0)" },
+						{ opacity: 1, clipPath: "inset(0)" },
+					],
+					{ duration: 320, easing: EASE, fill: "both" },
+				),
+			);
+
+			menuItems().forEach((item, index) => {
+				activeAnims.push(
+					item.animate(
+						[
+							{ opacity: 0, transform: "translate3d(0, 1.25rem, 0)" },
+							{ opacity: 1, transform: "translate3d(0, 0, 0)" },
+						],
+						{
+							duration: 520,
+							delay: 120 + index * 55,
+							easing: EASE,
+							fill: "both",
+						},
+					),
+				);
+			});
+		}
+
+		function playClose() {
+			cancelAnims();
+			if (reduceMotion() || !menu.animate) {
+				return Promise.resolve();
+			}
+
+			const panel = menu.animate(
+				[
+					{ opacity: 1, clipPath: "inset(0)" },
+					{ opacity: 0, clipPath: "inset(0 0 100% 0)" },
+				],
+				{ duration: 340, easing: EASE, fill: "forwards" },
+			);
+			activeAnims.push(panel);
+
+			menuItems().forEach((item, index) => {
+				activeAnims.push(
+					item.animate(
+						[
+							{ opacity: 1, transform: "translate3d(0, 0, 0)" },
+							{ opacity: 0, transform: "translate3d(0, -0.65rem, 0)" },
+						],
+						{
+							duration: 220,
+							delay: index * 35,
+							easing: EASE,
+							fill: "forwards",
+						},
+					),
+				);
+			});
+
+			return panel.finished.catch(() => {});
+		}
+
+		function openMenu() {
+			if (!menu.hidden || isClosing) return;
+
+			lastFocused = document.activeElement;
+			menu.classList.remove("is-closing");
+			menu.hidden = false;
+			menu.classList.add("is-open");
+			playOpen();
+			openButton.setAttribute("aria-expanded", "true");
+			document.documentElement.style.overflow = "hidden";
+			setBackgroundInert(true);
+			closeButton.focus({ preventScroll: true });
+		}
+
+		function finishClose({ restoreFocus = true, onClosed } = {}) {
+			cancelAnims();
+			menu.hidden = true;
+			menu.classList.remove("is-open", "is-closing");
+			menu.style.removeProperty("opacity");
+			menu.style.removeProperty("clip-path");
+			menuItems().forEach((item) => {
+				item.style.removeProperty("opacity");
+				item.style.removeProperty("transform");
+			});
+			isClosing = false;
+			openButton.setAttribute("aria-expanded", "false");
+			document.documentElement.style.overflow = "";
+			setBackgroundInert(false);
+			if (restoreFocus && lastFocused) {
+				lastFocused.focus({ preventScroll: true });
+			}
+			onClosed?.();
+		}
+
+		function closeMenu({
+			restoreFocus = true,
+			animate = true,
+			onClosed,
+		} = {}) {
+			if (menu.hidden || isClosing) return;
+
+			openButton.setAttribute("aria-expanded", "false");
+
+			if (!animate || reduceMotion()) {
+				finishClose({ restoreFocus, onClosed });
+				return;
+			}
+
+			isClosing = true;
+			menu.classList.remove("is-open");
+			menu.classList.add("is-closing");
+
+			playClose().then(() => finishClose({ restoreFocus, onClosed }));
+		}
+
+		openButton.addEventListener("click", openMenu);
+		closeButton.addEventListener("click", () => closeMenu());
+
+		menu.querySelectorAll("[data-mobile-menu-link]").forEach((link) => {
+			link.addEventListener("click", (event) => {
+				if (link.target === "_blank") {
+					closeMenu({ restoreFocus: false });
+					return;
+				}
+
+				event.preventDefault();
+				const href = link.href;
+				closeMenu({
+					restoreFocus: false,
+					onClosed: () => {
+						window.location.assign(href);
+					},
+				});
+			});
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (menu.hidden) return;
+
+			if (event.key === "Escape") {
+				event.preventDefault();
+				closeMenu();
+				return;
+			}
+
+			if (event.key !== "Tab" || isClosing) return;
+
+			const focusable = getFocusable();
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			if (!first || !last) return;
+
+			if (event.shiftKey && document.activeElement === first) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && document.activeElement === last) {
+				event.preventDefault();
+				first.focus();
+			}
+		});
+
+		window.addEventListener("resize", () => {
+			if (!menu.hidden && window.matchMedia("(min-width: 768px)").matches) {
+				closeMenu({ restoreFocus: false, animate: false });
+			}
+		});
+	})();
+</script>

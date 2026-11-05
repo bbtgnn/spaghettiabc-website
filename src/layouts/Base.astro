@@ -3,6 +3,7 @@ import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import FontPairingPicker from "../components/FontPairingPicker.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import "../styles/theme.css";
 
@@ -64,11 +65,6 @@ const pageCtx = createPublicPageContext({
 	content,
 	siteName: siteTitle,
 });
-
-const isActive = (url: string) => {
-	if (url === "/") return currentPath === "/";
-	return currentPath === url || currentPath.startsWith(`${url}/`);
-};
 ---
 
 <!doctype html>
@@ -142,40 +138,12 @@ const isActive = (url: string) => {
 
 		<a class="sr-only" href="#main-content">Vai al contenuto</a>
 
-		<header class="site-header">
-			<div class="site-header__inner">
-				<a class="site-brand" href="/" aria-label={`${siteTitle}, home`}>
-					{
-						siteLogo ? (
-							<img
-								src={siteLogo.url}
-								alt={siteLogo.alt || siteTitle}
-							/>
-						) : (
-							siteTitle
-						)
-					}
-				</a>
-				<nav class="site-nav" aria-label="Principale">
-					{
-						menu?.items.map((item) => (
-							<a
-								href={item.url}
-								target={item.target}
-								rel={
-									item.target === "_blank"
-										? "noopener noreferrer"
-										: undefined
-								}
-								aria-current={isActive(item.url) ? "page" : undefined}
-							>
-								{item.label}
-							</a>
-						))
-					}
-				</nav>
-			</div>
-		</header>
+		<SiteHeader
+			siteTitle={siteTitle}
+			siteLogo={siteLogo}
+			items={menu?.items}
+			currentPath={currentPath}
+		/>
 
 		<main class="site-main" id="main-content">
 			<slot />
