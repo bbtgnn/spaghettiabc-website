@@ -156,18 +156,24 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 				<section class="shell section feature feature--flip">
 					<div class="rule" data-reveal="line" />
 					<div class="feature__layout">
-						{home.data.training_image && (
-							<a
-								href="/training"
-								class="feature__media"
-								data-reveal="mask"
-								aria-label={home.data.training_title ?? "Training"}
-							>
+						<a
+							href="/training"
+							class="feature__media"
+							data-reveal="mask"
+							aria-label={home.data.training_title ?? "Training"}
+						>
+							{home.data.training_image ? (
 								<div {...home.edit.training_image}>
 									<Image image={home.data.training_image} />
 								</div>
-							</a>
-						)}
+							) : (
+								<div
+									class="feature__placeholder"
+									aria-hidden="true"
+									{...home.edit.training_image}
+								/>
+							)}
+						</a>
 						<div class="feature__copy" data-reveal>
 							{home.data.training_title && (
 								<h2 class="type-h2" {...home.edit.training_title}>
@@ -426,11 +432,16 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		background: var(--surface);
 	}
 
-	.feature__media :global(img) {
+	.feature__media :global(img),
+	.feature__placeholder {
 		width: 100%;
 		aspect-ratio: 5 / 4;
 		object-fit: cover;
 		transition: transform 1100ms var(--ease-out-expo);
+	}
+
+	.feature__placeholder {
+		background: var(--surface-strong);
 	}
 
 	.feature__media:hover :global(img) {

@@ -1074,13 +1074,6 @@
 					"training_title": "Formazione",
 					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
 					"training_cta_label": "Scopri la formazione",
-					"training_image": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1600&h=1067&fit=crop",
-							"alt": "Tavola apparecchiata per un incontro intorno al cibo",
-							"filename": "homepage-training.jpg"
-						}
-					},
 					"collaborations_title": "Collaborazioni",
 					"collaborations_subtitle": "Partner e riconoscimenti di chi ha lavorato con Flavia intorno al cibo e alla cultura italiana",
 					"collaborations_cta_label": "Scopri le collaborazioni",
