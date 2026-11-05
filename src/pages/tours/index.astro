@@ -23,7 +23,7 @@ const pageDescription =
 <Base title={pageTitle} description={pageDescription}>
 	<section class="shell tours-catalog">
 		<header class="tours-catalog__intro">
-			<h1 class="type-h1">{pageTitle}</h1>
+			<h1 class="type-hero">{pageTitle}</h1>
 			<p class="type-lead tours-catalog__lede">{pageDescription}</p>
 		</header>
 
@@ -75,11 +75,20 @@ const pageDescription =
 	.tours-catalog__intro {
 		display: grid;
 		gap: 1.25rem;
-		max-width: 48ch;
 	}
 
+	.tours-catalog__intro .type-hero,
 	.tours-catalog__lede {
-		max-width: 42ch;
+		text-wrap: nowrap;
+		white-space: nowrap;
+	}
+
+	@media (max-width: 639px) {
+		.tours-catalog__intro .type-hero,
+		.tours-catalog__lede {
+			text-wrap: balance;
+			white-space: normal;
+		}
 	}
 
 	.tours-catalog__empty {
