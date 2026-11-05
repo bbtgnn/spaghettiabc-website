@@ -2,9 +2,14 @@
 import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import LiveSearch from "emdash/ui/search";
+import FontPairingPicker from "../components/FontPairingPicker.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import "../styles/theme.css";
+
+const isDev = import.meta.env.DEV;
+if (isDev) {
+	await import("../styles/font-pairings-preview.css");
+}
 
 interface Props {
 	title: string;
@@ -67,7 +72,7 @@ const isActive = (url: string) => {
 ---
 
 <!doctype html>
-<html lang="it">
+<html lang="it" data-font-ui-case="serif">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -84,6 +89,53 @@ const isActive = (url: string) => {
 				}
 			})();
 		</script>
+		{
+			isDev && (
+				<script is:inline>
+					(() => {
+						const KEYS = {
+							display: "spaghettiabc-font-display",
+							body: "spaghettiabc-font-body",
+							ui: "spaghettiabc-font-ui",
+						};
+						const DEFAULTS = {
+							display: "fraunces",
+							body: "source-serif-4",
+							ui: "body",
+						};
+						const VALID = {
+							display: ["newsreader", "fraunces", "lora", "cormorant"],
+							body: ["source-serif-4", "literata"],
+							ui: ["body", "tsukimi", "fira-sans"],
+						};
+						const pick = (key, valid, fallback) => {
+							try {
+								const stored = localStorage.getItem(key);
+								return stored && valid.includes(stored) ? stored : fallback;
+							} catch {
+								return fallback;
+							}
+						};
+						const root = document.documentElement;
+						const ui = pick(KEYS.ui, VALID.ui, DEFAULTS.ui);
+						root.setAttribute(
+							"data-font-display",
+							pick(KEYS.display, VALID.display, DEFAULTS.display),
+						);
+						root.setAttribute(
+							"data-font-body",
+							pick(KEYS.body, VALID.body, DEFAULTS.body),
+						);
+						root.setAttribute("data-font-ui", ui);
+						/* UI=body is always serif; tsukimi / fira-sans are sans */
+						root.setAttribute(
+							"data-font-ui-case",
+							ui === "body" ? "serif" : "sans",
+						);
+					})();
+				</script>
+			)
+		}
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
@@ -121,12 +173,6 @@ const isActive = (url: string) => {
 							</a>
 						))
 					}
-					<div class="site-search">
-						<LiveSearch
-							placeholder="Cerca..."
-							collections={["tours", "pages", "posts"]}
-						/>
-					</div>
 				</nav>
 			</div>
 		</header>
@@ -136,6 +182,8 @@ const isActive = (url: string) => {
 		</main>
 
 		<EmDashBodyEnd page={pageCtx} />
+
+		{isDev && <FontPairingPicker />}
 
 		<script is:inline>
 			(() => {

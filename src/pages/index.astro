@@ -376,10 +376,14 @@ const facts = [
 		display: flex;
 		justify-content: space-between;
 		gap: 1rem;
-		font-size: 0.625rem;
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
 		color: var(--muted);
+	}
+
+	/* Casing on each span: parent is flex, so ::first-letter would not apply there */
+	.hero__caption > span {
+		display: inline-block;
 	}
 
 	.facts-band {
@@ -601,10 +605,9 @@ const facts = [
 
 	.newsletter-form__status {
 		margin: 0;
-		font-family: var(--font-mono);
-		font-size: 0.6875rem;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size);
+		letter-spacing: var(--font-ui-tracking);
 		color: var(--muted);
 	}
 

@@ -1,7 +1,8 @@
 /* Atelier Kō visual language adapted for Spaghetti ABC (EmDash).
    Tokens, type scale, controls and motion ported without Tailwind. */
 
-@import "@fontsource-variable/archivo/wght.css";
+@import "@fontsource-variable/fraunces/wght.css";
+@import "@fontsource-variable/source-serif-4/wght.css";
 @import "@fontsource/ibm-plex-mono/400.css";
 
 :root {
@@ -33,14 +34,27 @@
 	--gutter: 1.5rem;
 	--shell: 96rem;
 
-	/* Fonts */
-	--font-sans: "Archivo Variable", "Archivo", "Helvetica Neue", Helvetica, Arial,
-		sans-serif;
+	/* Fonts — prod baseline until a pairing is locked (#9 follow-up):
+	   Display = Fraunces, Body = Source Serif 4, UI = body */
+	--font-fraunces: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman",
+		serif;
+	--font-source-serif: "Source Serif 4 Variable", "Source Serif 4", Georgia,
+		"Times New Roman", serif;
 	--font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+	--font-display: var(--font-fraunces);
+	--font-body: var(--font-source-serif);
+	--font-sans: var(--font-body);
+	--font-ui: var(--font-body);
+	/* Fraunces (prod display) sits one step lighter than other display faces */
+	--font-display-weight: 400;
+	--font-brand-weight: 400;
 
-	/* Back-compat aliases used by existing page styles */
-	--font-display: var(--font-sans);
-	--font-body: var(--font-sans);
+	/* UI chrome metrics — sans/uppercase baseline; serif overrides via data-font-ui-case */
+	--font-ui-size: 0.6875rem;
+	--font-ui-size-sm: 0.625rem;
+	--font-ui-tracking: 0.06em;
+	--font-ui-tracking-btn: 0.09em;
+	--font-ui-tracking-field: 0.08em;
 	--color-ink: var(--ink);
 	--color-ink-soft: var(--muted);
 	--color-foam: var(--surface);
@@ -68,6 +82,14 @@
 	--measure: 42rem;
 }
 
+html[data-font-ui-case="serif"] {
+	--font-ui-size: 0.8125rem;
+	--font-ui-size-sm: 0.75rem;
+	--font-ui-tracking: normal;
+	--font-ui-tracking-btn: normal;
+	--font-ui-tracking-field: normal;
+}
+
 @media (min-width: 1024px) {
 	:root {
 		--gutter: 2.5rem;
@@ -92,7 +114,7 @@ body {
 	min-height: 100svh;
 	background-color: var(--canvas);
 	color: var(--ink);
-	font-family: var(--font-sans);
+	font-family: var(--font-body);
 	font-size: 1rem;
 	line-height: 1.65;
 	letter-spacing: -0.006em;
@@ -139,8 +161,8 @@ a {
 h1,
 h2,
 h3 {
-	font-family: var(--font-sans);
-	font-weight: 500;
+	font-family: var(--font-display);
+	font-weight: var(--font-display-weight);
 	margin: 0;
 }
 
@@ -189,34 +211,38 @@ hr {
 --------------------------------------------------------------------------- */
 
 .type-hero {
+	font-family: var(--font-display);
 	font-size: clamp(2.75rem, 4.9vw, 4.5rem);
 	line-height: 0.95;
 	letter-spacing: -0.038em;
-	font-weight: 500;
+	font-weight: var(--font-display-weight);
 	text-wrap: balance;
 }
 
 .type-h1 {
+	font-family: var(--font-display);
 	font-size: clamp(2.75rem, 8vw, 6.5rem);
 	line-height: 0.88;
 	letter-spacing: -0.04em;
-	font-weight: 500;
+	font-weight: var(--font-display-weight);
 	text-wrap: balance;
 }
 
 .type-h2 {
+	font-family: var(--font-display);
 	font-size: clamp(2rem, 4.6vw, 3.75rem);
 	line-height: 0.94;
 	letter-spacing: -0.035em;
-	font-weight: 500;
+	font-weight: var(--font-display-weight);
 	text-wrap: balance;
 }
 
 .type-h3 {
+	font-family: var(--font-display);
 	font-size: clamp(1.375rem, 2.2vw, 1.875rem);
 	line-height: 1.06;
 	letter-spacing: -0.025em;
-	font-weight: 500;
+	font-weight: var(--font-display-weight);
 	text-wrap: balance;
 }
 
@@ -236,21 +262,72 @@ hr {
 }
 
 .label {
-	display: inline-flex;
-	align-items: baseline;
-	gap: 0.6em;
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
+	/* inline-block (not flex): ::first-letter works for serif UI sentence case */
+	display: inline-block;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
 	line-height: 1;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
+	letter-spacing: var(--font-ui-tracking);
 	color: var(--muted);
 }
 
 .mono {
-	font-family: var(--font-mono);
+	font-family: var(--font-ui);
 	font-variant-numeric: tabular-nums;
 	letter-spacing: -0.01em;
+}
+
+/* ---------------------------------------------------------------------------
+   UI casing + metrics — driven by data-font-ui-case on <html>
+   Sans (tsukimi / fira-sans): uppercase + tracked sizes via --font-ui-* baseline.
+   Serif (UI=body; both body faces are serif): sentence case + larger size / normal tracking.
+   Prod defaults to data-font-ui-case="serif" (UI follows Source Serif 4 body).
+   Hosts use block/inline-block (not flex) so ::first-letter applies.
+   Nav (.site-nav a) is tied to body, not --font-ui — see nav rules below.
+--------------------------------------------------------------------------- */
+
+:is(
+	.btn,
+	.label,
+	.link-mono,
+	.text-link,
+	.field-label,
+	.newsletter-form__status,
+	.hero__caption > span,
+	.font-pairing-picker__title,
+	.font-pairing-picker__ui-label
+) {
+	text-transform: uppercase;
+}
+
+html[data-font-ui-case="serif"]
+	:is(
+		.btn,
+		.label,
+		.link-mono,
+		.text-link,
+		.field-label,
+		.newsletter-form__status,
+		.hero__caption > span,
+		.font-pairing-picker__title,
+		.font-pairing-picker__ui-label
+	) {
+	text-transform: lowercase;
+}
+
+html[data-font-ui-case="serif"]
+	:is(
+		.btn,
+		.label,
+		.link-mono,
+		.text-link,
+		.field-label,
+		.newsletter-form__status,
+		.hero__caption > span,
+		.font-pairing-picker__title,
+		.font-pairing-picker__ui-label
+	)::first-letter {
+	text-transform: uppercase;
 }
 
 /* ---------------------------------------------------------------------------
@@ -259,19 +336,18 @@ hr {
 
 .btn {
 	position: relative;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.75rem;
+	/* inline-block (not flex): ::first-letter works for serif UI sentence case */
+	display: inline-block;
 	overflow: hidden;
 	isolation: isolate;
 	padding: 1.0625rem 2rem;
 	border: 0;
 	border-radius: var(--radius);
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
-	letter-spacing: 0.09em;
-	text-transform: uppercase;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
+	letter-spacing: var(--font-ui-tracking-btn);
+	line-height: 1;
+	text-align: center;
 	white-space: nowrap;
 	text-decoration: none;
 	transition: color 320ms var(--ease-out-quart);
@@ -326,6 +402,7 @@ hr {
 .link {
 	width: fit-content;
 	max-width: 100%;
+	font-family: var(--font-ui);
 	background-image: linear-gradient(currentColor, currentColor);
 	background-repeat: no-repeat;
 	background-position: 0 100%;
@@ -342,13 +419,14 @@ hr {
 }
 
 .link-mono {
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
+	display: inline-block;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
+	letter-spacing: var(--font-ui-tracking);
 }
 
 .text-link {
+	display: inline-block;
 	width: fit-content;
 	max-width: 100%;
 	background-image: linear-gradient(currentColor, currentColor);
@@ -358,10 +436,9 @@ hr {
 	transition:
 		background-size 380ms var(--ease-out-expo),
 		color 240ms ease;
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
+	letter-spacing: var(--font-ui-tracking);
 }
 
 .text-link:hover,
@@ -394,10 +471,9 @@ hr {
 
 .field-label {
 	display: block;
-	font-family: var(--font-mono);
-	font-size: 0.625rem;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size-sm);
+	letter-spacing: var(--font-ui-tracking-field);
 	color: var(--muted);
 }
 
@@ -420,7 +496,7 @@ hr {
 	border: 0;
 	background: transparent;
 	text-align: center;
-	font-family: var(--font-mono);
+	font-family: var(--font-ui);
 	font-size: 0.875rem;
 }
 
@@ -487,11 +563,10 @@ hr {
 }
 
 .site-brand {
-	font-family: var(--font-sans);
-	font-size: 0.9375rem;
-	font-weight: 600;
+	font-family: var(--font-display);
+	font-size: 1.1875rem;
+	font-weight: var(--font-brand-weight);
 	letter-spacing: -0.01em;
-	text-transform: uppercase;
 	text-decoration: none;
 	color: var(--ink);
 	transition: color 220ms ease;
@@ -515,10 +590,12 @@ hr {
 }
 
 .site-nav a {
-	font-family: var(--font-mono);
-	font-size: 0.6875rem;
-	letter-spacing: 0.06em;
-	text-transform: uppercase;
+	/* Body face + size — not UI chrome; ignores --font-ui / data-font-ui-case */
+	display: inline-block;
+	font-family: var(--font-body);
+	font-size: 1rem;
+	letter-spacing: -0.006em;
+	text-transform: lowercase;
 	text-decoration: none;
 	color: var(--muted);
 	background-image: linear-gradient(currentColor, currentColor);
@@ -530,19 +607,15 @@ hr {
 		color 240ms ease;
 }
 
+.site-nav a::first-letter {
+	text-transform: uppercase;
+}
+
 .site-nav a:hover,
 .site-nav a:focus-visible,
 .site-nav a[aria-current="page"] {
 	background-size: 100% 1px;
 	color: var(--accent);
-}
-
-.site-search {
-	min-width: 9rem;
-}
-
-.site-search :is(input, button) {
-	font: inherit;
 }
 
 .site-main {
