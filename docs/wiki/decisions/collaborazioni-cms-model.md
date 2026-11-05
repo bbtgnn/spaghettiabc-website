@@ -31,3 +31,11 @@ Later same day [Swap collab logos](8400d159-50c9-4ba2-b936-9ae2648299ae) linked 
 - Per-project case-study entries
 - Claiming Google as review source
 - Menu item (unless added later)
+
+## Supersession (2026-11-05)
+
+On 2026-11-05 Chiara retired **Testimonianza** entirely:
+
+- Removed `testimonials` from the `collaborations` schema and seed; landing no longer holds or renders testimonianze.
+- Recensioni Google live on the **homepage** as `google_reviews` (not on Collaborazioni). See [Homepage hero + Recensioni Google](./homepage-hero-google-reviews.md).
+- Decisions 4, 6, and 7 above from 2026-10-23 are **historical** for the testimonials half; logos still live only on the landing and the homepage still fetches that entry for the logo row.

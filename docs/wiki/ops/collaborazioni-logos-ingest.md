@@ -53,3 +53,16 @@ On 2026-10-23 the seed briefly used `http://127.0.0.1:8765/…` URLs. A later re
    ```
 
 4. Local-only `serve` + `127.0.0.1` URLs alone are insufficient because of the SSRF/non-public-IP guard.
+
+## Homepage hero image (2026-11-05)
+
+- Committed file: `seed/media/homepage-hero.jpg` (copied from Chiara’s newsletter/ingredient cover asset).
+- `seed/seed.json` keeps a **working remote Unsplash** `$media` placeholder for `hero_image` (same filename) so `emdash seed` can download without loopback. Do **not** point `$media.url` at `127.0.0.1`.
+- After fresh `init` + seed against a running site, overwrite with the real file:
+
+  ```bash
+  npx emdash media upload seed/media/homepage-hero.jpg --alt "Ingredienti e olio — hero homepage Spaghetti ABC" --url http://localhost:4321
+  # then content update homepage home hero_image to the uploaded media id
+  ```
+
+- Optional later: once `homepage-hero.jpg` is on a public GitHub raw URL for the branch, seed may use that URL like the collaborazioni logos and skip the upload overwrite.

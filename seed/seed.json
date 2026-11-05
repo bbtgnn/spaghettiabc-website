@@ -48,6 +48,21 @@
 					"type": "string"
 				},
 				{
+					"slug": "group_size",
+					"label": "Group size",
+					"type": "string"
+				},
+				{
+					"slug": "language",
+					"label": "Language",
+					"type": "string"
+				},
+				{
+					"slug": "included",
+					"label": "Included",
+					"type": "string"
+				},
+				{
 					"slug": "price",
 					"label": "Price",
 					"type": "string"
@@ -72,6 +87,27 @@
 					"label": "Content",
 					"type": "portableText",
 					"searchable": true
+				},
+				{
+					"slug": "faq",
+					"label": "FAQ",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "question",
+								"label": "Question",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "answer",
+								"label": "Answer",
+								"type": "text",
+								"required": true
+							}
+						]
+					}
 				}
 			]
 		},
@@ -219,6 +255,32 @@
 					"slug": "collaborations_cta_label",
 					"label": "Testo CTA",
 					"type": "string"
+				},
+				{
+					"slug": "google_reviews",
+					"label": "Recensioni Google",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "author",
+								"label": "Autore",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "quote",
+								"label": "Citazione",
+								"type": "text",
+								"required": true
+							},
+							{
+								"slug": "rating",
+								"label": "Valutazione",
+								"type": "number"
+							}
+						]
+					}
 				},
 				{
 					"slug": "form_heading_newsletter",
@@ -375,37 +437,6 @@
 								"slug": "name",
 								"label": "Name",
 								"type": "string"
-							}
-						]
-					}
-				},
-				{
-					"slug": "testimonials",
-					"label": "Testimonials",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "author",
-								"label": "Author",
-								"type": "string",
-								"required": true
-							},
-							{
-								"slug": "role_or_company",
-								"label": "Role or company",
-								"type": "string"
-							},
-							{
-								"slug": "quote",
-								"label": "Quote",
-								"type": "text",
-								"required": true
-							},
-							{
-								"slug": "rating",
-								"label": "Rating",
-								"type": "number"
 							}
 						]
 					}
@@ -571,20 +602,23 @@
 	"content": {
 		"tours": [
 			{
-				"id": "tour-tuscany",
-				"slug": "toscana-classica",
+				"id": "tour-polignano",
+				"slug": "polignano-food-tour",
 				"status": "published",
 				"data": {
-					"title": "Toscana classica",
-					"excerpt": "Colline, borghi e cucina tra Firenze, Siena e la Val d’Orcia.",
-					"destination": "Toscana",
-					"duration": "7 giorni",
-					"price": "da €1.290",
+					"title": "Polignano food tour",
+					"excerpt": "Esplora i banchi e i vicoli a strapiombo sul mare ed assaggia le migliori specialità artigianali di Polignano.",
+					"destination": "Polignano a Mare",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "5 tappe degustazione + bevande",
+					"price": "60 € / persona",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1516483638261-f4dbaf036963?w=1600&h=1067&fit=crop",
-							"alt": "Paesaggio toscano con cipressi",
-							"filename": "toscana-classica.jpg"
+							"url": "https://images.unsplash.com/photo-1697310904924-ec1c03c8ba9b?w=1600&h=1067&fit=crop",
+							"alt": "Veduta aerea di Polignano a Mare sul mare",
+							"filename": "polignano-food-tour.jpg"
 						}
 					},
 					"content": [
@@ -594,30 +628,51 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Un itinerario tra Firenze, Siena e i borghi della Val d’Orcia, con degustazioni e passeggate tra i vigneti.",
-									"_key": "k1"
+									"text": "Un'esperienza intima per piccoli gruppi guidata da esperti locali: dal centro storico alle terrazze sul mare, con assaggi della cucina polignanese.",
+									"_key": "pol-c1"
 								}
 							],
-							"_key": "k0"
+							"_key": "pol-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
 						}
 					]
 				}
 			},
 			{
-				"id": "tour-amalfi",
-				"slug": "costiera-amalfitana",
+				"id": "tour-bari",
+				"slug": "bari-food-tour",
 				"status": "published",
 				"data": {
-					"title": "Costiera Amalfitana",
-					"excerpt": "Sentieri, mare e limoneti tra Amalfi, Positano e Ravello.",
-					"destination": "Campania",
-					"duration": "5 giorni",
-					"price": "da €980",
+					"title": "Bari food tour",
+					"excerpt": "Tra Bari Vecchia e i mercati: focaccia, orecchiette e street food del capoluogo pugliese.",
+					"destination": "Bari",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "5 tappe degustazione + bevande",
+					"price": "60 € / persona",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=1600&h=1067&fit=crop",
-							"alt": "Veduta della Costiera Amalfitana",
-							"filename": "costiera-amalfitana.jpg"
+							"url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Bari_-_Lungomare_Araldo_di_Crollalanza.jpg",
+							"alt": "Lungomare di Bari",
+							"filename": "bari-food-tour.jpg"
 						}
 					},
 					"content": [
@@ -627,11 +682,353 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Giornate sul mare e nei borghi sospesi sulla scogliera, con tempo per nuotare e assaggiare la cucina locale.",
-									"_key": "k1"
+									"text": "Esplora i banchi del mercato locale e i vicoli di Bari Vecchia ed assaggia le migliori specialità artigianali. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "ba-c1"
 								}
 							],
-							"_key": "k0"
+							"_key": "ba-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
+						}
+					]
+				}
+			},
+			{
+				"id": "tour-ostuni",
+				"slug": "ostuni-food-tour",
+				"status": "published",
+				"data": {
+					"title": "Ostuni food tour",
+					"excerpt": "Nella Città Bianca: olive, formaggi e sapori della campagna brindisina tra i vicoli imbiancati.",
+					"destination": "Ostuni",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "5 tappe degustazione + bevande",
+					"price": "60 € / persona",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1634561527613-172d7489214b?w=1600&h=1067&fit=crop",
+							"alt": "Veduta aerea di Ostuni e degli oliveti",
+							"filename": "ostuni-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Cammina tra le case bianche di Ostuni e assaggia le specialità della Murgia brindisina. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "os-c1"
+								}
+							],
+							"_key": "os-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
+						}
+					]
+				}
+			},
+			{
+				"id": "tour-altamura",
+				"slug": "altamura-food-tour",
+				"status": "published",
+				"data": {
+					"title": "Altamura food tour",
+					"excerpt": "Pane DOP, forni a legna e sapori della Murgia nel centro storico di Altamura.",
+					"destination": "Altamura",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "5 tappe degustazione + bevande",
+					"price": "60 € / persona",
+					"featured_image": {
+						"$media": {
+							"url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Puglia_Altamura1_tango7174.jpg",
+							"alt": "Cattedrale e centro storico di Altamura",
+							"filename": "altamura-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Scopri i panifici storici e le botteghe di Altamura, città del pane DOP. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "al-c1"
+								}
+							],
+							"_key": "al-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
+						}
+					]
+				}
+			},
+			{
+				"id": "tour-monopoli",
+				"slug": "monopoli-food-tour",
+				"status": "published",
+				"data": {
+					"title": "Monopoli food tour",
+					"excerpt": "Dal porto antico alle botteghe: pesce, fritti e specialità del centro storico di Monopoli.",
+					"destination": "Monopoli",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "5 tappe degustazione + bevande",
+					"price": "60 € / persona",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1682347641333-b9080bfe7af3?w=1600&h=1067&fit=crop",
+							"alt": "Veduta aerea di Monopoli sul mare",
+							"filename": "monopoli-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Esplora i vicoli e il porto di Monopoli ed assaggia le migliori specialità artigianali. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "mo-c1"
+								}
+							],
+							"_key": "mo-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
+						}
+					]
+				}
+			},
+			{
+				"id": "tour-narrative-dinner",
+				"slug": "narrative-dinner",
+				"status": "published",
+				"data": {
+					"title": "Narrative dinner",
+					"excerpt": "Una cena raccontata: piatti, storie e paesaggi pugliesi a tavola, in un'esperienza serale intima.",
+					"destination": "Narrative dinner",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "Menù degustazione + bevande",
+					"price": "60 € / persona",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1672636401322-b909b15b7c57?w=1600&h=1067&fit=crop",
+							"alt": "Tavola con piatto e calice di vino",
+							"filename": "narrative-dinner.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Una serata a tavola in cui ogni portata apre un racconto sulla Puglia. Un'esperienza intima per piccoli gruppi, guidata da Flavia.",
+									"_key": "nd-c1"
+								}
+							],
+							"_key": "nd-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
+						}
+					]
+				}
+			},
+			{
+				"id": "tour-mice-sensory",
+				"slug": "mice-sensory-food-quiz",
+				"status": "published",
+				"data": {
+					"title": "MICE and team building — Sensory food quiz",
+					"excerpt": "Quiz sensoriale sul cibo per team e gruppi aziendali: gusto, racconto e collaborazione intorno alla tavola.",
+					"destination": "MICE & team building",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "Attività sensoriale + degustazioni",
+					"price": "60 € / persona",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1600&h=1067&fit=crop",
+							"alt": "Gruppo a tavola durante un'esperienza condivisa",
+							"filename": "mice-sensory-food-quiz.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Un formato MICE e team building che usa il cibo come strumento di gioco e ascolto: quiz sensoriali, assaggi e confronto in gruppo.",
+									"_key": "mi-c1"
+								}
+							],
+							"_key": "mi-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
+						}
+					]
+				}
+			},
+			{
+				"id": "tour-customized",
+				"slug": "customized-experience",
+				"status": "published",
+				"data": {
+					"title": "Customized Experience",
+					"excerpt": "Un'esperienza su misura intorno al cibo pugliese: itinerario, ritmo e degustazioni costruiti insieme a te.",
+					"destination": "Su misura",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "Percorso e degustazioni personalizzati",
+					"price": "60 € / persona",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
+							"alt": "Tavola apparecchiata per un'esperienza gastronomica",
+							"filename": "customized-experience.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Parti da un'idea — famiglia, team, ospiti internazionali — e costruiamo insieme il formato giusto: luoghi, tempi e sapori della Puglia.",
+									"_key": "cu-c1"
+								}
+							],
+							"_key": "cu-c0"
+						}
+					],
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
 						}
 					]
 				}
@@ -642,19 +1039,28 @@
 				"id": "home",
 				"status": "published",
 				"data": {
-					"hero_title": "Spaghetti ABC",
-					"hero_subtitle": "Tour e viaggi in Italia",
+					"hero_title": "Puglia: Beyond the Plate",
+					"hero_subtitle": "Culinary Experiences Curated by Flavia Giordano",
 					"hero_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1920&h=1080&fit=crop",
-							"alt": "Canale veneziano al tramonto",
+							"alt": "Ingredienti e olio — hero homepage Spaghetti ABC",
 							"filename": "homepage-hero.jpg"
 						}
 					},
 					"tour_title": "I nostri tour",
 					"tour_subtitle": "Itinerari selezionati per scoprire l’Italia",
 					"tour_cta_label": "Vedi tutti i tour",
-					"featured_tours": ["$ref:tour-tuscany", "$ref:tour-amalfi"],
+					"featured_tours": [
+						"$ref:tour-polignano",
+						"$ref:tour-bari",
+						"$ref:tour-ostuni",
+						"$ref:tour-altamura",
+						"$ref:tour-monopoli",
+						"$ref:tour-narrative-dinner",
+						"$ref:tour-mice-sensory",
+						"$ref:tour-customized"
+					],
 					"book_title": "Il libro",
 					"book_subtitle": "Puglia raccontata attraverso luoghi, sapori e incontri",
 					"book_cta_label": "Scopri il libro",
@@ -670,14 +1076,36 @@
 					"training_cta_label": "Scopri la formazione",
 					"training_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1556910103-1c0279aa1bd5?w=1600&h=1067&fit=crop",
+							"url": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1600&h=1067&fit=crop",
 							"alt": "Tavola apparecchiata per un incontro intorno al cibo",
 							"filename": "homepage-training.jpg"
 						}
 					},
 					"collaborations_title": "Collaborazioni",
-					"collaborations_subtitle": "Partner e testimonianze di chi ha lavorato con Flavia intorno al cibo e alla cultura italiana",
+					"collaborations_subtitle": "Partner e riconoscimenti di chi ha lavorato con Flavia intorno al cibo e alla cultura italiana",
 					"collaborations_cta_label": "Scopri le collaborazioni",
+					"google_reviews": [
+						{
+							"author": "Chiara R.",
+							"quote": "Un’esperienza bellissima: Flavia ci ha fatto conoscere la Puglia attraverso i sapori, con calma e competenza. Consigliatissima!",
+							"rating": 5
+						},
+						{
+							"author": "Marco D.",
+							"quote": "Tour impeccabile. Prodotti locali, storie vere e una guida che sa davvero di cosa parla. Torneremo senz’altro.",
+							"rating": 5
+						},
+						{
+							"author": "Elena B.",
+							"quote": "Atmosfera familiare e contenuti di qualità. Si sente la cura in ogni dettaglio, dal mercato alla tavola.",
+							"rating": 5
+						},
+						{
+							"author": "Luca P.",
+							"quote": "Non è turismo di massa: è un viaggio guloso e intelligente. Quattro stelle solo perché vorrei fossero più lunghi!",
+							"rating": 4
+						}
+					],
 					"newsletter_title": "Newsletter",
 					"newsletter_subtitle": "Ricette di stagione, eventi e novità — direttamente dalla cucina di Flavia",
 					"newsletter_button_label": "Iscriviti",
@@ -872,32 +1300,6 @@
 							}
 						}
 					],
-					"testimonials": [
-						{
-							"author": "Elena Martini",
-							"role_or_company": "Responsabile comunicazione, casa editrice",
-							"quote": "Lavorare con Flavia significa entrare in una storia vera del cibo italiano: precisione, calore e un gusto che resta.",
-							"rating": 5
-						},
-						{
-							"author": "Marco Bianchi",
-							"role_or_company": "Direttore marketing, brand agroalimentare",
-							"quote": "Ha saputo raccontare il nostro prodotto con rispetto per la materia e attenzione al pubblico. Una collaborazione che ripeteremmo subito.",
-							"rating": 5
-						},
-						{
-							"author": "Giulia Conti",
-							"role_or_company": "Curatrice eventi culturali",
-							"quote": "Gli incontri che abbiamo costruito insieme erano caldi e professionali: cultura del cibo senza retorica, solo presenza e cura.",
-							"rating": 5
-						},
-						{
-							"author": "Andrea Russo",
-							"role_or_company": "Fondatore, startup hospitality",
-							"quote": "Flavia porta esperienza e leggerezza. Il team ha imparato a guardare la tavola come un linguaggio, non solo come un servizio.",
-							"rating": 5
-						}
-					],
 					"gallery": [
 						{
 							"image": {
@@ -911,7 +1313,7 @@
 						{
 							"image": {
 								"$media": {
-									"url": "https://images.unsplash.com/photo-1556910103-1c0279aa1bd5?w=1200&h=800&fit=crop",
+									"url": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1200&h=800&fit=crop",
 									"alt": "Momento di lavoro in cucina, placeholder",
 									"filename": "collaborazioni-gallery-2.jpg"
 								}

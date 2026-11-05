@@ -584,6 +584,61 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	}
 }
 
+/* Homepage Sezione Tour: horizontal scroll along a baseline */
+.tour-rail {
+	--tour-rail-item: min(72vw, 17.5rem);
+	position: relative;
+	margin-top: 3rem;
+	margin-inline: calc(var(--gutter) * -1);
+}
+
+.tour-rail__line {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0.35rem;
+	height: 1px;
+	background: var(--line);
+	pointer-events: none;
+}
+
+.tour-rail__track {
+	display: flex;
+	gap: 1.25rem;
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+	scroll-snap-type: x mandatory;
+	scroll-padding-inline: var(--gutter);
+	padding-inline: var(--gutter);
+	padding-bottom: 1.5rem;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: thin;
+	scrollbar-color: var(--line-strong) transparent;
+}
+
+.tour-rail__track > * {
+	flex: 0 0 var(--tour-rail-item);
+	width: var(--tour-rail-item);
+	scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+	.tour-rail {
+		--tour-rail-item: min(38vw, 20rem);
+		margin-top: 3.5rem;
+	}
+
+	.tour-rail__track {
+		gap: 1.75rem;
+	}
+}
+
+@media (min-width: 1100px) {
+	.tour-rail {
+		--tour-rail-item: 18.5rem;
+	}
+}
+
 .rule {
 	height: 1px;
 	width: 100%;

@@ -13,7 +13,7 @@ Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non le
 _Avoid_: pagina libro, scheda libro, reference al Libro
 
 **Tour**:
-Esperienza guidata di cibo in un paese della Puglia (sapori locali; Flavia guida). Non è un itinerario di viaggio plurigiornaliero in Italia. Campo `destination` = nome del paese.
+Esperienza cibo guidata di Flavia — di solito in un paese pugliese, a volte un formato speciale senza singolo paese (cena narrativa, MICE, su misura). Non è un itinerario di viaggio plurigiornaliero in Italia. Campo `destination` = nome del paese oppure etichetta di formato.
 _Avoid_: viaggio, pacchetto (salvo copy marketing), itinerario (come termine definitorio)
 
 **Catalogo Tour**:
@@ -41,16 +41,16 @@ La landing di prima classe (collection `collaborations`, entry/URL `/collaborazi
 _Avoid_: Credibilità (come nome di collection/pagina), portfolio, press, partner (come nome di collection)
 
 **Sezione Collaborazioni**:
-Blocco della homepage con titolo, sottotitolo e CTA *propri*; loghi e testimonianze sono letti dalla landing Collaborazioni (fonte unica).
-_Avoid_: pagina collaborazioni, trust section
+Blocco della homepage con titolo, sottotitolo e CTA *propri*; i loghi partner sono letti dalla landing Collaborazioni; le Recensioni Google vivono sul campo homepage `google_reviews` (non sulla landing).
+_Avoid_: pagina collaborazioni, trust section, testimonianze
 
 **Logo partner**:
 Marchio di un’azienda o organizzazione con cui Flavia ha collaborato, mostrato in griglia sulla Sezione Collaborazioni e sulla landing.
 _Avoid_: sponsor, cliente (salvo copy)
 
-**Testimonianza**:
-Commento positivo su Flavia (stile stelle, fino a 5), editabile nel CMS; non è una recensione Google verificata.
-_Avoid_: recensione Google, review (come claim di provenienza)
+**Recensione Google**:
+Citazione stile recensione Google (autore, testo, valutazione numerica) gestita nel CMS sulla homepage (`google_reviews`); demo/placeholder finché non arrivano le recensioni reali. Non è un’integrazione live con Google.
+_Avoid_: Testimonianza, testimonial, review widget Google
 
 **Newsletter**:
 Canale di aggiornamento di Flavia (ricette di stagione, eventi e novità). Sul sito è una sezione di iscrizione in homepage; non è (ancora) una landing dedicata né un provider collegato.

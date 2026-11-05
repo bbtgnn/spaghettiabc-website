@@ -13,7 +13,6 @@ if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
 
 const logos = collaborations?.data.logos ?? [];
-const testimonials = collaborations?.data.testimonials ?? [];
 const gallery = collaborations?.data.gallery ?? [];
 
 const seo = collaborations
@@ -86,55 +85,6 @@ const seo = collaborations
 									)}
 								</li>
 							))}
-						</ul>
-					</section>
-				)}
-
-				{testimonials.length > 0 && (
-					<section
-						class="collaborations-page__block"
-						aria-labelledby="collaborazioni-testimonianze"
-					>
-						<h2 id="collaborazioni-testimonianze" class="collaborations-page__heading">
-							Testimonianze
-						</h2>
-						<ul
-							class="collaborations-page__testimonials"
-							{...collaborations.edit.testimonials}
-						>
-							{testimonials.map((item) => {
-								const rating = Number(item.rating) || 5;
-								return (
-									<li class="testimonial-card">
-										<div
-											class="testimonial-card__rating"
-											role="img"
-											aria-label={`Valutazione: ${rating} su 5`}
-										>
-											{Array.from({ length: 5 }, (_, i) => (
-												<span
-													class:list={[
-														"testimonial-card__star",
-														i < rating && "testimonial-card__star--filled",
-													]}
-													aria-hidden="true"
-												>
-													★
-												</span>
-											))}
-										</div>
-										<blockquote class="testimonial-card__quote">
-											<p>{item.quote}</p>
-										</blockquote>
-										<p class="testimonial-card__author">
-											<span class="testimonial-card__name">{item.author}</span>
-											{item.role_or_company && (
-												<span class="testimonial-card__role">{item.role_or_company}</span>
-											)}
-										</p>
-									</li>
-								);
-							})}
 						</ul>
 					</section>
 				)}
@@ -253,65 +203,6 @@ const seo = collaborations
 		color: var(--color-ink-soft);
 	}
 
-	.collaborations-page__testimonials {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: var(--space-4);
-	}
-
-	.testimonial-card {
-		display: grid;
-		gap: var(--space-3);
-		padding: var(--space-4);
-		background: color-mix(in srgb, var(--color-foam) 55%, #fff);
-		border-radius: var(--radius);
-		border: 1px solid var(--color-line);
-	}
-
-	.testimonial-card__rating {
-		display: flex;
-		gap: 0.15rem;
-		color: var(--color-sun);
-		font-size: var(--text-sm);
-		letter-spacing: 0.04em;
-	}
-
-	.testimonial-card__star {
-		opacity: 0.28;
-	}
-
-	.testimonial-card__star--filled {
-		opacity: 1;
-	}
-
-	.testimonial-card__quote {
-		margin: 0;
-	}
-
-	.testimonial-card__quote p {
-		margin: 0;
-		color: var(--color-ink-soft);
-		text-wrap: pretty;
-	}
-
-	.testimonial-card__author {
-		margin: 0;
-		display: grid;
-		gap: 0.15rem;
-	}
-
-	.testimonial-card__name {
-		font-weight: 650;
-	}
-
-	.testimonial-card__role {
-		font-size: var(--text-sm);
-		color: var(--color-sea);
-	}
-
 	.collaborations-page__gallery {
 		list-style: none;
 		margin: 0;
@@ -348,7 +239,6 @@ const seo = collaborations
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 
-		.collaborations-page__testimonials,
 		.collaborations-page__gallery {
 			grid-template-columns: 1fr;
 		}

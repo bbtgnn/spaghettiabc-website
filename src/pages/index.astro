@@ -22,7 +22,7 @@ const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 
 const featuredTours = home?.references?.featured_tours?.entries ?? [];
 const collaborationLogos = collaborations?.data.logos ?? [];
-const collaborationTestimonials = collaborations?.data.testimonials ?? [];
+const googleReviews = home?.data.google_reviews ?? [];
 const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 
@@ -91,19 +91,28 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 					{featuredTours.length === 0 ? (
 						<p class="type-body" data-reveal>Nessun tour in evidenza.</p>
 					) : (
-						<div class="tour-grid">
-							{featuredTours.map((tour, index) => (
-								<TourTeaser
-									href={`/tours/${tour.id}`}
-									title={tour.data.title}
-									excerpt={tour.data.excerpt}
-									destination={tour.data.destination}
-									duration={tour.data.duration}
-									price={tour.data.price}
-									image={tour.data.featured_image}
-									index={index}
-								/>
-							))}
+						<div class="tour-rail" data-reveal>
+							<div class="tour-rail__line" aria-hidden="true" />
+							<div
+								class="tour-rail__track"
+								role="list"
+								aria-label={home.data.tour_title ?? "Tour in evidenza"}
+							>
+								{featuredTours.map((tour, index) => (
+									<div role="listitem">
+										<TourTeaser
+											href={`/tours/${tour.id}`}
+											title={tour.data.title}
+											excerpt={tour.data.excerpt}
+											destination={tour.data.destination}
+											duration={tour.data.duration}
+											price={tour.data.price}
+											image={tour.data.featured_image}
+											index={index}
+										/>
+									</div>
+								))}
+							</div>
 						</div>
 					)}
 				</section>
@@ -220,13 +229,13 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 						</ul>
 					)}
 
-					{collaborationTestimonials.length > 0 && (
+					{googleReviews.length > 0 && (
 						<ul
 							class="quote-list"
 							data-reveal
-							{...collaborations?.edit.testimonials}
+							{...home.edit.google_reviews}
 						>
-							{collaborationTestimonials.map((item) => {
+							{googleReviews.map((item) => {
 								const rating = Number(item.rating) || 5;
 								return (
 									<li class="quote">
@@ -238,9 +247,6 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 										</blockquote>
 										<p class="quote__author">
 											<span>{item.author}</span>
-											{item.role_or_company && (
-												<span class="label">{item.role_or_company}</span>
-											)}
 										</p>
 									</li>
 								);

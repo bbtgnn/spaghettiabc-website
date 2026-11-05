@@ -42,7 +42,7 @@ Primary reader: **content editors** (Flavia), not developers.
 | `form_heading_tour` | Tour | `tour_*`, `featured_tours` |
 | `form_heading_book` | Libro | `book_*` |
 | `form_heading_training` | Formazione | `training_*` |
-| `form_heading_collaborations` | Collaborazioni | `collaborations_*` |
+| `form_heading_collaborations` | Collaborazioni | `collaborations_*`, `google_reviews` (added 2026-11-05; see [Homepage hero + Recensioni Google](./homepage-hero-google-reviews.md)) |
 | `form_heading_newsletter` | Newsletter | `newsletter_*` |
 
 Markers: `type: boolean`, `required: false`, `defaultValue: false`. The widget displays `label` as the heading; it does not expose a toggle.

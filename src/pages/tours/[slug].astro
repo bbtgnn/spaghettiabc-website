@@ -44,13 +44,6 @@ const specs: {
 	value: string;
 	edit?: Record<string, unknown>;
 }[] = [];
-if (tour.data.destination) {
-	specs.push({
-		term: "Paese",
-		value: tour.data.destination,
-		edit: tour.edit.destination,
-	});
-}
 if (tour.data.duration) {
 	specs.push({
 		term: "Durata",
@@ -58,6 +51,32 @@ if (tour.data.duration) {
 		edit: tour.edit.duration,
 	});
 }
+if (tour.data.group_size) {
+	specs.push({
+		term: "Gruppo",
+		value: tour.data.group_size,
+		edit: tour.edit.group_size,
+	});
+}
+if (tour.data.language) {
+	specs.push({
+		term: "Lingua",
+		value: tour.data.language,
+		edit: tour.edit.language,
+	});
+}
+if (tour.data.included) {
+	specs.push({
+		term: "Incluso",
+		value: tour.data.included,
+		edit: tour.edit.included,
+	});
+}
+
+const faqItems = (tour.data.faq ?? []).filter(
+	(row): row is { question: string; answer: string } =>
+		Boolean(row?.question && row?.answer),
+);
 ---
 
 <Base
@@ -173,6 +192,24 @@ if (tour.data.duration) {
 				<div class="scheda-tour__content" {...tour.edit.content}>
 					<PortableText value={tour.data.content} />
 				</div>
+			)
+		}
+
+		{
+			faqItems.length > 0 && (
+				<section class="scheda-tour__faq" aria-labelledby="tour-faq-heading" {...tour.edit.faq}>
+					<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
+						Domande frequenti
+					</h2>
+					<div class="scheda-tour__faq-list">
+						{faqItems.map((item) => (
+							<details class="scheda-tour__faq-item">
+								<summary>{item.question}</summary>
+								<p class="type-body">{item.answer}</p>
+							</details>
+						))}
+					</div>
+				</section>
 			)
 		}
 	</article>
@@ -347,6 +384,57 @@ if (tour.data.duration) {
 	.scheda-tour__content :global(h3) {
 		color: var(--title);
 		margin: 1.6em 0 0.5em;
+	}
+
+	.scheda-tour__faq {
+		margin-top: 4rem;
+		max-width: var(--measure);
+		border-top: 1px solid var(--line);
+		padding-top: 2.5rem;
+	}
+
+	.scheda-tour__faq-title {
+		margin: 0 0 1.25rem;
+		color: var(--title);
+	}
+
+	.scheda-tour__faq-list {
+		display: grid;
+		gap: 0;
+	}
+
+	.scheda-tour__faq-item {
+		border-bottom: 1px solid var(--line);
+	}
+
+	.scheda-tour__faq-item summary {
+		cursor: pointer;
+		list-style: none;
+		padding-block: 1rem;
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.8125rem;
+		letter-spacing: 0.02em;
+		color: var(--ink);
+	}
+
+	.scheda-tour__faq-item summary::-webkit-details-marker {
+		display: none;
+	}
+
+	.scheda-tour__faq-item summary::before {
+		content: "▼ ";
+		color: var(--muted);
+		font-size: 0.65em;
+	}
+
+	.scheda-tour__faq-item[open] summary::before {
+		content: "▲ ";
+	}
+
+	.scheda-tour__faq-item p {
+		margin: 0 0 1.25rem;
+		max-width: 46ch;
+		color: var(--muted);
 	}
 </style>
 
