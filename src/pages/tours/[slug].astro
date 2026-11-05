@@ -30,10 +30,34 @@ const seo = getSeoMeta(tour, {
 	path: Astro.url.pathname.replace(/\/$/, ""),
 });
 
-const gallery = tour.data.gallery ?? [];
-const meta = [tour.data.destination, tour.data.duration, tour.data.price]
-	.filter(Boolean)
-	.join(" · ");
+type TourImage = NonNullable<typeof tour.data.featured_image>;
+
+const galleryImages: TourImage[] = [
+	...(tour.data.featured_image ? [tour.data.featured_image] : []),
+	...(tour.data.gallery ?? [])
+		.map((row) => row.image)
+		.filter((image): image is TourImage => Boolean(image)),
+];
+
+const specs: {
+	term: string;
+	value: string;
+	edit?: Record<string, unknown>;
+}[] = [];
+if (tour.data.destination) {
+	specs.push({
+		term: "Paese",
+		value: tour.data.destination,
+		edit: tour.edit.destination,
+	});
+}
+if (tour.data.duration) {
+	specs.push({
+		term: "Durata",
+		value: tour.data.duration,
+		edit: tour.edit.duration,
+	});
+}
 ---
 
 <Base
@@ -42,196 +66,311 @@ const meta = [tour.data.destination, tour.data.duration, tour.data.price]
 	description={seo.description}
 	canonical={seo.canonical}
 	image={seo.ogImage}
-	overlayHeader={Boolean(tour.data.featured_image)}
 	content={{ collection: "tours", id: tour.data.id, slug }}
 >
-	<article class="tour">
-		<header class="tour-hero">
-			{
-				tour.data.featured_image && (
-					<div class="tour-hero__media" {...tour.edit.featured_image}>
-						<Image image={tour.data.featured_image} />
-					</div>
-				)
-			}
-			<div class="tour-hero__veil" aria-hidden="true" />
-			<div class="tour-hero__content">
-				{meta && <p class="tour-hero__meta">{meta}</p>}
-				<h1 class="tour-hero__title" {...tour.edit.title}>{tour.data.title}</h1>
-				{
-					tour.data.excerpt && (
-						<p class="tour-hero__excerpt" {...tour.edit.excerpt}>
-							{tour.data.excerpt}
-						</p>
-					)
-				}
-			</div>
-		</header>
+	<article class="shell scheda-tour">
+		<nav class="mono scheda-tour__crumb" aria-label="Breadcrumb">
+			<a href="/tours" class="link">Catalogo tour</a>
+			<span aria-hidden="true">/</span>
+			<span class="scheda-tour__crumb-current" aria-current="page"
+				>{tour.data.title}</span
+			>
+		</nav>
 
-		<div class="tour-body">
-			<div class="tour-body__prose">
-				<PortableText value={tour.data.content} />
-			</div>
-
+		<div class="scheda-tour__split">
 			{
-				gallery.length > 0 && (
-					<section class="tour-gallery">
-						<h2 class="tour-gallery__title">Gallery</h2>
-						<ul class="tour-gallery__list">
-							{gallery.map((row) =>
-								row.image ? (
-									<li class="tour-gallery__item">
-										<Image image={row.image} />
-									</li>
-								) : null,
-							)}
-						</ul>
+				galleryImages.length > 0 && (
+					<section
+						class="scheda-tour__gallery"
+						aria-label={`${tour.data.title} images`}
+						data-tour-gallery
+					>
+						<div class="scheda-tour__stage" {...tour.edit.featured_image}>
+							{galleryImages.map((image, index) => (
+								<div
+									class:list={[
+										"gallery-panel",
+										index !== 0 && "is-hidden",
+									]}
+									data-gallery-panel={index}
+								>
+									<Image image={image} />
+								</div>
+							))}
+						</div>
+
+						{galleryImages.length >= 2 && (
+							<div
+								class="scheda-tour__thumbs"
+								role="group"
+								aria-label="Choose an image"
+							>
+								{galleryImages.map((image, index) => (
+									<button
+										type="button"
+										class="gallery-thumb"
+										data-gallery-thumb={index}
+										aria-label={`Show view ${index + 1}`}
+										aria-pressed={index === 0 ? "true" : "false"}
+									>
+										<Image image={image} />
+									</button>
+								))}
+							</div>
+						)}
 					</section>
 				)
 			}
 
-			<p class="tour-back">
-				<a href="/tours">← Tutti i tour</a>
-			</p>
+			<div class="scheda-tour__info">
+				{
+					tour.data.destination && (
+						<p class="label" {...tour.edit.destination}>
+							{tour.data.destination}
+						</p>
+					)
+				}
+				<h1 class="type-h2 scheda-tour__title" {...tour.edit.title}>
+					{tour.data.title}
+				</h1>
+				{
+					tour.data.price && (
+						<p class="mono scheda-tour__price" {...tour.edit.price}>
+							{tour.data.price}
+						</p>
+					)
+				}
+
+				{
+					tour.data.excerpt && (
+						<p class="type-body scheda-tour__excerpt" {...tour.edit.excerpt}>
+							{tour.data.excerpt}
+						</p>
+					)
+				}
+
+				{
+					specs.length > 0 && (
+						<dl class="mono scheda-tour__specs">
+							{specs.map(({ term, value, edit }) => (
+								<div class="scheda-tour__spec" {...edit}>
+									<dt>{term}</dt>
+									<dd>{value}</dd>
+								</div>
+							))}
+						</dl>
+					)
+				}
+
+				<button type="button" class="btn btn-primary scheda-tour__cart">
+					Add to cart
+				</button>
+			</div>
 		</div>
+
+		{
+			tour.data.content && (
+				<div class="scheda-tour__content" {...tour.edit.content}>
+					<PortableText value={tour.data.content} />
+				</div>
+			)
+		}
 	</article>
 </Base>
 
 <style>
-	.tour-hero {
-		position: relative;
-		isolation: isolate;
-		min-height: min(78svh, 44rem);
-		display: grid;
-		align-items: end;
-		color: #fff;
-		overflow: hidden;
-		background: var(--color-ink);
+	.scheda-tour {
+		padding-block: 0 4rem;
 	}
 
-	.tour-hero__media {
-		position: absolute;
-		inset: 0;
-		z-index: 0;
-	}
-
-	.tour-hero__media :global(img) {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		animation: media-drift 4.5s var(--ease-out) both;
-	}
-
-	.tour-hero__veil {
-		position: absolute;
-		inset: 0;
-		z-index: 1;
-		background: linear-gradient(
-			180deg,
-			rgb(20 35 58 / 0.2) 0%,
-			rgb(20 35 58 / 0.55) 100%
-		);
-		animation: fade-in 800ms var(--ease-out) both;
-	}
-
-	.tour-hero__content {
-		position: relative;
-		z-index: 2;
-		width: min(100% - 2rem, var(--content));
-		margin: 0 auto;
-		padding: calc(var(--space-7) + 1rem) 0 var(--space-5);
-		display: grid;
-		gap: var(--space-3);
-		max-width: 42rem;
-		animation: rise-in 850ms var(--ease-out) both;
-	}
-
-	.tour-hero__meta {
-		font-size: var(--text-xs);
-		font-weight: 650;
-		letter-spacing: 0.1em;
+	.scheda-tour__crumb {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding-block: 1.5rem;
+		font-size: 0.6875rem;
 		text-transform: uppercase;
-		color: var(--color-sun);
+		letter-spacing: 0.05em;
+		color: var(--muted);
 	}
 
-	.tour-hero__title {
-		font-size: var(--text-3xl);
-		text-wrap: balance;
+	.scheda-tour__crumb-current {
+		color: var(--ink);
 	}
 
-	.tour-hero__excerpt {
-		max-width: 34rem;
-		font-size: var(--text-lg);
-		color: rgb(255 255 255 / 0.9);
-	}
-
-	.tour-body {
-		width: min(100% - 2rem, var(--content));
-		margin: 0 auto;
-		padding: var(--space-6) 0 var(--space-7);
+	.scheda-tour__split {
 		display: grid;
-		gap: var(--space-6);
+		align-items: start;
+		gap: 2.5rem;
+		border-top: 1px solid var(--line);
+		padding-top: 2rem;
 	}
 
-	.tour-body__prose {
+	@media (min-width: 1024px) {
+		.scheda-tour__split {
+			grid-template-columns: 7fr 5fr;
+			gap: 3rem;
+		}
+	}
+
+	.scheda-tour__stage {
+		position: relative;
+		overflow: hidden;
+		background: var(--surface);
+	}
+
+	.scheda-tour__stage :global(img) {
+		aspect-ratio: 4 / 5;
+		width: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.scheda-tour__thumbs {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+		margin-top: 0.75rem;
+	}
+
+	.gallery-thumb {
+		overflow: hidden;
+		padding: 0;
+		border: 0;
+		background: var(--surface);
+		cursor: pointer;
+		box-shadow: inset 0 0 0 1px var(--line);
+		transition: box-shadow 260ms ease;
+	}
+
+	.gallery-thumb:hover {
+		box-shadow: inset 0 0 0 1px var(--line-strong);
+	}
+
+	.gallery-thumb[aria-pressed="true"] {
+		box-shadow: inset 0 0 0 2px var(--accent);
+	}
+
+	.gallery-thumb :global(img) {
+		aspect-ratio: 1;
+		width: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.gallery-panel.is-hidden {
+		display: none;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.gallery-panel:not(.is-hidden) {
+			animation: panel-in 600ms var(--ease-out-expo) both;
+		}
+
+		@keyframes panel-in {
+			from {
+				opacity: 0;
+				transform: scale(1.015);
+			}
+		}
+	}
+
+	.scheda-tour__info {
+		display: grid;
+		justify-items: start;
+		align-content: start;
+	}
+
+	@media (min-width: 1024px) {
+		.scheda-tour__info {
+			position: sticky;
+			top: 7rem;
+		}
+	}
+
+	.scheda-tour__title {
+		margin-top: 1.25rem;
+	}
+
+	.scheda-tour__price {
+		margin-top: 1.25rem;
+		font-size: 1.25rem;
+		color: var(--ink);
+	}
+
+	.scheda-tour__excerpt {
+		margin-top: 2rem;
+		max-width: 46ch;
+	}
+
+	.scheda-tour__specs {
+		width: 100%;
+		margin-top: 2.5rem;
+		border-top: 1px solid var(--line);
+		font-size: 0.8125rem;
+	}
+
+	.scheda-tour__spec {
+		display: flex;
+		justify-content: space-between;
+		gap: 1.5rem;
+		border-bottom: 1px solid var(--line);
+		padding-block: 0.75rem;
+	}
+
+	.scheda-tour__spec dt {
+		color: var(--muted);
+	}
+
+	.scheda-tour__spec dd {
+		margin: 0;
+		text-align: right;
+		color: var(--ink);
+	}
+
+	.scheda-tour__cart {
+		margin-top: 2.5rem;
+		width: 100%;
+	}
+
+	.scheda-tour__content {
+		margin-top: 4rem;
 		max-width: var(--measure);
-		font-size: var(--text-lg);
-		color: var(--color-ink-soft);
-		animation: rise-in 700ms var(--ease-out) 80ms both;
+		color: var(--muted);
 	}
 
-	.tour-body__prose :global(p) {
+	.scheda-tour__content :global(p) {
 		margin-bottom: 1.1em;
 	}
 
-	.tour-body__prose :global(h2),
-	.tour-body__prose :global(h3) {
-		color: var(--color-ink);
+	.scheda-tour__content :global(h2),
+	.scheda-tour__content :global(h3) {
+		color: var(--title);
 		margin: 1.6em 0 0.5em;
 	}
-
-	.tour-gallery__title {
-		font-size: var(--text-xl);
-		margin-bottom: var(--space-4);
-	}
-
-	.tour-gallery__list {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-		gap: var(--space-3);
-	}
-
-	.tour-gallery__item {
-		overflow: hidden;
-		border-radius: var(--radius);
-		background: var(--color-foam);
-	}
-
-	.tour-gallery__item :global(img) {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		aspect-ratio: 4 / 3;
-	}
-
-	.tour-back a {
-		font-weight: 650;
-		color: var(--color-sea-deep);
-		text-decoration: none;
-	}
-
-	.tour-back a:hover {
-		text-decoration: underline;
-		text-underline-offset: 0.28em;
-	}
-
-	@media (max-width: 720px) {
-		.tour-hero {
-			min-height: 70svh;
-		}
-
-		.tour-hero__content {
-			padding-top: calc(var(--space-7) + 3rem);
-		}
-	}
 </style>
+
+<script is:inline>
+	(() => {
+		const gallery = document.querySelector("[data-tour-gallery]");
+		if (!gallery) return;
+
+		const panels = Array.from(gallery.querySelectorAll("[data-gallery-panel]"));
+		const thumbs = Array.from(gallery.querySelectorAll("[data-gallery-thumb]"));
+
+		thumbs.forEach((thumb) => {
+			thumb.addEventListener("click", () => {
+				const active = thumb.dataset.galleryThumb;
+				panels.forEach((panel) =>
+					panel.classList.toggle(
+						"is-hidden",
+						panel.dataset.galleryPanel !== active,
+					),
+				);
+				thumbs.forEach((button) => {
+					button.setAttribute("aria-pressed", String(button === thumb));
+				});
+			});
+		});
+	})();
+</script>
