@@ -1043,9 +1043,9 @@
 					"hero_subtitle": "Culinary Experiences Curated by Flavia Giordano",
 					"hero_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1920&h=1080&fit=crop",
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/cover-newsletter-ingredient.jpg",
 							"alt": "Ingredienti e olio — hero homepage Spaghetti ABC",
-							"filename": "homepage-hero.jpg"
+							"filename": "cover-newsletter-ingredient.jpg"
 						}
 					},
 					"tour_title": "I nostri tour",
@@ -1066,9 +1066,9 @@
 					"book_cta_label": "Scopri il libro",
 					"book_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&h=1067&fit=crop",
-							"alt": "Paesaggio pugliese al tramonto",
-							"filename": "homepage-book.jpg"
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro.jpg",
+							"alt": "Copertina del libro Puglia",
+							"filename": "copertina-libro.jpg"
 						}
 					},
 					"training_title": "Formazione",
