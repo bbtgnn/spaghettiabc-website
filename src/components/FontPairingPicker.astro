@@ -3,6 +3,9 @@
  * DEV-only font pairing preview (#9). Stripped from production builds.
  * Matrix: rows = body, columns = display; separate Font UI control.
  */
+import Type from "@lucide/astro/icons/type";
+import X from "@lucide/astro/icons/x";
+
 const DISPLAY = [
 	{ id: "newsreader", label: "Newsreader" },
 	{ id: "fraunces", label: "Fraunces" },
@@ -23,72 +26,94 @@ const UI = [
 ---
 
 <div class="font-pairing-picker" role="region" aria-label="Anteprima font">
-	<p class="font-pairing-picker__title">Abbinamento font</p>
+	<div class="font-pairing-picker__header">
+		<p class="font-pairing-picker__title">Abbinamento font</p>
+		<button
+			type="button"
+			class="font-pairing-picker__collapse"
+			aria-label="Riduci pannello font"
+			aria-expanded="true"
+		>
+			<X class="font-pairing-picker__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+		</button>
+	</div>
 
-	<div class="font-pairing-picker__matrix-wrap">
-		<table class="font-pairing-picker__matrix">
-			<thead>
-				<tr>
-					<th scope="col" class="font-pairing-picker__corner">
-						<span class="sr-only">Corpo \ Display</span>
-						<span aria-hidden="true">Corpo ↓ / Titoli →</span>
-					</th>
+	<div class="font-pairing-picker__panel">
+		<div class="font-pairing-picker__matrix-wrap">
+			<table class="font-pairing-picker__matrix">
+				<thead>
+					<tr>
+						<th scope="col" class="font-pairing-picker__corner">
+							<span class="sr-only">Corpo \ Display</span>
+							<span aria-hidden="true">Corpo ↓ / Titoli →</span>
+						</th>
+						{
+							DISPLAY.map((d) => (
+								<th scope="col">{d.label}</th>
+							))
+						}
+					</tr>
+				</thead>
+				<tbody>
 					{
-						DISPLAY.map((d) => (
-							<th scope="col">{d.label}</th>
+						BODY.map((body) => (
+							<tr>
+								<th scope="row">{body.label}</th>
+								{DISPLAY.map((display) => (
+									<td>
+										<button
+											type="button"
+											class="font-pairing-picker__cell"
+											data-display={display.id}
+											data-body={body.id}
+											aria-label={`${body.label} + ${display.label}`}
+											aria-pressed="false"
+										>
+											<span class="font-pairing-picker__cell-mark" aria-hidden="true"
+											></span>
+										</button>
+									</td>
+								))}
+							</tr>
 						))
 					}
-				</tr>
-			</thead>
-			<tbody>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="font-pairing-picker__ui">
+			<label class="font-pairing-picker__ui-label" for="font-ui-select">
+				Font UI
+			</label>
+			<select id="font-ui-select" class="font-pairing-picker__select">
 				{
-					BODY.map((body) => (
-						<tr>
-							<th scope="row">{body.label}</th>
-							{DISPLAY.map((display) => (
-								<td>
-									<button
-										type="button"
-										class="font-pairing-picker__cell"
-										data-display={display.id}
-										data-body={body.id}
-										aria-label={`${body.label} + ${display.label}`}
-										aria-pressed="false"
-									>
-										<span class="font-pairing-picker__cell-mark" aria-hidden="true"
-										></span>
-									</button>
-								</td>
-							))}
-						</tr>
+					UI.map((opt) => (
+						<option value={opt.id}>{opt.label}</option>
 					))
 				}
-			</tbody>
-		</table>
+			</select>
+		</div>
 	</div>
 
-	<div class="font-pairing-picker__ui">
-		<label class="font-pairing-picker__ui-label" for="font-ui-select">
-			Font UI
-		</label>
-		<select id="font-ui-select" class="font-pairing-picker__select">
-			{
-				UI.map((opt) => (
-					<option value={opt.id}>{opt.label}</option>
-				))
-			}
-		</select>
-	</div>
+	<button
+		type="button"
+		class="font-pairing-picker__launch"
+		aria-label="Apri anteprima font"
+		hidden
+	>
+		<Type class="font-pairing-picker__icon" size={18} stroke-width={1.75} aria-hidden="true" />
+	</button>
 </div>
 
 <script>
 	const KEY_DISPLAY = "spaghettiabc-font-display";
 	const KEY_BODY = "spaghettiabc-font-body";
 	const KEY_UI = "spaghettiabc-font-ui";
+	const KEY_COLLAPSED = "spaghettiabc-font-picker-collapsed";
 
 	const DEFAULT_DISPLAY = "fraunces";
 	const DEFAULT_BODY = "source-serif-4";
-	const DEFAULT_UI = "body";
+	const DEFAULT_UI = "fira-sans";
 
 	const VALID_DISPLAY = ["newsreader", "fraunces", "lora", "cormorant"];
 	const VALID_BODY = ["source-serif-4", "literata"];
@@ -98,6 +123,8 @@ const UI = [
 	const picker = document.querySelector(".font-pairing-picker");
 	const cells = picker?.querySelectorAll(".font-pairing-picker__cell");
 	const uiSelect = document.getElementById("font-ui-select");
+	const collapseBtn = picker?.querySelector(".font-pairing-picker__collapse");
+	const launchBtn = picker?.querySelector(".font-pairing-picker__launch");
 
 	const read = (key: string, valid: string[], fallback: string) => {
 		try {
@@ -115,6 +142,39 @@ const UI = [
 		} catch {
 			/* no-op */
 		}
+	};
+
+	const readCollapsed = () => {
+		try {
+			return localStorage.getItem(KEY_COLLAPSED) === "1";
+		} catch {
+			return false;
+		}
+	};
+
+	const setCollapsed = (collapsed: boolean, { focus = false } = {}) => {
+		if (!(picker instanceof HTMLElement)) return;
+		picker.classList.toggle("is-collapsed", collapsed);
+		picker.setAttribute(
+			"aria-label",
+			collapsed ? "Anteprima font (ridotta)" : "Anteprima font",
+		);
+
+		if (collapseBtn instanceof HTMLButtonElement) {
+			collapseBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+			collapseBtn.hidden = collapsed;
+		}
+
+		if (launchBtn instanceof HTMLButtonElement) {
+			launchBtn.hidden = !collapsed;
+		}
+
+		if (focus) {
+			const next = collapsed ? launchBtn : collapseBtn;
+			if (next instanceof HTMLButtonElement) next.focus();
+		}
+
+		write(KEY_COLLAPSED, collapsed ? "1" : "0");
 	};
 
 	/** Serif UI → sentence case + metrics; sans UI → uppercase (see theme.css). */
@@ -162,6 +222,7 @@ const UI = [
 
 	applyPairing(initialDisplay, initialBody);
 	applyUi(initialUi);
+	setCollapsed(readCollapsed());
 
 	cells?.forEach((cell) => {
 		cell.addEventListener("click", () => {
@@ -175,6 +236,14 @@ const UI = [
 			applyUi(uiSelect.value);
 		});
 	}
+
+	collapseBtn?.addEventListener("click", () => {
+		setCollapsed(true, { focus: true });
+	});
+
+	launchBtn?.addEventListener("click", () => {
+		setCollapsed(false, { focus: true });
+	});
 </script>
 
 <style>
@@ -197,12 +266,95 @@ const UI = [
 		pointer-events: auto;
 	}
 
+	.font-pairing-picker.is-collapsed {
+		width: auto;
+		max-height: none;
+		padding: 0;
+		overflow: visible;
+		gap: 0;
+		background: transparent;
+		border: 0;
+		box-shadow: none;
+	}
+
+	.font-pairing-picker__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.font-pairing-picker.is-collapsed .font-pairing-picker__header,
+	.font-pairing-picker.is-collapsed .font-pairing-picker__panel {
+		display: none;
+	}
+
 	.font-pairing-picker__title {
 		margin: 0;
 		font-family: var(--font-ui);
 		font-size: var(--font-ui-size-sm);
 		letter-spacing: var(--font-ui-tracking);
 		color: var(--muted);
+	}
+
+	.font-pairing-picker__collapse,
+	.font-pairing-picker__launch {
+		display: grid;
+		place-items: center;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--canvas);
+		color: var(--ink);
+		cursor: pointer;
+		transition:
+			background 160ms ease,
+			border-color 160ms ease,
+			box-shadow 160ms ease,
+			color 160ms ease;
+	}
+
+	.font-pairing-picker__collapse {
+		width: 1.75rem;
+		height: 1.75rem;
+		flex-shrink: 0;
+	}
+
+	.font-pairing-picker__launch {
+		width: 2.75rem;
+		height: 2.75rem;
+		border-color: var(--line-strong);
+		background: var(--surface);
+		box-shadow: 0 8px 24px color-mix(in oklab, var(--ink) 12%, transparent);
+	}
+
+	.font-pairing-picker__launch[hidden] {
+		display: none;
+	}
+
+	.font-pairing-picker__collapse:hover,
+	.font-pairing-picker__collapse:focus-visible,
+	.font-pairing-picker__launch:hover,
+	.font-pairing-picker__launch:focus-visible {
+		border-color: var(--line-strong);
+		color: var(--accent);
+		outline: none;
+	}
+
+	.font-pairing-picker__collapse:focus-visible,
+	.font-pairing-picker__launch:focus-visible {
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+	}
+
+	.font-pairing-picker__icon {
+		display: block;
+	}
+
+	.font-pairing-picker__panel {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		min-width: 0;
 	}
 
 	.font-pairing-picker__matrix-wrap {
@@ -328,7 +480,7 @@ const UI = [
 	}
 
 	@media (max-width: 480px) {
-		.font-pairing-picker {
+		.font-pairing-picker:not(.is-collapsed) {
 			left: max(0.5rem, env(safe-area-inset-left));
 			right: max(0.5rem, env(safe-area-inset-right));
 			width: auto;

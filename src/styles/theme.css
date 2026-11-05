@@ -3,6 +3,14 @@
 
 @import "@fontsource-variable/fraunces/wght.css";
 @import "@fontsource-variable/source-serif-4/wght.css";
+@import "@fontsource/fira-sans/latin-400.css";
+@import "@fontsource/fira-sans/latin-500.css";
+@import "@fontsource/fira-sans/latin-600.css";
+@import "@fontsource/fira-sans/latin-700.css";
+@import "@fontsource/fira-sans/latin-ext-400.css";
+@import "@fontsource/fira-sans/latin-ext-500.css";
+@import "@fontsource/fira-sans/latin-ext-600.css";
+@import "@fontsource/fira-sans/latin-ext-700.css";
 @import "@fontsource/ibm-plex-mono/400.css";
 
 :root {
@@ -18,6 +26,8 @@
 	/* Accent — oiled walnut */
 	--accent: #8a5322;
 	--accent-ink: #ffffff;
+	/* Titles — darker walnut than accent */
+	--title: #6b3f18;
 
 	/* Hairlines */
 	--line: color-mix(in oklab, var(--ink) 13%, transparent);
@@ -34,17 +44,18 @@
 	--gutter: 1.5rem;
 	--shell: 96rem;
 
-	/* Fonts — prod baseline until a pairing is locked (#9 follow-up):
-	   Display = Fraunces, Body = Source Serif 4, UI = body */
+	/* Fonts — prod baseline:
+	   Display = Fraunces, Body = Source Serif 4, UI = Fira Sans */
 	--font-fraunces: "Fraunces Variable", "Fraunces", Georgia, "Times New Roman",
 		serif;
 	--font-source-serif: "Source Serif 4 Variable", "Source Serif 4", Georgia,
 		"Times New Roman", serif;
+	--font-fira-sans: "Fira Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	--font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 	--font-display: var(--font-fraunces);
 	--font-body: var(--font-source-serif);
 	--font-sans: var(--font-body);
-	--font-ui: var(--font-body);
+	--font-ui: var(--font-fira-sans);
 	/* Fraunces (prod display) sits one step lighter than other display faces */
 	--font-display-weight: 400;
 	--font-brand-weight: 400;
@@ -52,9 +63,9 @@
 	/* UI chrome metrics — sans/uppercase baseline; serif overrides via data-font-ui-case */
 	--font-ui-size: 0.6875rem;
 	--font-ui-size-sm: 0.625rem;
-	--font-ui-tracking: 0.06em;
-	--font-ui-tracking-btn: 0.09em;
-	--font-ui-tracking-field: 0.08em;
+	--font-ui-tracking: 0.02em;
+	--font-ui-tracking-btn: 0.03em;
+	--font-ui-tracking-field: 0.025em;
 	--color-ink: var(--ink);
 	--color-ink-soft: var(--muted);
 	--color-foam: var(--surface);
@@ -163,6 +174,7 @@ h2,
 h3 {
 	font-family: var(--font-display);
 	font-weight: var(--font-display-weight);
+	color: var(--title);
 	margin: 0;
 }
 
@@ -216,6 +228,7 @@ hr {
 	line-height: 0.95;
 	letter-spacing: -0.038em;
 	font-weight: var(--font-display-weight);
+	color: var(--title);
 	text-wrap: balance;
 }
 
@@ -225,6 +238,7 @@ hr {
 	line-height: 0.88;
 	letter-spacing: -0.04em;
 	font-weight: var(--font-display-weight);
+	color: var(--title);
 	text-wrap: balance;
 }
 
@@ -234,6 +248,7 @@ hr {
 	line-height: 0.94;
 	letter-spacing: -0.035em;
 	font-weight: var(--font-display-weight);
+	color: var(--title);
 	text-wrap: balance;
 }
 
@@ -243,6 +258,7 @@ hr {
 	line-height: 1.06;
 	letter-spacing: -0.025em;
 	font-weight: var(--font-display-weight);
+	color: var(--title);
 	text-wrap: balance;
 }
 
@@ -281,7 +297,7 @@ hr {
    UI casing + metrics — driven by data-font-ui-case on <html>
    Sans (tsukimi / fira-sans): uppercase + tracked sizes via --font-ui-* baseline.
    Serif (UI=body; both body faces are serif): sentence case + larger size / normal tracking.
-   Prod defaults to data-font-ui-case="serif" (UI follows Source Serif 4 body).
+   Prod defaults to data-font-ui-case="sans" (UI = Fira Sans).
    Hosts use block/inline-block (not flex) so ::first-letter applies.
    Nav (.site-nav a) is tied to body, not --font-ui — see nav rules below.
 --------------------------------------------------------------------------- */
@@ -342,7 +358,7 @@ html[data-font-ui-case="serif"]
 	isolation: isolate;
 	padding: 1.0625rem 2rem;
 	border: 0;
-	border-radius: var(--radius);
+	border-radius: 9999px;
 	font-family: var(--font-ui);
 	font-size: var(--font-ui-size);
 	letter-spacing: var(--font-ui-tracking-btn);
@@ -370,7 +386,7 @@ html[data-font-ui-case="serif"]
 }
 
 .btn-primary {
-	background: var(--ink);
+	background: var(--title);
 	color: var(--canvas);
 }
 
@@ -397,6 +413,29 @@ html[data-font-ui-case="serif"]
 .btn:disabled {
 	opacity: 0.45;
 	pointer-events: none;
+}
+
+.btn--arrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.55rem;
+	width: fit-content;
+	max-width: 100%;
+	padding-inline: 1.5rem 1.25rem;
+}
+
+.btn__label {
+	display: inline-block;
+}
+
+html[data-font-ui-case="serif"] .btn__label::first-letter {
+	text-transform: uppercase;
+}
+
+.btn__icon {
+	width: 1em;
+	height: 1em;
+	flex-shrink: 0;
 }
 
 .link {
@@ -568,12 +607,12 @@ html[data-font-ui-case="serif"]
 	font-weight: var(--font-brand-weight);
 	letter-spacing: -0.01em;
 	text-decoration: none;
-	color: var(--ink);
+	color: var(--title);
 	transition: color 220ms ease;
 }
 
 .site-brand:hover {
-	color: var(--accent);
+	color: color-mix(in oklab, var(--title) 82%, var(--ink));
 }
 
 .site-brand img {

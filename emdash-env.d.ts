@@ -5,6 +5,21 @@
 
 import type { BylineSummary, ContentBylineCredit, TaxonomyTerm, PortableTextBlock, ReferencePage } from "emdash";
 
+export interface AgniSlide {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  content?: PortableTextBlock[];
+  excerpt?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Book {
   id: string;
   slug: string | null;
@@ -45,39 +60,27 @@ export interface Homepage {
   id: string;
   slug: string | null;
   status: string;
-  form_heading_hero?: boolean;
   hero_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   hero_title: string;
   hero_subtitle?: string;
-  form_heading_tour?: boolean;
   tour_title: string;
   tour_subtitle?: string;
   tour_cta_label?: string;
-  form_heading_book?: boolean;
   book_title?: string;
   book_subtitle?: string;
   book_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   book_cta_label?: string;
-  form_heading_training?: boolean;
   training_title?: string;
   training_subtitle?: string;
   training_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   training_cta_label?: string;
-  form_heading_collaborations?: boolean;
   collaborations_title?: string;
   collaborations_subtitle?: string;
   collaborations_cta_label?: string;
-  form_heading_newsletter?: boolean;
   newsletter_title?: string;
   newsletter_subtitle?: string;
   newsletter_button_label?: string;
   newsletter_email_placeholder?: string;
-  form_heading_hero?: boolean;
-  form_heading_tour?: boolean;
-  form_heading_book?: boolean;
-  form_heading_training?: boolean;
-  form_heading_collaborations?: boolean;
-  form_heading_newsletter?: boolean;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -92,6 +95,7 @@ export interface Page {
   status: string;
   title: string;
   content?: PortableTextBlock[];
+  excerpt?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -153,12 +157,28 @@ export interface Training {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface Wpcf7ContactForm {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  content?: PortableTextBlock[];
+  excerpt?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface HomepageReferences {
   featured_tours: ReferencePage<Tour>;
 }
 
 declare module "emdash" {
   interface EmDashCollections {
+    agni_slides: AgniSlide;
     book: Book;
     collaborations: Collaboration;
     homepage: Homepage;
@@ -166,6 +186,7 @@ declare module "emdash" {
     posts: Post;
     tours: Tour;
     training: Training;
+    wpcf7_contact_form: Wpcf7ContactForm;
   }
   interface EmDashCollectionReferences {
     homepage: HomepageReferences;

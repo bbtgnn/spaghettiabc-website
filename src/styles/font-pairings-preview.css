@@ -1,5 +1,5 @@
 /* DEV-only font pairing preview (#9). Imported from Base.astro when DEV.
-   Prod baseline faces (Fraunces, Source Serif 4) load from theme.css. */
+   Prod baseline faces (Fraunces, Source Serif 4, Fira Sans) load from theme.css. */
 
 @import "@fontsource-variable/newsreader/wght.css";
 @import "@fontsource-variable/lora/wght.css";
@@ -14,14 +14,6 @@
 @import "@fontsource/cormorant-garamond/latin-ext-700.css";
 @import "@fontsource/tsukimi-rounded/latin.css";
 @import "@fontsource/tsukimi-rounded/latin-ext.css";
-@import "@fontsource/fira-sans/latin-400.css";
-@import "@fontsource/fira-sans/latin-500.css";
-@import "@fontsource/fira-sans/latin-600.css";
-@import "@fontsource/fira-sans/latin-700.css";
-@import "@fontsource/fira-sans/latin-ext-400.css";
-@import "@fontsource/fira-sans/latin-ext-500.css";
-@import "@fontsource/fira-sans/latin-ext-600.css";
-@import "@fontsource/fira-sans/latin-ext-700.css";
 
 :root {
 	--font-newsreader: "Newsreader Variable", "Newsreader", Georgia,
@@ -32,7 +24,6 @@
 	--font-cormorant: "Cormorant Garamond", Georgia, "Times New Roman", serif;
 	--font-tsukimi: "Tsukimi Rounded", "Helvetica Neue", Helvetica, Arial,
 		sans-serif;
-	--font-fira-sans: "Fira Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* Display — non-Fraunces faces restore the heavier title/brand weights;

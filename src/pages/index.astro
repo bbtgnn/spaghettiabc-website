@@ -1,6 +1,7 @@
 ---
 import { getEmDashEntry, getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Base from "../layouts/Base.astro";
 import TourTeaser from "../components/TourTeaser.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
@@ -25,12 +26,6 @@ const collaborationTestimonials = collaborations?.data.testimonials ?? [];
 const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 
-const facts = [
-	{ value: String(featuredTours.length).padStart(2, "0"), label: "Tour" },
-	{ value: "Puglia", label: "Base" },
-	{ value: "Book", label: "Guida" },
-	{ value: "Formazione", label: "Training" },
-];
 ---
 
 <Base title={pageTitle} description={pageDescription}>
@@ -74,21 +69,6 @@ const facts = [
 					)}
 				</section>
 
-				<div class="facts-band">
-					<dl class="shell facts-band__grid">
-						{facts.map((fact, index) => (
-							<div
-								class="fact"
-								data-reveal
-								style={`--reveal-delay:${index * 70}ms`}
-							>
-								<dt class="label">{fact.label}</dt>
-								<dd class="facts-band__value">{fact.value}</dd>
-							</div>
-						))}
-					</dl>
-				</div>
-
 				<section class="shell section">
 					<div class="rule" data-reveal="line" />
 					<div class="section__head" data-reveal>
@@ -96,8 +76,9 @@ const facts = [
 							{home.data.tour_title}
 						</h2>
 						{home.data.tour_cta_label && (
-							<a class="link link-mono" href="/tours" {...home.edit.tour_cta_label}>
-								Tutti i tour
+							<a class="btn btn-outline btn--arrow" href="/tours" {...home.edit.tour_cta_label}>
+								<span class="btn__label">Tutti i tour</span>
+								<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
 							</a>
 						)}
 					</div>
@@ -154,8 +135,9 @@ const facts = [
 								</p>
 							)}
 							{home.data.book_cta_label && (
-								<a class="link link-mono" href="/puglia-the-book" {...home.edit.book_cta_label}>
-									{home.data.book_cta_label}
+								<a class="btn btn-outline btn--arrow" href="/puglia-the-book" {...home.edit.book_cta_label}>
+									<span class="btn__label">{home.data.book_cta_label}</span>
+									<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
 								</a>
 							)}
 						</div>
@@ -189,8 +171,9 @@ const facts = [
 								</p>
 							)}
 							{home.data.training_cta_label && (
-								<a class="link link-mono" href="/training" {...home.edit.training_cta_label}>
-									{home.data.training_cta_label}
+								<a class="btn btn-outline btn--arrow" href="/training" {...home.edit.training_cta_label}>
+									<span class="btn__label">{home.data.training_cta_label}</span>
+									<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
 								</a>
 							)}
 						</div>
@@ -207,11 +190,12 @@ const facts = [
 						)}
 						{home.data.collaborations_cta_label && (
 							<a
-								class="link link-mono"
+								class="btn btn-outline btn--arrow"
 								href="/collaborazioni"
 								{...home.edit.collaborations_cta_label}
 							>
-								{home.data.collaborations_cta_label}
+								<span class="btn__label">{home.data.collaborations_cta_label}</span>
+								<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
 							</a>
 						)}
 					</div>
@@ -386,43 +370,8 @@ const facts = [
 		display: inline-block;
 	}
 
-	.facts-band {
-		margin-top: 3.5rem;
-		border-block: 1px solid var(--line);
-	}
-
-	@media (min-width: 768px) {
-		.facts-band {
-			margin-top: 5rem;
-		}
-	}
-
-	.facts-band__grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-
-	@media (min-width: 768px) {
-		.facts-band__grid {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
-		}
-	}
-
-	.facts-band__value {
-		margin: 0.65rem 0 0;
-		font-size: clamp(1.5rem, 2.5vw, 1.875rem);
-		font-weight: 500;
-		letter-spacing: -0.03em;
-	}
-
 	.section {
-		padding-block: 6rem 0;
-	}
-
-	@media (min-width: 768px) {
-		.section {
-			padding-block: 9rem 0;
-		}
+		padding-block: 0 2.5rem;
 	}
 
 	.section__head {
@@ -454,10 +403,6 @@ const facts = [
 			margin-top: 3.5rem;
 			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
-	}
-
-	.feature {
-		padding-bottom: 0;
 	}
 
 	.feature__layout {
