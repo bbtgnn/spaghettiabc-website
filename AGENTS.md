@@ -41,6 +41,9 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
 - When Astro's cache is enabled, pass content-query hints to `Astro.cache.set(cacheHint)`. Use the `WithCacheHint` variants for site settings, menus, taxonomies, and widget areas rendered by cached routes.
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
+- A **Tour** is a guided food experience in one Puglia town — not multi-stop Italy travel. See `GLOSSARY.md` for Catalogo Tour / Sezione Tour / Tour.
+- **Catalogo Tour** (`/tours`) = shell intro + shared `.tour-grid` + `TourTeaser`.
+- `.tour-grid` lives in `src/styles/theme.css` — reuse on homepage Sezione Tour and Catalogo Tour; do not redefine page-locally.
 
 ## This Template
 
@@ -50,14 +53,15 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 
 ## Pages
 
-| Page        | Path               | What it shows                                  |
-| ----------- | ------------------ | ---------------------------------------------- |
-| Home        | `/`                | Site title + tagline, links into Posts / About |
-| All posts   | `/posts`           | Post list                                      |
-| Post detail | `/posts/[slug]`    | Post content                                   |
-| Page        | `/[slug]`          | Static page content (e.g. `/about`)            |
-| Category    | `/category/[slug]` | Posts filtered by category                     |
-| Tag         | `/tag/[slug]`      | Posts filtered by tag                          |
+| Page          | Path               | What it shows                                      |
+| ------------- | ------------------ | -------------------------------------------------- |
+| Home          | `/`                | Site title + tagline, links into Posts / About     |
+| Catalogo Tour | `/tours`           | Shell intro + shared `.tour-grid` + `TourTeaser` |
+| All posts     | `/posts`           | Post list                                          |
+| Post detail   | `/posts/[slug]`    | Post content                                       |
+| Page          | `/[slug]`          | Static page content (e.g. `/about`)                |
+| Category      | `/category/[slug]` | Posts filtered by category                         |
+| Tag           | `/tag/[slug]`      | Posts filtered by tag                              |
 
 ## Schema
 
