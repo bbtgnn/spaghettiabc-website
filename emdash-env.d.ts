@@ -67,6 +67,9 @@ export interface Homepage {
   collaborations_title?: string;
   collaborations_subtitle?: string;
   collaborations_cta_label?: string;
+  form_heading_reviews?: boolean;
+  reviews_title?: string;
+  reviews_subtitle?: string;
   form_heading_newsletter?: boolean;
   newsletter_title?: string;
   newsletter_subtitle?: string;

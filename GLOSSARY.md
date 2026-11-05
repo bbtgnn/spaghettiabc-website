@@ -44,6 +44,14 @@ _Avoid_: sponsor, cliente (salvo copy)
 Commento positivo su Flavia (stile stelle, fino a 5), editabile nel CMS; non è una recensione Google verificata.
 _Avoid_: recensione Google, review (come claim di provenienza)
 
+**Recensione Google**:
+Recensione pubblica presa da Google Places (max 5 per sync) tramite il plugin `google-reviews`; Flavia sceglie quali mostrare in homepage. Non si confonde con le Testimonianze Collaborazioni.
+_Avoid_: testimonianza, review inventata, scraping
+
+**Sezione Recensioni Google**:
+Blocco della homepage con titolo e sottotitolo *propri*; le recensioni in evidenza arrivano dal plugin (non da un repeater CMS).
+_Avoid_: sezione testimonianze, Google widget embed
+
 **Newsletter**:
 Canale di aggiornamento di Flavia (ricette di stagione, eventi e novità). Sul sito è una sezione di iscrizione in homepage; non è (ancora) una landing dedicata né un provider collegato.
 _Avoid_: mailing list (come nome UI), iscriviti (come nome di entità)

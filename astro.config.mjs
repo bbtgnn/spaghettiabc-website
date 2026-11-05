@@ -2,6 +2,7 @@ import node from "@astrojs/node";
 import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 import { formHeadingsPlugin } from "@spaghettiabc/form-headings";
+import { googleReviewsPlugin } from "@spaghettiabc/google-reviews";
 import emdash, { local } from "emdash/astro";
 import { sqlite } from "emdash/db";
 
@@ -22,7 +23,7 @@ export default defineConfig({
 				directory: "./uploads",
 				baseUrl: "/_emdash/api/media/file",
 			}),
-			plugins: [formHeadingsPlugin()],
+			plugins: [formHeadingsPlugin(), googleReviewsPlugin()],
 		}),
 	],
 	devToolbar: { enabled: false },

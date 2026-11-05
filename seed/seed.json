@@ -221,6 +221,24 @@
 					"type": "string"
 				},
 				{
+					"slug": "form_heading_reviews",
+					"label": "Recensioni Google",
+					"type": "boolean",
+					"required": false,
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
+					"slug": "reviews_title",
+					"label": "Titolo",
+					"type": "string"
+				},
+				{
+					"slug": "reviews_subtitle",
+					"label": "Sottotitolo",
+					"type": "string"
+				},
+				{
 					"slug": "form_heading_newsletter",
 					"label": "Newsletter",
 					"type": "boolean",
@@ -678,6 +696,8 @@
 					"collaborations_title": "Collaborazioni",
 					"collaborations_subtitle": "Partner e testimonianze di chi ha lavorato con Flavia intorno al cibo e alla cultura italiana",
 					"collaborations_cta_label": "Scopri le collaborazioni",
+					"reviews_title": "Recensioni Google",
+					"reviews_subtitle": "Cosa dicono chi ha viaggiato con Spaghetti ABC",
 					"newsletter_title": "Newsletter",
 					"newsletter_subtitle": "Ricette di stagione, eventi e novità — direttamente dalla cucina di Flavia",
 					"newsletter_button_label": "Iscriviti",
