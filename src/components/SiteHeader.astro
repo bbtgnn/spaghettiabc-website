@@ -19,6 +19,19 @@ const isActive = (url: string) => {
 	if (url === "/") return currentPath === "/";
 	return currentPath === url || currentPath.startsWith(`${url}/`);
 };
+
+const abcTransforms: Record<string, { r: string; x: string; y: string } | null> = {
+	A: null,
+	B: { r: "-8deg", x: "0", y: "0.12em" },
+	C: { r: "6deg", x: "0", y: "-0.1em" },
+};
+
+const brandParts = [...siteTitle].map((char) => {
+	if (!(char in abcTransforms)) return { kind: "text" as const, char };
+	const transform = abcTransforms[char];
+	if (!transform) return { kind: "text" as const, char };
+	return { kind: "abc" as const, char, ...transform };
+});
 ---
 
 <header class="site-header">
@@ -28,7 +41,18 @@ const isActive = (url: string) => {
 				siteLogo?.url ? (
 					<img src={siteLogo.url} alt={siteLogo.alt || siteTitle} />
 				) : (
-					siteTitle
+					brandParts.map((part) =>
+						part.kind === "abc" ? (
+							<span
+								class="site-brand__abc"
+								style={`--r: ${part.r}; --x: ${part.x}; --y: ${part.y}`}
+							>
+								{part.char}
+							</span>
+						) : (
+							part.char
+						),
+					)
 				)
 			}
 		</a>
