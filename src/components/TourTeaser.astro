@@ -35,7 +35,6 @@ const {
 	index = 0,
 } = Astro.props;
 
-const indexLabel = String(index + 1).padStart(2, "0");
 const meta = [destination, duration].filter(Boolean).join(" · ");
 ---
 
@@ -56,10 +55,6 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 				</div>
 			)
 		}
-		<div class="tour-teaser__meta-row">
-			<span class="mono tour-teaser__index">{indexLabel}</span>
-			{meta && <p class="label tour-teaser__meta">{meta}</p>}
-		</div>
 		<h3 class="type-h3 tour-teaser__title" {...edit?.title}>{title}</h3>
 		{
 			excerpt && (
@@ -68,19 +63,28 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 				</p>
 			)
 		}
-		{
-			price && (
-				<p class="mono tour-teaser__price">{price}</p>
-			)
-		}
+		{(price || meta) && (
+			<div class="tour-teaser__footer">
+				{price && <p class="mono tour-teaser__price">{price}</p>}
+				{meta && <p class="label tour-teaser__meta">{meta}</p>}
+			</div>
+		)}
 	</a>
 </article>
 
 <style>
-	.tour-teaser__link {
-		display: grid;
-		gap: 0.85rem;
+	.tour-teaser {
+		display: flex;
 		height: 100%;
+	}
+
+	.tour-teaser__link {
+		display: flex;
+		flex-direction: column;
+		gap: 0.85rem;
+		flex: 1 1 auto;
+		width: 100%;
+		min-height: 100%;
 		padding: 1rem;
 		background: color-mix(in oklab, var(--canvas) 45%, white);
 		border: 1px solid var(--line);
@@ -118,30 +122,33 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 		transform: scale(1.04);
 	}
 
-	.tour-teaser__meta-row {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 1rem;
-	}
-
-	.tour-teaser__index {
-		font-size: 0.6875rem;
-		color: var(--muted);
-	}
-
 	.tour-teaser__title {
 		margin: 0;
 	}
 
 	.tour-teaser__excerpt {
 		max-width: 34rem;
+		margin: 0;
 		font-size: 0.9375rem;
 	}
 
+	.tour-teaser__footer {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-top: auto;
+	}
+
 	.tour-teaser__price {
+		margin: 0;
 		font-size: 0.8125rem;
 		color: var(--ink);
+	}
+
+	.tour-teaser__meta {
+		margin: 0;
+		text-align: right;
 	}
 </style>
 
