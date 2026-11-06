@@ -2,18 +2,18 @@
 import { getEmDashEntry, getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
+import ExternalLink from "@lucide/astro/icons/external-link";
+import Star from "@lucide/astro/icons/star";
 import Base from "../layouts/Base.astro";
+import PartnerLogoMarquee from "../components/PartnerLogoMarquee.astro";
 import TourTeaser from "../components/TourTeaser.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
 const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
 	references: { featured_tours: true },
 });
-const { entry: collaborations, cacheHint: collaborationsCacheHint } =
-	await getEmDashEntry("collaborations", "collaborazioni");
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
-	Astro.cache.set(collaborationsCacheHint);
 }
 
 const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
@@ -21,10 +21,15 @@ const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 );
 
 const featuredTours = home?.references?.featured_tours?.entries ?? [];
-const collaborationLogos = collaborations?.data.logos ?? [];
+const partnerLogos = home?.data.partner_logos ?? [];
 const googleReviews = home?.data.google_reviews ?? [];
+const googleScore = Number(home?.data.google_score) || 0;
+const googleReviewCount = Number(home?.data.google_review_count) || 0;
+const googleProfileUrl = home?.data.google_profile_url;
 const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
+
+const starSlots = [1, 2, 3, 4, 5] as const;
 
 ---
 
@@ -195,69 +200,125 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 					</div>
 				</section>
 
-				<section class="shell section">
+				<section class="shell section" aria-labelledby="dicono-heading">
 					<div class="rule" data-reveal="line" />
 					<div class="section__head" data-reveal>
-						{home.data.collaborations_title && (
-							<h2 class="type-h2" {...home.edit.collaborations_title}>
-								{home.data.collaborations_title}
+						{home.data.dicono_title && (
+							<h2 class="type-h2" id="dicono-heading" {...home.edit.dicono_title}>
+								{home.data.dicono_title}
 							</h2>
 						)}
-						{home.data.collaborations_cta_label && (
-							<a
-								class="btn btn-outline btn--arrow"
-								href="/collaborazioni"
-								{...home.edit.collaborations_cta_label}
-							>
-								<span class="btn__label">{home.data.collaborations_cta_label}</span>
-								<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
-							</a>
-						)}
 					</div>
-					{home.data.collaborations_subtitle && (
+					{home.data.dicono_subtitle && (
 						<p
 							class="type-lead section__lede"
 							data-reveal
-							{...home.edit.collaborations_subtitle}
+							{...home.edit.dicono_subtitle}
 						>
-							{home.data.collaborations_subtitle}
+							{home.data.dicono_subtitle}
 						</p>
 					)}
 
-					{collaborationLogos.length > 0 && (
-						<ul class="logo-row" data-reveal {...collaborations?.edit.logos}>
-							{collaborationLogos.map((item) => (
-								<li class="logo-row__item">
-									{item.logo && <Image image={item.logo} />}
-									{item.name && <span class="visually-hidden">{item.name}</span>}
-								</li>
-							))}
-						</ul>
+					{partnerLogos.length > 0 && (
+						<div data-reveal {...home.edit.partner_logos}>
+							<PartnerLogoMarquee logos={partnerLogos} />
+						</div>
 					)}
 
-					{googleReviews.length > 0 && (
-						<ul
-							class="quote-list"
-							data-reveal
-							{...home.edit.google_reviews}
-						>
-							{googleReviews.map((item) => {
-								const rating = Number(item.rating) || 5;
-								return (
-									<li class="quote">
-										<p class="mono quote__rating" aria-label={`Valutazione: ${rating} su 5`}>
-											{String(rating).padStart(2, "0")} / 05
+					{(googleScore > 0 || googleReviews.length > 0) && (
+						<div class="dicono-proof" data-reveal>
+							{(googleScore > 0 || googleProfileUrl) && (
+								<aside class="google-score" {...home.edit.google_score}>
+									{googleScore > 0 && (
+										<p class="google-score__value" {...home.edit.google_score}>
+											{googleScore.toFixed(1)}
 										</p>
-										<blockquote class="type-lead quote__text">
-											<p>{item.quote}</p>
-										</blockquote>
-										<p class="quote__author">
-											<span>{item.author}</span>
+									)}
+									{googleScore > 0 && (
+										<div
+											class="star-row"
+											aria-label={`Valutazione media: ${googleScore.toFixed(1)} su 5`}
+										>
+											{starSlots.map((n) => (
+												<Star
+													class={`star-row__icon${n <= Math.round(googleScore) ? " is-filled" : ""}`}
+													size={16}
+													stroke-width={1.5}
+													aria-hidden="true"
+												/>
+											))}
+										</div>
+									)}
+									{googleReviewCount > 0 && (
+										<p class="mono google-score__count" {...home.edit.google_review_count}>
+											{googleReviewCount} recensioni su Google
 										</p>
-									</li>
-								);
-							})}
-						</ul>
+									)}
+									{googleProfileUrl && (
+										<a
+											class="google-score__link"
+											href={googleProfileUrl}
+											target="_blank"
+											rel="noopener noreferrer"
+											{...home.edit.google_profile_url}
+										>
+											Vedi su Google
+										</a>
+									)}
+								</aside>
+							)}
+
+							{googleReviews.length > 0 && (
+								<ul class="quote-list" {...home.edit.google_reviews}>
+									{googleReviews.map((item) => {
+										const rating = Math.min(5, Math.max(0, Number(item.rating) || 5));
+										return (
+											<li class="quote">
+												<div class="quote__card">
+													<div class="quote__meta">
+														<div
+															class="star-row quote__stars"
+															aria-label={`Valutazione: ${rating} su 5`}
+														>
+															{starSlots.map((n) => (
+																<Star
+																	class={`star-row__icon${n <= rating ? " is-filled" : ""}`}
+																	size={14}
+																	stroke-width={1.5}
+																	aria-hidden="true"
+																/>
+															))}
+														</div>
+														{item.review_url && (
+															<a
+																class="quote__link"
+																href={item.review_url}
+																target="_blank"
+																rel="noopener noreferrer"
+																aria-label={`Apri la recensione di ${item.author} su Google`}
+															>
+																<ExternalLink size={14} stroke-width={1.75} aria-hidden="true" />
+															</a>
+														)}
+													</div>
+													<blockquote class="type-lead quote__text">
+														<p>{item.quote}</p>
+													</blockquote>
+													<div class="quote__author">
+														{item.avatar && (
+															<span class="quote__avatar">
+																<Image image={item.avatar} />
+															</span>
+														)}
+														<span class="quote__name">{item.author}</span>
+													</div>
+												</div>
+											</li>
+										);
+									})}
+								</ul>
+							)}
+						</div>
 					)}
 				</section>
 
@@ -458,42 +519,68 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		text-wrap: balance;
 	}
 
-	.logo-row {
-		margin-top: 2.5rem;
+	.dicono-proof {
+		margin-top: 3rem;
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1px;
-		background: var(--line);
-		border: 1px solid var(--line);
+		gap: 2.5rem;
 	}
 
-	@media (min-width: 768px) {
-		.logo-row {
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+	@media (min-width: 900px) {
+		.dicono-proof {
+			grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr);
+			gap: 3rem;
+			align-items: start;
 		}
 	}
 
-	.logo-row__item {
+	.google-score {
 		display: grid;
-		place-items: center;
-		min-height: 5rem;
-		padding: 1rem;
-		background: var(--canvas);
+		gap: 0.65rem;
+		justify-items: start;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--line);
 	}
 
-	.logo-row__item :global(img) {
-		max-height: 2.5rem;
-		width: auto;
-		max-width: 100%;
-		object-fit: contain;
-		filter: grayscale(1);
-		opacity: 0.7;
+	.google-score__value {
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: clamp(2.5rem, 4vw, 3.25rem);
+		line-height: 1;
+		letter-spacing: -0.03em;
+	}
+
+	.google-score__count {
+		margin: 0;
+		font-size: 0.6875rem;
+		color: var(--muted);
+	}
+
+	.google-score__link {
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size);
+		letter-spacing: var(--font-ui-tracking);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+		color: inherit;
+	}
+
+	.star-row {
+		display: flex;
+		gap: 0.15rem;
+		color: color-mix(in oklab, var(--muted) 45%, transparent);
+	}
+
+	.star-row__icon.is-filled {
+		color: color-mix(in oklab, var(--muted) 72%, transparent);
+		fill: currentColor;
 	}
 
 	.quote-list {
-		margin-top: 3rem;
 		display: grid;
 		gap: 2rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
 
 	@media (min-width: 768px) {
@@ -504,15 +591,20 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 	}
 
 	.quote {
+		margin: 0;
+	}
+
+	.quote__card {
 		display: grid;
 		gap: 1rem;
 		padding-top: 1.25rem;
 		border-top: 1px solid var(--line);
 	}
 
-	.quote__rating {
-		font-size: 0.6875rem;
-		color: var(--muted);
+	.quote__meta {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
 	}
 
 	.quote__text {
@@ -520,9 +612,47 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 	}
 
 	.quote__author {
-		display: grid;
-		gap: 0.35rem;
+		display: flex;
+		align-items: center;
+		gap: 0.55rem;
 		font-weight: 500;
+	}
+
+	.quote__name {
+		min-width: 0;
+	}
+
+	.quote__avatar {
+		display: grid;
+		width: 1.5rem;
+		height: 1.5rem;
+		border-radius: 50%;
+		overflow: hidden;
+		flex-shrink: 0;
+		background: var(--line);
+	}
+
+	.quote__avatar :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(1);
+		opacity: 0.45;
+	}
+
+	.quote__link {
+		display: inline-grid;
+		place-items: center;
+		margin-left: auto;
+		flex-shrink: 0;
+		color: var(--muted);
+		transition: color 160ms ease;
+	}
+
+	.quote__link:hover,
+	.quote__link:focus-visible {
+		color: var(--ink);
+		outline: none;
 	}
 
 	.newsletter {

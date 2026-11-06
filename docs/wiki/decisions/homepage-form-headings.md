@@ -23,7 +23,7 @@ Primary reader: **content editors** (Flavia), not developers.
 ## Terminology (2026-10-28)
 
 - **Form headings** are editor-only labels. They are **not** the public-site **[Sezione Tour]**, **[Sezione Libro]**, etc. defined in [`GLOSSARY.md`](../../../GLOSSARY.md).
-- Heading **titles** in the admin use short names only: **Hero**, **Tour**, **Libro**, **Formazione**, **Collaborazioni**, **Newsletter** — the word “Sezione” is omitted on purpose.
+- Heading **titles** in the admin use short names only: **Hero**, **Tour**, **Libro**, **Formazione**, **Dicono di me** (was Collaborazioni until 2026-11-06), **Newsletter** — the word “Sezione” is omitted on purpose.
 
 ## Product decisions (2026-10-28)
 
@@ -42,7 +42,7 @@ Primary reader: **content editors** (Flavia), not developers.
 | `form_heading_tour` | Tour | `tour_*`, `featured_tours` |
 | `form_heading_book` | Libro | `book_*` |
 | `form_heading_training` | Formazione | `training_*` |
-| `form_heading_collaborations` | Collaborazioni | `collaborations_*`, `google_reviews` (added 2026-11-05; see [Homepage hero + Recensioni Google](./homepage-hero-google-reviews.md)) |
+| `form_heading_dicono` | Dicono di me | `dicono_*`, `partner_logos`, `google_score`, `google_review_count`, `google_profile_url`, `google_reviews` (renamed 2026-11-06; see [Sezione Dicono di me](./dicono-di-me-section.md)) |
 | `form_heading_newsletter` | Newsletter | `newsletter_*` |
 
 Markers: `type: boolean`, `required: false`, `defaultValue: false`. The widget displays `label` as the heading; it does not expose a toggle.

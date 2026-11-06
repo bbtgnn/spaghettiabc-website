@@ -21,4 +21,4 @@ On 2026-11-05 Chiara locked:
 
 - Live Google Business / Places API sync
 - Verified-badge UI chrome beyond the existing quote-list rating display
-- Moving partner logos onto the homepage entry
+- Moving partner logos onto the homepage entry *(reversed 2026-11-06 — see [Sezione Dicono di me](./dicono-di-me-section.md))*

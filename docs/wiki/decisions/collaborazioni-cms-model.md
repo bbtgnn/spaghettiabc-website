@@ -1,5 +1,7 @@
 # Collaborazioni CMS model
 
+> **Superseded 2026-11-06** by [Sezione Dicono di me](./dicono-di-me-section.md). The `collaborations` collection and `/collaborazioni` landing are removed; logos and reviews live on the homepage.
+
 ## Sources
 
 - Grilling session with Chiara, 2026-10-23 (Q1–Q8, confirmed “sì”)
@@ -39,3 +41,7 @@ On 2026-11-05 Chiara retired **Testimonianza** entirely:
 - Removed `testimonials` from the `collaborations` schema and seed; landing no longer holds or renders testimonianze.
 - Recensioni Google live on the **homepage** as `google_reviews` (not on Collaborazioni). See [Homepage hero + Recensioni Google](./homepage-hero-google-reviews.md).
 - Decisions 4, 6, and 7 above from 2026-10-23 are **historical** for the testimonials half; logos still live only on the landing and the homepage still fetches that entry for the logo row.
+
+## Supersession (2026-11-06)
+
+On 2026-11-06 Chiara replaced Collaborazioni with **Sezione Dicono di me**: no landing, no CTA, logos + Punteggio/Recensioni Google on `homepage` only. See [Sezione Dicono di me](./dicono-di-me-section.md).

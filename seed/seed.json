@@ -234,27 +234,57 @@
 					"type": "string"
 				},
 				{
-					"slug": "form_heading_collaborations",
-					"label": "Collaborazioni",
+					"slug": "form_heading_dicono",
+					"label": "Dicono di me",
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
 					"widget": "form-headings:heading"
 				},
 				{
-					"slug": "collaborations_title",
+					"slug": "dicono_title",
 					"label": "Titolo",
 					"type": "string"
 				},
 				{
-					"slug": "collaborations_subtitle",
+					"slug": "dicono_subtitle",
 					"label": "Sottotitolo",
 					"type": "string"
 				},
 				{
-					"slug": "collaborations_cta_label",
-					"label": "Testo CTA",
-					"type": "string"
+					"slug": "partner_logos",
+					"label": "Loghi partner",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "logo",
+								"label": "Logo",
+								"type": "image",
+								"required": true
+							},
+							{
+								"slug": "name",
+								"label": "Nome",
+								"type": "string"
+							}
+						]
+					}
+				},
+				{
+					"slug": "google_score",
+					"label": "Punteggio Google",
+					"type": "number"
+				},
+				{
+					"slug": "google_review_count",
+					"label": "Numero recensioni",
+					"type": "integer"
+				},
+				{
+					"slug": "google_profile_url",
+					"label": "Link profilo Google",
+					"type": "url"
 				},
 				{
 					"slug": "google_reviews",
@@ -276,8 +306,19 @@
 							},
 							{
 								"slug": "rating",
-								"label": "Valutazione",
-								"type": "number"
+								"label": "Stelle",
+								"type": "number",
+								"required": true
+							},
+							{
+								"slug": "avatar",
+								"label": "Foto profilo",
+								"type": "image"
+							},
+							{
+								"slug": "review_url",
+								"label": "Link recensione",
+								"type": "url"
 							}
 						]
 					}
@@ -386,75 +427,6 @@
 					"label": "Content",
 					"type": "portableText",
 					"searchable": true
-				}
-			]
-		},
-		{
-			"slug": "collaborations",
-			"label": "Collaborazioni",
-			"labelSingular": "Collaborazioni",
-			"routable": false,
-			"supports": ["drafts", "revisions", "preview", "search", "seo"],
-			"titleField": "title",
-			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "subtitle",
-					"label": "Subtitle",
-					"type": "string"
-				},
-				{
-					"slug": "excerpt",
-					"label": "Excerpt",
-					"type": "text",
-					"searchable": true
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
-				},
-				{
-					"slug": "logos",
-					"label": "Logos",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "logo",
-								"label": "Logo",
-								"type": "image",
-								"required": true
-							},
-							{
-								"slug": "name",
-								"label": "Name",
-								"type": "string"
-							}
-						]
-					}
-				},
-				{
-					"slug": "gallery",
-					"label": "Gallery",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "image",
-								"label": "Image",
-								"type": "image",
-								"required": true
-							}
-						]
-					}
 				}
 			]
 		},
@@ -1074,29 +1046,138 @@
 					"training_title": "Formazione",
 					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
 					"training_cta_label": "Scopri la formazione",
-					"collaborations_title": "Collaborazioni",
-					"collaborations_subtitle": "Partner e riconoscimenti di chi ha lavorato con Flavia intorno al cibo e alla cultura italiana",
-					"collaborations_cta_label": "Scopri le collaborazioni",
+					"dicono_title": "Dicono di me",
+					"dicono_subtitle": "Partner e recensioni di chi ha condiviso tavola, mercati e storie con Flavia",
+					"partner_logos": [
+						{
+							"name": "Ciccolella",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_ciccolella.webp",
+									"alt": "Logo Ciccolella",
+									"filename": "logo_ciccolella.webp"
+								}
+							}
+						},
+						{
+							"name": "Evolio Expo",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_evolio_expo.webp",
+									"alt": "Logo Evolio Expo",
+									"filename": "logo_evolio_expo.webp"
+								}
+							}
+						},
+						{
+							"name": "FIOI",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_fioi.webp",
+									"alt": "Logo FIOI",
+									"filename": "logo_fioi.webp"
+								}
+							}
+						},
+						{
+							"name": "Gambero Rosso",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_gambero_rosso.webp",
+									"alt": "Logo Gambero Rosso",
+									"filename": "logo_gambero_rosso.webp"
+								}
+							}
+						},
+						{
+							"name": "Slow Food",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_slow_food.webp",
+									"alt": "Logo Slow Food",
+									"filename": "logo_slow_food.webp"
+								}
+							}
+						},
+						{
+							"name": "TEDx",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_tedx.webp",
+									"alt": "Logo TEDx",
+									"filename": "logo_tedx.webp"
+								}
+							}
+						}
+					],
+					"google_score": 5,
+					"google_review_count": 48,
+					"google_profile_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+Flavia+Giordano",
 					"google_reviews": [
 						{
 							"author": "Chiara R.",
 							"quote": "Un’esperienza bellissima: Flavia ci ha fatto conoscere la Puglia attraverso i sapori, con calma e competenza. Consigliatissima!",
-							"rating": 5
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Chiara",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop&crop=face",
+									"alt": "Foto profilo di Chiara R.",
+									"filename": "review-avatar-chiara.jpg"
+								}
+							}
 						},
 						{
 							"author": "Marco D.",
 							"quote": "Tour impeccabile. Prodotti locali, storie vere e una guida che sa davvero di cosa parla. Torneremo senz’altro.",
-							"rating": 5
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Marco",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&h=128&fit=crop&crop=face",
+									"alt": "Foto profilo di Marco D.",
+									"filename": "review-avatar-marco.jpg"
+								}
+							}
 						},
 						{
 							"author": "Elena B.",
 							"quote": "Atmosfera familiare e contenuti di qualità. Si sente la cura in ogni dettaglio, dal mercato alla tavola.",
-							"rating": 5
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Elena",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=128&h=128&fit=crop&crop=face",
+									"alt": "Foto profilo di Elena B.",
+									"filename": "review-avatar-elena.jpg"
+								}
+							}
 						},
 						{
 							"author": "Luca P.",
-							"quote": "Non è turismo di massa: è un viaggio guloso e intelligente. Quattro stelle solo perché vorrei fossero più lunghi!",
-							"rating": 4
+							"quote": "Non è turismo di massa: è un viaggio guloso e intelligente. Vorremmo solo che durasse più a lungo!",
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Luca",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=128&h=128&fit=crop&crop=face",
+									"alt": "Foto profilo di Luca P.",
+									"filename": "review-avatar-luca.jpg"
+								}
+							}
+						},
+						{
+							"author": "Sofia M.",
+							"quote": "Flavia racconta la Puglia con grazia e precisione. Ogni assaggio ha una storia: ce ne siamo innamorati.",
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Sofia",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&h=128&fit=crop&crop=face",
+									"alt": "Foto profilo di Sofia M.",
+									"filename": "review-avatar-sofia.jpg"
+								}
+							}
 						}
 					],
 					"newsletter_title": "Newsletter",
@@ -1191,135 +1272,6 @@
 								}
 							],
 							"_key": "k2"
-						}
-					]
-				}
-			}
-		],
-		"collaborations": [
-			{
-				"id": "collaborazioni",
-				"slug": "collaborazioni",
-				"status": "published",
-				"data": {
-					"title": "Collaborazioni",
-					"subtitle": "Progetti e partnership intorno alla cultura del cibo",
-					"excerpt": "Marchi, editori e organizzazioni con cui Flavia ha lavorato — placeholder da sostituire con i partner reali.",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Questa è la landing Collaborazioni. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione dei progetti e dei riconoscimenti.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Qui andranno i dettagli delle collaborazioni e le fotografie dei progetti. I loghi reali arriveranno dallo zip partner.",
-									"_key": "k3"
-								}
-							],
-							"_key": "k2"
-						}
-					],
-					"logos": [
-						{
-							"name": "Ciccolella",
-							"logo": {
-								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_ciccolella.webp",
-									"alt": "Logo Ciccolella",
-									"filename": "logo_ciccolella.webp"
-								}
-							}
-						},
-						{
-							"name": "Evolio Expo",
-							"logo": {
-								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_evolio_expo.webp",
-									"alt": "Logo Evolio Expo",
-									"filename": "logo_evolio_expo.webp"
-								}
-							}
-						},
-						{
-							"name": "FIOI",
-							"logo": {
-								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_fioi.webp",
-									"alt": "Logo FIOI",
-									"filename": "logo_fioi.webp"
-								}
-							}
-						},
-						{
-							"name": "Gambero Rosso",
-							"logo": {
-								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_gambero_rosso.webp",
-									"alt": "Logo Gambero Rosso",
-									"filename": "logo_gambero_rosso.webp"
-								}
-							}
-						},
-						{
-							"name": "Slow Food",
-							"logo": {
-								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_slow_food.webp",
-									"alt": "Logo Slow Food",
-									"filename": "logo_slow_food.webp"
-								}
-							}
-						},
-						{
-							"name": "TEDx",
-							"logo": {
-								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_tedx.webp",
-									"alt": "Logo TEDx",
-									"filename": "logo_tedx.webp"
-								}
-							}
-						}
-					],
-					"gallery": [
-						{
-							"image": {
-								"$media": {
-									"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&h=800&fit=crop",
-									"alt": "Tavolo apparecchiato durante una collaborazione",
-									"filename": "collaborazioni-gallery-1.jpg"
-								}
-							}
-						},
-						{
-							"image": {
-								"$media": {
-									"url": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1200&h=800&fit=crop",
-									"alt": "Momento di lavoro in cucina, placeholder",
-									"filename": "collaborazioni-gallery-2.jpg"
-								}
-							}
-						},
-						{
-							"image": {
-								"$media": {
-									"url": "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=1200&h=800&fit=crop",
-									"alt": "Dettaglio di un progetto culinario, placeholder",
-									"filename": "collaborazioni-gallery-3.jpg"
-								}
-							}
 						}
 					]
 				}

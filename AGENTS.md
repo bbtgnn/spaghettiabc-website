@@ -47,6 +47,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - `.tour-grid` lives in `src/styles/theme.css` — Catalogo Tour grid; do not redefine page-locally.
 - Homepage Sezione Tour uses `.tour-rail` (horizontal scroll + baseline) in `theme.css`, not `.tour-grid`.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
+- **Sezione Dicono di me** is homepage-only (logos + Punteggio/Recensioni Google on `homepage`). No `/collaborazioni` landing. See `GLOSSARY.md`.
 
 ## This Template
 

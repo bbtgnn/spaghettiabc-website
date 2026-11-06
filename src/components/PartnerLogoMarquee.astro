@@ -1,0 +1,216 @@
+---
+import { Image } from "emdash/ui";
+
+type PartnerLogo = {
+	logo?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+		[key: string]: unknown;
+	} | null;
+	name?: string | null;
+};
+
+interface Props {
+	logos: PartnerLogo[];
+	/** Seconds for one full loop when marquee is needed */
+	duration?: number;
+}
+
+const { logos, duration = 36 } = Astro.props;
+---
+
+{
+	logos.length > 0 && (
+		<div
+			class="logo-marquee"
+			style={`--logo-marquee-duration: ${duration}s`}
+			role="region"
+			aria-label="Loghi partner"
+			data-logo-marquee
+		>
+			<div class="logo-marquee__viewport">
+				<div class="logo-marquee__track">
+					<ul class="logo-marquee__list" data-logo-marquee-primary>
+						{logos.map((item) => (
+							<li class="logo-marquee__item">
+								{item.logo && <Image image={item.logo} />}
+								{item.name && <span class="visually-hidden">{item.name}</span>}
+							</li>
+						))}
+					</ul>
+					<ul class="logo-marquee__list logo-marquee__list--clone" aria-hidden="true">
+						{logos.map((item) => (
+							<li class="logo-marquee__item">
+								{item.logo && <Image image={item.logo} />}
+								{item.name && <span class="visually-hidden">{item.name}</span>}
+							</li>
+						))}
+					</ul>
+				</div>
+			</div>
+		</div>
+	)
+}
+
+<style>
+	.logo-marquee {
+		margin-top: 2.5rem;
+	}
+
+	.logo-marquee__viewport {
+		overflow: hidden;
+	}
+
+	.logo-marquee__track {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+	}
+
+	.logo-marquee__list {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 3rem;
+		width: 100%;
+		margin: 0;
+		padding: 0.85rem 0;
+		list-style: none;
+	}
+
+	.logo-marquee__list--clone {
+		display: none;
+	}
+
+	.logo-marquee__item {
+		flex: 0 0 auto;
+		display: grid;
+		place-items: center;
+	}
+
+	.logo-marquee__item :global(img) {
+		display: block;
+		height: 3.75rem;
+		width: auto;
+		max-width: 12.5rem;
+		object-fit: contain;
+		filter: grayscale(1);
+		opacity: 0.5;
+	}
+
+	@media (min-width: 900px) {
+		.logo-marquee__item :global(img) {
+			height: 4.5rem;
+			max-width: 14rem;
+		}
+
+		.logo-marquee__list {
+			gap: 3.75rem;
+		}
+	}
+
+	/* Overflow: seamless auto-scroll */
+	.logo-marquee.is-marquee .logo-marquee__viewport {
+		mask-image: linear-gradient(
+			to right,
+			transparent,
+			#000 8%,
+			#000 92%,
+			transparent
+		);
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent,
+			#000 8%,
+			#000 92%,
+			transparent
+		);
+	}
+
+	.logo-marquee.is-marquee .logo-marquee__track {
+		width: max-content;
+		animation: logo-marquee-scroll var(--logo-marquee-duration, 36s) linear infinite;
+	}
+
+	.logo-marquee.is-marquee .logo-marquee__track:hover,
+	.logo-marquee.is-marquee .logo-marquee__track:focus-within {
+		animation-play-state: paused;
+	}
+
+	.logo-marquee.is-marquee .logo-marquee__list {
+		width: max-content;
+		justify-content: flex-start;
+		padding-right: 3.75rem;
+	}
+
+	.logo-marquee.is-marquee .logo-marquee__list--clone {
+		display: flex;
+	}
+
+	@keyframes logo-marquee-scroll {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.logo-marquee.is-marquee .logo-marquee__viewport {
+			mask-image: none;
+			-webkit-mask-image: none;
+			overflow-x: auto;
+			overscroll-behavior-x: contain;
+			-webkit-overflow-scrolling: touch;
+			scrollbar-width: thin;
+		}
+
+		.logo-marquee.is-marquee .logo-marquee__track {
+			animation: none;
+		}
+
+		.logo-marquee.is-marquee .logo-marquee__list--clone {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	function prefersReducedMotion() {
+		return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	}
+
+	function contentWidth(list: HTMLElement) {
+		const items = [...list.children] as HTMLElement[];
+		if (items.length === 0) return 0;
+		const styles = getComputedStyle(list);
+		const gap = Number.parseFloat(styles.columnGap || styles.gap) || 0;
+		return items.reduce((sum, el, i) => sum + el.offsetWidth + (i > 0 ? gap : 0), 0);
+	}
+
+	function syncMarquee(root: HTMLElement) {
+		const viewport = root.querySelector<HTMLElement>(".logo-marquee__viewport");
+		const primary = root.querySelector<HTMLElement>("[data-logo-marquee-primary]");
+		if (!viewport || !primary) return;
+
+		root.classList.remove("is-marquee");
+		const needsMarquee =
+			!prefersReducedMotion() && contentWidth(primary) > viewport.clientWidth + 1;
+		root.classList.toggle("is-marquee", needsMarquee);
+	}
+
+	function syncAll() {
+		document.querySelectorAll<HTMLElement>("[data-logo-marquee]").forEach(syncMarquee);
+	}
+
+	const run = () => {
+		syncAll();
+		requestAnimationFrame(syncAll);
+	};
+
+	run();
+	document.addEventListener("astro:page-load", run);
+	window.addEventListener("resize", syncAll);
+	window.addEventListener("load", syncAll);
+</script>

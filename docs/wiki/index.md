@@ -6,8 +6,9 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 
 - [Libro CMS model](./decisions/libro-cms-model.md) — collection `book`, Sezione Libro duplicata in homepage, URL `/puglia-the-book` (2026-10-23)
 - [Formazione CMS model](./decisions/formazione-cms-model.md) — collection `training`, Sezione Formazione duplicata, URL `/training` (2026-10-23)
-- [Collaborazioni CMS model](./decisions/collaborazioni-cms-model.md) — collection `collaborations`, loghi sulla landing; testimonianze superseded 2026-11-05, URL `/collaborazioni` (2026-10-23 / 2026-11-05)
-- [Homepage hero + Recensioni Google](./decisions/homepage-hero-google-reviews.md) — hero copy + `seed/media/homepage-hero.jpg`; `google_reviews` on homepage; Testimonianza removed (2026-11-05)
+- [Sezione Dicono di me](./decisions/dicono-di-me-section.md) — homepage-only logos + Punteggio/Recensioni Google; Collaborazioni landing removed (2026-11-06)
+- [Collaborazioni CMS model](./decisions/collaborazioni-cms-model.md) — **superseded 2026-11-06** by Dicono di me; historical landing `collaborations` / `/collaborazioni` (2026-10-23 / 2026-11-05)
+- [Homepage hero + Recensioni Google](./decisions/homepage-hero-google-reviews.md) — hero copy + `seed/media/homepage-hero.jpg`; `google_reviews` on homepage; Testimonianza removed (2026-11-05); logos moved 2026-11-06
 - [Newsletter homepage section](./decisions/newsletter-homepage-section.md) — UI-only iscrizione in home, no collection/provider (2026-10-23)
 - [Homepage + Tours schema](./decisions/homepage-tours-schema.md) — first CMS slice before Libro (2026-10-23)
 - [Homepage form headings](./decisions/homepage-form-headings.md) — CMS editor section titles for Homepage only ([#5](https://github.com/bbtgnn/spaghettiabc-website/issues/5), 2026-10-28)
@@ -16,8 +17,8 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 ## Operations
 
 - [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts` (2026-10-23)
-- [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — logos on landing; Recensioni Google exception on homepage (2026-10-23 / 2026-11-05)
-- [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps; GitHub raw `$media` URLs; homepage hero upload ritual (2026-10-28 / 2026-11-05; loopback SSRF noted 2026-10-23)
+- [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — Libro/Formazione pattern; Collaborazioni logos claim **superseded 2026-11-06** (2026-10-23 / 2026-11-05 / 2026-11-06)
+- [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps now seeded on homepage `partner_logos` (2026-10-28 / 2026-11-05 / 2026-11-06; loopback SSRF noted 2026-10-23)
 
 ## Domain language
 

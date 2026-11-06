@@ -36,20 +36,20 @@ _Avoid_: corso, workshop (come nome di collection), education, `formazione` (com
 Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non letti dalla landing Formazione). La CTA punta a `/training`.
 _Avoid_: pagina formazione, catalogo corsi, reference alla Formazione
 
-**Collaborazioni**:
-La landing di prima classe (collection `collaborations`, entry/URL `/collaborazioni`) che raccoglie collaborazioni, progetti e riconoscimenti di Flavia. Una sola pagina; i progetti non sono entry separate finché non si decide un catalogo. Serve a mostrare credibilità, non è il nome “Credibilità”.
-_Avoid_: Credibilità (come nome di collection/pagina), portfolio, press, partner (come nome di collection)
-
-**Sezione Collaborazioni**:
-Blocco della homepage con titolo, sottotitolo e CTA *propri*; i loghi partner sono letti dalla landing Collaborazioni; le Recensioni Google vivono sul campo homepage `google_reviews` (non sulla landing).
-_Avoid_: pagina collaborazioni, trust section, testimonianze
+**Sezione Dicono di me**:
+Blocco della homepage (titolo, sottotitolo, Loghi partner, Punteggio Google, Recensioni Google) che mostra prove sociali intorno a Flavia. Nessuna landing dedicata né CTA verso una pagina Collaborazioni.
+_Avoid_: Sezione Collaborazioni; Credibilità; Fiducia; trust section; testimonianze; Collaborazioni (come pagina/collection)
 
 **Logo partner**:
-Marchio di un’azienda o organizzazione con cui Flavia ha collaborato, mostrato in griglia sulla Sezione Collaborazioni e sulla landing.
+Marchio di un’azienda o organizzazione con cui Flavia ha collaborato, mostrato nella Sezione Dicono di me.
 _Avoid_: sponsor, cliente (salvo copy)
 
+**Punteggio Google**:
+Valutazione aggregata del profilo Google di Flavia (voto, numero di recensioni, link al profilo), mostrata a sinistra dell’elenco Recensioni Google nella Sezione Dicono di me.
+_Avoid_: rating globale, score widget
+
 **Recensione Google**:
-Citazione stile recensione Google (autore, testo, valutazione numerica) gestita nel CMS sulla homepage (`google_reviews`); demo/placeholder finché non arrivano le recensioni reali. Non è un’integrazione live con Google.
+Citazione curata nello stile di una recensione Google (stelle, testo, autore, foto profilo, link alla recensione originale) gestita nel CMS sulla homepage; seed demo finché non arrivano le recensioni reali. Non è un’integrazione live con Google.
 _Avoid_: Testimonianza, testimonial, review widget Google
 
 **Newsletter**:

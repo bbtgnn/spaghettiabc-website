@@ -22,6 +22,10 @@ Committed source of truth for reseed: `seed/media/collaborazioni-logos/` (6 webp
 
 All six logos were ingested into the EmDash media library and linked on the `collaborations` / `collaborazioni` entry (names + image fields). Homepage and `/collaborazioni` resolve media via `/_emdash/api/media/file/…webp`, not Unsplash placeholders.
 
+## Homepage ownership (2026-11-06)
+
+After [Sezione Dicono di me](../decisions/dicono-di-me-section.md), the same six webps are seeded on homepage `partner_logos` (GitHub raw `$media` URLs unchanged). The Collaborazioni landing no longer exists.
+
 ### Why not `$media` from local HTTP alone
 
 EmDash seed `$media` fetches a downloadable HTTP `url`. Serving `seed/media/collaborazioni-logos` on a local port (e.g. `npx serve … -p 8765`) works for browsers, but the seeder **rejects non-public IPs** (`127.0.0.1` / loopback), so those URLs fail with “URLs targeting non-public IP addresses are not allowed”.

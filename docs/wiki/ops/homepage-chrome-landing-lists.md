@@ -19,3 +19,7 @@ Do **not** duplicate landing-owned repeater lists onto `homepage` — that was r
 ## Exception — Recensioni Google (2026-11-05)
 
 On 2026-11-05 Chiara moved quote-style reviews **onto the homepage** as `google_reviews` (and removed Collaborazioni `testimonials`). Logos still follow the 2026-10-23 landing-list pattern; reviews do not. See [Homepage hero + Recensioni Google](../decisions/homepage-hero-google-reviews.md).
+
+## Supersession — Collaborazioni logos (2026-11-06)
+
+On 2026-11-06 the Collaborazioni landing was removed. Partner logos moved onto the homepage as `partner_logos` under **Sezione Dicono di me**. The 2026-10-23 “do not duplicate landing lists onto homepage” rule **no longer applies** to that section — there is no landing. Libro/Formazione still follow the chrome + landing-list pattern above. See [Sezione Dicono di me](../decisions/dicono-di-me-section.md).

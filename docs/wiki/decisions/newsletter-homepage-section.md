@@ -15,7 +15,7 @@ On 2026-10-23 Chiara locked:
 4. Homepage CMS fields: `newsletter_title`, `newsletter_subtitle`, `newsletter_button_label`, `newsletter_email_placeholder`.
 5. Submit: client `preventDefault` + soft IT message that signup is coming (no data sent).
 6. **No privacy checkbox** until a real data processor exists (small honesty note under the form OK).
-7. Placement: **after Collaborazioni**, near page end.
+7. Placement: **after** the social-proof block (Collaborazioni through 2026-11-05; **Sezione Dicono di me** from 2026-11-06), near page end.
 
 ## Implementation snapshot (2026-10-23, pre-commit)
 
