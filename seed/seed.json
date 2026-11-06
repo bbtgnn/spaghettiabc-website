@@ -1043,13 +1043,13 @@
 					"hero_subtitle": "Culinary Experiences Curated by Flavia Giordano",
 					"hero_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1920&h=1080&fit=crop",
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/cover-newsletter-ingredient.jpg",
 							"alt": "Ingredienti e olio — hero homepage Spaghetti ABC",
-							"filename": "homepage-hero.jpg"
+							"filename": "cover-newsletter-ingredient.jpg"
 						}
 					},
-					"tour_title": "I nostri tour",
-					"tour_subtitle": "Itinerari selezionati per scoprire l’Italia",
+					"tour_title": "I tour di Flavia",
+					"tour_subtitle": "Esperienze guidate in un paese della Puglia, tra sapori locali e incontri",
 					"tour_cta_label": "Vedi tutti i tour",
 					"featured_tours": [
 						"$ref:tour-polignano",
@@ -1066,21 +1066,14 @@
 					"book_cta_label": "Scopri il libro",
 					"book_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&h=1067&fit=crop",
-							"alt": "Paesaggio pugliese al tramonto",
-							"filename": "homepage-book.jpg"
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro.jpg",
+							"alt": "Copertina del libro Puglia",
+							"filename": "copertina-libro.jpg"
 						}
 					},
 					"training_title": "Formazione",
 					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
 					"training_cta_label": "Scopri la formazione",
-					"training_image": {
-						"$media": {
-							"url": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=1600&h=1067&fit=crop",
-							"alt": "Tavola apparecchiata per un incontro intorno al cibo",
-							"filename": "homepage-training.jpg"
-						}
-					},
 					"collaborations_title": "Collaborazioni",
 					"collaborations_subtitle": "Partner e riconoscimenti di chi ha lavorato con Flavia intorno al cibo e alla cultura italiana",
 					"collaborations_cta_label": "Scopri le collaborazioni",
