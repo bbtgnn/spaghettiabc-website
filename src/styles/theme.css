@@ -574,7 +574,7 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 .tour-grid {
 	margin-top: 3rem;
 	display: grid;
-	gap: 3.5rem 2rem;
+	gap: 1.75rem 1.25rem;
 }
 
 @media (min-width: 768px) {
@@ -592,19 +592,10 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	margin-inline: calc(var(--gutter) * -1);
 }
 
-.tour-rail__line {
-	position: absolute;
-	left: 0;
-	right: 0;
-	bottom: 0.35rem;
-	height: 1px;
-	background: var(--line);
-	pointer-events: none;
-}
-
 .tour-rail__track {
 	display: flex;
-	gap: 1.25rem;
+	align-items: stretch;
+	gap: 0.75rem;
 	overflow-x: auto;
 	overflow-y: hidden;
 	overscroll-behavior-x: contain;
@@ -612,16 +603,26 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	scroll-snap-type: x mandatory;
 	scroll-padding-inline: var(--gutter);
 	padding-inline: var(--gutter);
-	padding-bottom: 1.5rem;
 	-webkit-overflow-scrolling: touch;
-	scrollbar-width: thin;
-	scrollbar-color: var(--line-strong) transparent;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.tour-rail__track::-webkit-scrollbar {
+	display: none;
 }
 
 .tour-rail__track > * {
+	display: flex;
 	flex: 0 0 var(--tour-rail-item);
 	width: var(--tour-rail-item);
 	scroll-snap-align: start;
+}
+
+.tour-rail__track > * > * {
+	flex: 1 1 auto;
+	width: 100%;
+	min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -631,7 +632,7 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	}
 
 	.tour-rail__track {
-		gap: 1.75rem;
+		gap: 1rem;
 	}
 }
 
