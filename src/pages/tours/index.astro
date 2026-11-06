@@ -1,19 +1,41 @@
 ---
-import { getEmDashCollection } from "emdash";
+import { getEmDashCollection, getEmDashEntry } from "emdash";
 import Base from "../../layouts/Base.astro";
 import TourTeaser from "../../components/TourTeaser.astro";
 
 const cursor = Astro.url.searchParams.get("cursor") || undefined;
+const { entry: home, cacheHint: homeCacheHint } = await getEmDashEntry(
+	"homepage",
+	"home",
+	{ references: { featured_tours: true } },
+);
 const {
-	entries: tours,
+	entries: tourEntries,
 	cacheHint,
 	nextCursor,
 } = await getEmDashCollection("tours", {
-	orderBy: { published_at: "desc" },
-	limit: 20,
+	orderBy: { published_at: "asc" },
+	limit: 40,
 	cursor,
 });
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+	Astro.cache.set(homeCacheHint);
+}
+
+/** Same curated order as homepage Sezione Tour (`featured_tours`), then any extras. */
+const featuredOrder = new Map(
+	(home?.references?.featured_tours?.entries ?? []).map((tour, index) => [
+		tour.id,
+		index,
+	]),
+);
+const tours = [...tourEntries].sort((a, b) => {
+	const rankA = featuredOrder.get(a.id) ?? Number.POSITIVE_INFINITY;
+	const rankB = featuredOrder.get(b.id) ?? Number.POSITIVE_INFINITY;
+	if (rankA !== rankB) return rankA - rankB;
+	return (a.data.title ?? "").localeCompare(b.data.title ?? "", "it");
+});
 
 const pageTitle = "Catalogo tour";
 const pageDescription =
