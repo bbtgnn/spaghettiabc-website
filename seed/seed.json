@@ -1048,8 +1048,8 @@
 							"filename": "cover-newsletter-ingredient.jpg"
 						}
 					},
-					"tour_title": "I nostri tour",
-					"tour_subtitle": "Itinerari selezionati per scoprire l’Italia",
+					"tour_title": "I tour di Flavia",
+					"tour_subtitle": "Esperienze guidate in un paese della Puglia, tra sapori locali e incontri",
 					"tour_cta_label": "Vedi tutti i tour",
 					"featured_tours": [
 						"$ref:tour-polignano",
