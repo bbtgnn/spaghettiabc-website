@@ -42,15 +42,17 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 <article
 	class="tour-teaser"
 	data-reveal
-	style={`--reveal-delay: ${index * 110}ms`}
+	style={`--reveal-delay: ${(index % 3) * 70}ms`}
 >
 	<a class="tour-teaser__link" href={href}>
 		{
 			image && (
-				<div class="tour-teaser__media" data-reveal="mask" {...edit?.featured_image}>
-					<div>
-						<Image image={image} />
-					</div>
+				<div class="tour-teaser__media" {...edit?.featured_image}>
+					<Image
+						image={image}
+						loading={index < 3 ? "eager" : "lazy"}
+						priority={index < 3}
+					/>
 				</div>
 			)
 		}
@@ -95,17 +97,24 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 
 	.tour-teaser__media {
 		overflow: hidden;
-		background: var(--canvas);
+		background: var(--surface);
 	}
 
 	.tour-teaser__media :global(img) {
 		width: 100%;
 		aspect-ratio: 4 / 3;
 		object-fit: cover;
-		transition: transform 1100ms var(--ease-out-expo);
+		opacity: 0;
+		transition:
+			opacity 480ms ease,
+			transform 1100ms var(--ease-out-expo);
 	}
 
-	.tour-teaser__link:hover .tour-teaser__media :global(img) {
+	.tour-teaser__media :global(img.is-loaded) {
+		opacity: 1;
+	}
+
+	.tour-teaser__link:hover .tour-teaser__media :global(img.is-loaded) {
 		transform: scale(1.04);
 	}
 
@@ -135,3 +144,21 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 		color: var(--ink);
 	}
 </style>
+
+<script>
+	function markLoaded(img: HTMLImageElement) {
+		if (img.complete && img.naturalWidth > 0) {
+			img.classList.add("is-loaded");
+			return;
+		}
+		img.addEventListener("load", () => img.classList.add("is-loaded"), { once: true });
+		img.addEventListener("error", () => img.classList.add("is-loaded"), { once: true });
+	}
+
+	function bindTeaserImages(root: ParentNode = document) {
+		root.querySelectorAll<HTMLImageElement>(".tour-teaser__media img").forEach(markLoaded);
+	}
+
+	bindTeaserImages();
+	document.addEventListener("astro:page-load", () => bindTeaserImages());
+</script>
