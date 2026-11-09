@@ -71,7 +71,7 @@ This page still records agreement only; do not treat the playground as shipped u
 
 ## Implementation note (2026-11-09)
 
-Subagent shipped the playground in the working tree on 2026-11-09 (uncommitted; not locked to a git SHA — same status as [Sezione Tour `/_dev`](./sezione-tour-dev-playground.md)). Shared pattern: [`/_dev/*` playgrounds](./_dev-playgrounds.md).
+Subagent shipped the playground on 2026-11-09; recorded on `feat/hero-dev-playground` as `bbtgnn/spaghettiabc-website@dbbd228`. Shared pattern: [`/_dev/*` playgrounds](./_dev-playgrounds.md).
 
 **Routes:** hub `/_dev/hero` + variants `/_dev/hero/a` … `/_dev/hero/f` via `devPlaygrounds()` `injectRoute` in `src/dev/integration.ts`. Files under `src/dev/hero/` (`index.astro`, `[variant].astro`, `variants.ts`). Every page calls `gateDevOnly` (`src/utils/dev-only.ts`).
 
