@@ -23,3 +23,7 @@
 - Live Google Business / Places API
 - Dedicated Collaborazioni (or Credibilità) landing
 - Migrating old gallery/progetti media into a new home
+
+## Live DB alignment (2026-11-09)
+
+On 2026-11-09 the running instance (`data.db`) was brought in line with this decision: homepage `dicono_*` / `partner_logos` / Punteggio Google fields + richer `google_reviews`; obsolete `collaborations_*` fields and collection `collaborations` removed. Backup and field map: [Homepage Dicono schema migration](../ops/homepage-dicono-schema-migration.md).

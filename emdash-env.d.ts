@@ -22,24 +22,6 @@ export interface Book {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
-export interface Collaboration {
-  id: string;
-  slug: string | null;
-  status: string;
-  title: string;
-  subtitle?: string;
-  excerpt?: string;
-  content?: PortableTextBlock[];
-  logos?: { "logo": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } }; "name"?: string | null }[];
-  gallery?: { "image": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } }[];
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  byline?: BylineSummary | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
 export interface Homepage {
   id: string;
   slug: string | null;
@@ -62,16 +44,19 @@ export interface Homepage {
   training_subtitle?: string;
   training_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   training_cta_label?: string;
-  form_heading_collaborations?: boolean;
-  collaborations_title?: string;
-  collaborations_subtitle?: string;
-  collaborations_cta_label?: string;
-  google_reviews?: { "author": string; "quote": string; "rating"?: number | null }[];
+  google_reviews?: { "author": string; "quote": string; "rating": number; "avatar"?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } | null; "review_url"?: string | null }[];
   form_heading_newsletter?: boolean;
   newsletter_title?: string;
   newsletter_subtitle?: string;
   newsletter_button_label?: string;
   newsletter_email_placeholder?: string;
+  form_heading_dicono?: boolean;
+  dicono_title?: string;
+  dicono_subtitle?: string;
+  partner_logos?: { "logo": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } }; "name"?: string | null }[];
+  google_score?: number;
+  google_review_count?: number;
+  google_profile_url?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -158,7 +143,6 @@ export interface HomepageReferences {
 declare module "emdash" {
   interface EmDashCollections {
     book: Book;
-    collaborations: Collaboration;
     homepage: Homepage;
     pages: Page;
     posts: Post;

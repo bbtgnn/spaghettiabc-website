@@ -5,6 +5,7 @@ dist
 uploads
 data.db
 data.db-*
+backups/
 tmp/
 
 # Environment
