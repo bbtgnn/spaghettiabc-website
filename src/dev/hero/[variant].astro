@@ -1,0 +1,89 @@
+---
+import { getEmDashEntry, getSiteSettings } from "emdash";
+import Base from "../../layouts/Base.astro";
+import HeroMock from "../../components/_dev/HeroMock.astro";
+import { gateDevOnly } from "../../utils/dev-only";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import {
+	getHeroVariant,
+	HERO_VARIANTS,
+	HERO_VIEWPORTS,
+} from "./variants";
+import "../../styles/_dev/hero-playground.css";
+
+const denied = await gateDevOnly(Astro);
+if (denied) return denied;
+
+const variant = getHeroVariant(Astro.params.variant);
+if (!variant) {
+	return Astro.rewrite("/404");
+}
+
+const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home");
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+---
+
+<Base
+	title={`${variant.title} · Playground`}
+	description={variant.desc}
+	hideHeader
+>
+	<div class="pg">
+		<header class="pg__intro">
+			<p class="mono pg__kicker">
+				<a class="link" href="/_dev/hero">/_dev · playground</a>
+			</p>
+			<h1 class="type-h2 pg__title">{variant.title}</h1>
+			<p class="type-body pg__lede">{variant.desc}</p>
+			<nav class="pg-switch" aria-label="Altre varianti">
+				{
+					HERO_VARIANTS.map((item) => (
+						<a
+							class:list={["pg-switch__link", item.id === variant.id && "is-current"]}
+							href={item.href}
+							aria-current={item.id === variant.id ? "page" : undefined}
+						>
+							{item.id.toUpperCase()}
+						</a>
+					))
+				}
+			</nav>
+		</header>
+
+		{
+			!home ? (
+				<section class="pg__variant">
+					<p class="type-body">
+						Homepage non configurata.{" "}
+						<a class="link" href="/_emdash/admin/content/homepage">Apri l’admin</a>.
+					</p>
+				</section>
+			) : (
+				<section class="pg__variant" aria-labelledby={`variant-${variant.id}`}>
+					<div class="pg__frames">
+						{HERO_VIEWPORTS.map((viewport) => (
+							<figure class="pg-frame" data-viewport={viewport.id}>
+								<figcaption class="mono pg-frame__label">{viewport.label}</figcaption>
+								<div class="pg-frame__viewport">
+									<HeroMock
+										variant={variant.id}
+										viewport={viewport.id}
+										siteTitle={siteTitle}
+										heroTitle={home.data.hero_title}
+										heroSubtitle={home.data.hero_subtitle}
+										heroImage={home.data.hero_image}
+										tourCtaLabel={home.data.tour_cta_label}
+									/>
+								</div>
+							</figure>
+						))}
+					</div>
+				</section>
+			)
+		}
+	</div>
+</Base>

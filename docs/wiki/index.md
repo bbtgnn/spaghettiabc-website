@@ -14,7 +14,9 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Homepage form headings](./decisions/homepage-form-headings.md) — CMS editor section titles for Homepage only ([#5](https://github.com/bbtgnn/spaghettiabc-website/issues/5), 2026-10-28)
 - [Font pairing preview](./decisions/font-pairing-preview.md) — DEV matrix Body×Display + UI (Come testo / Tsukimi / Fira Sans); Archivo out, Cormorant in Display; serif UI larger + normal tracking (2026-11-05); supersedes 2026-11-04 four-option select ([#9](https://github.com/bbtgnn/spaghettiabc-website/issues/9))
 - [Color palette preview](./decisions/color-palette-preview.md) — DEV multi-slot Palettes (homepage regions + template pages + chrome); per-slot `localStorage`; supersedes 2026-11-09 single `html[data-palette]` ([#12](https://github.com/bbtgnn/spaghettiabc-website/issues/12), revised 2026-11-09)
+- [`/_dev/*` playgrounds](./decisions/_dev-playgrounds.md) — shared pattern: `injectRoute` + `src/dev/`, `gateDevOnly`, hub + one-page-per-variant, stacked frames (2026-11-09)
 - [Sezione Tour `/_dev` playground](./decisions/sezione-tour-dev-playground.md) — `#14`: hub + `/a|/b|/c` pages; stacked desktop/mobile frames; `injectRoute` + `gateDevOnly` (2026-11-09)
+- [Sezione Hero `/_dev` playground](./decisions/hero-dev-playground.md) — `#13` shipped 2026-11-09 (uncommitted): hub `/_dev/hero` + `a`–`f` via `injectRoute`; `HeroMock` + shared `playground-chrome.css`; 6 directions (3 Standard + 3 Sperimentale)
 
 ## Operations
 

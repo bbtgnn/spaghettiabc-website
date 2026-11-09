@@ -1,0 +1,44 @@
+---
+import Base from "../../layouts/Base.astro";
+import { gateDevOnly } from "../../utils/dev-only";
+import { HERO_VARIANTS } from "./variants";
+import "../../styles/_dev/hero-playground.css";
+
+const denied = await gateDevOnly(Astro);
+if (denied) return denied;
+---
+
+<Base
+	title="Playground Sezione Hero"
+	description="Scegli una variante di layout per la Sezione Hero (solo DEV)."
+	hideHeader
+>
+	<div class="pg">
+		<header class="pg__intro">
+			<p class="mono pg__kicker">/_dev · playground</p>
+			<h1 class="type-h2 pg__title">Sezione Hero</h1>
+			<p class="type-body pg__lede">
+				Sei bozze separate — tre standard e tre sperimentali. Apri quella da
+				mostrare al capo; in ciascuna trovi desktop e mobile. Solo la sezione,
+				senza header del sito. Dati live dalla homepage CMS.
+			</p>
+		</header>
+
+		<nav class="pg__hub" aria-label="Varianti Sezione Hero">
+			<ul class="pg-hub__list">
+				{
+					HERO_VARIANTS.map((variant) => (
+						<li>
+							<a class="pg-hub__card" href={variant.href}>
+								<span class="mono pg-hub__id">{variant.id.toUpperCase()}</span>
+								<span class="pg-hub__tipo">{variant.tipo}</span>
+								<span class="pg-hub__title">{variant.title}</span>
+								<span class="pg-hub__desc">{variant.desc}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
+</Base>

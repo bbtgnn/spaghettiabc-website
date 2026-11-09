@@ -4,6 +4,10 @@ Dominio del sito di Flavia: tour e contenuti editoriali presentati tramite EmDas
 
 ## Language
 
+**Sezione Hero**:
+Blocco iniziale della homepage con titolo, sottotitolo, immagine e CTA: l'ingresso di brand di Flavia. Distinta dal Catalogo Tour, dalla Scheda Tour e dalle altre Sezioni.
+_Avoid_: hero (da solo come nome di sezione nel dominio); above-the-fold; banner; jumbotron
+
 **Libro**:
 Un contenuto di prima classe nel CMS (collection `book`): il titolo che Flavia vende. Sul sito esiste un solo Libro canonico (entry id / URL `/puglia-the-book`) con pagina dedicata.
 _Avoid_: blocco homepage, prodotto, merchandise, catalogo libri, `books`

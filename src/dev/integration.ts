@@ -18,6 +18,14 @@ export function devPlaygrounds(): AstroIntegration {
 					pattern: "/_dev/sezione-tour/[variant]",
 					entrypoint: "./src/dev/sezione-tour/[variant].astro",
 				});
+				injectRoute({
+					pattern: "/_dev/hero",
+					entrypoint: "./src/dev/hero/index.astro",
+				});
+				injectRoute({
+					pattern: "/_dev/hero/[variant]",
+					entrypoint: "./src/dev/hero/[variant].astro",
+				});
 			},
 		},
 	};

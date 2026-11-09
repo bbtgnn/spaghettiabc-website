@@ -5,7 +5,7 @@
 - GitHub issue [#14](https://github.com/bbtgnn/spaghettiabc-website/issues/14) — feat: sezione tour
 - Pattern reference: [#13](https://github.com/bbtgnn/spaghettiabc-website/issues/13) — `/_dev/hero`, prod 404
 - Grill with Chiara (2026-11-09), confirmed end-to-end before implementation
-- Related: [Homepage + Tours schema](./homepage-tours-schema.md), [Sezione Dicono di me](./dicono-di-me-section.md), [`GLOSSARY.md`](../../../GLOSSARY.md)
+- Related: [`/_dev/*` playgrounds](./_dev-playgrounds.md) (shared pattern), [Homepage + Tours schema](./homepage-tours-schema.md), [Sezione Dicono di me](./dicono-di-me-section.md), [`GLOSSARY.md`](../../../GLOSSARY.md)
 
 This page records **what was agreed**, not whether the playground has shipped.
 

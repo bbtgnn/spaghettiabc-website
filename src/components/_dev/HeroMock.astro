@@ -1,0 +1,242 @@
+---
+import { Image } from "emdash/ui";
+
+interface HeroImage {
+	id: string;
+	src?: string;
+	alt?: string;
+	width?: number;
+	height?: number;
+}
+
+interface Props {
+	variant: "a" | "b" | "c" | "d" | "e" | "f";
+	viewport: "desktop" | "mobile";
+	siteTitle: string;
+	heroTitle?: string | null;
+	heroSubtitle?: string | null;
+	heroImage?: HeroImage | null;
+	tourCtaLabel?: string | null;
+}
+
+const {
+	variant,
+	viewport,
+	siteTitle,
+	heroTitle,
+	heroSubtitle,
+	heroImage,
+	tourCtaLabel,
+} = Astro.props;
+
+const title = heroTitle ?? "";
+const subtitle = heroSubtitle ?? "";
+---
+
+<section
+	class:list={[
+		"shell",
+		"pg-hero",
+		`pg-hero--${variant}`,
+		`pg-hero--${viewport}`,
+	]}
+	data-palette-slot="hero"
+	data-palette="walnut"
+	aria-label={title || "Sezione Hero"}
+>
+	{/* —— A: split raffinato (copy L / image R) —— */}
+	{
+		variant === "a" && (
+			<>
+				<div class="pg-hero__copy">
+					{title && <h1 class="type-hero pg-hero__title">{title}</h1>}
+					{subtitle && <p class="type-lead pg-hero__lede">{subtitle}</p>}
+					<div class="pg-hero__actions">
+						{tourCtaLabel && (
+							<a class="btn btn-primary" href="/tours">
+								{tourCtaLabel}
+							</a>
+						)}
+						<a class="btn btn-outline" href="/puglia-the-book">
+							Il libro
+						</a>
+					</div>
+				</div>
+				{heroImage && (
+					<figure class="pg-hero__figure">
+						<div class="pg-hero__frame">
+							<div class="parallax">
+								<Image image={heroImage} />
+							</div>
+						</div>
+						<figcaption class="mono pg-hero__caption">
+							<span>{siteTitle}</span>
+							<span>Puglia · Italia</span>
+						</figcaption>
+					</figure>
+				)}
+			</>
+		)
+	}
+
+	{/* —— B: full-bleed image, copy in document flow —— */}
+	{
+		variant === "b" && (
+			<>
+				{heroImage && (
+					<figure class="pg-hero__bleed">
+						<div class="pg-hero__bleed-media parallax">
+							<Image image={heroImage} />
+						</div>
+					</figure>
+				)}
+				<div class="pg-hero__copy pg-hero__copy--flow">
+					{title && <h1 class="type-hero pg-hero__title">{title}</h1>}
+					{subtitle && <p class="type-lead pg-hero__lede">{subtitle}</p>}
+					<div class="pg-hero__actions">
+						{tourCtaLabel && (
+							<a class="btn btn-primary" href="/tours">
+								{tourCtaLabel}
+							</a>
+						)}
+						<a class="btn btn-outline" href="/puglia-the-book">
+							Il libro
+						</a>
+					</div>
+				</div>
+			</>
+		)
+	}
+
+	{/* —— C: brand-first —— */}
+	{
+		variant === "c" && (
+			<>
+				<div class="pg-hero__copy">
+					<p class="pg-hero__brand">{siteTitle}</p>
+					{title && <h1 class="type-h2 pg-hero__title pg-hero__title--secondary">{title}</h1>}
+					{subtitle && <p class="type-lead pg-hero__lede">{subtitle}</p>}
+					<div class="pg-hero__actions">
+						{tourCtaLabel && (
+							<a class="btn btn-primary" href="/tours">
+								{tourCtaLabel}
+							</a>
+						)}
+						<a class="btn btn-outline" href="/puglia-the-book">
+							Il libro
+						</a>
+					</div>
+				</div>
+				{heroImage && (
+					<figure class="pg-hero__figure">
+						<div class="pg-hero__frame">
+							<div class="parallax">
+								<Image image={heroImage} />
+							</div>
+						</div>
+						<figcaption class="mono pg-hero__caption">
+							<span>Puglia · Italia</span>
+						</figcaption>
+					</figure>
+				)}
+			</>
+		)
+	}
+
+	{/* —— D: typography-dominant —— */}
+	{
+		variant === "d" && (
+			<>
+				<div class="pg-hero__copy pg-hero__copy--typo">
+					{title && <h1 class="pg-hero__title pg-hero__title--huge">{title}</h1>}
+					{subtitle && <p class="type-lead pg-hero__lede">{subtitle}</p>}
+					<div class="pg-hero__actions">
+						{tourCtaLabel && (
+							<a class="btn btn-primary" href="/tours">
+								{tourCtaLabel}
+							</a>
+						)}
+						<a class="btn btn-outline" href="/puglia-the-book">
+							Il libro
+						</a>
+					</div>
+				</div>
+				{heroImage && (
+					<figure class="pg-hero__figure pg-hero__figure--crop">
+						<div class="pg-hero__frame">
+							<div class="parallax">
+								<Image image={heroImage} />
+							</div>
+						</div>
+					</figure>
+				)}
+			</>
+		)
+	}
+
+	{/* —— E: strong asymmetry — image invades copy —— */}
+	{
+		variant === "e" && (
+			<>
+				<div class="pg-hero__copy pg-hero__copy--invade">
+					{title && <h1 class="type-hero pg-hero__title">{title}</h1>}
+					{subtitle && <p class="type-lead pg-hero__lede">{subtitle}</p>}
+					<div class="pg-hero__actions">
+						{tourCtaLabel && (
+							<a class="btn btn-primary" href="/tours">
+								{tourCtaLabel}
+							</a>
+						)}
+						<a class="btn btn-outline" href="/puglia-the-book">
+							Il libro
+						</a>
+					</div>
+				</div>
+				{heroImage && (
+					<figure class="pg-hero__figure pg-hero__figure--invade">
+						<div class="pg-hero__frame">
+							<div class="parallax">
+								<Image image={heroImage} />
+							</div>
+						</div>
+						<figcaption class="mono pg-hero__caption">
+							<span>{siteTitle}</span>
+							<span>Puglia · Italia</span>
+						</figcaption>
+					</figure>
+				)}
+			</>
+		)
+	}
+
+	{/* —— F: editorial vertical narrow stack —— */}
+	{
+		variant === "f" && (
+			<div class="pg-hero__editorial">
+				{heroImage && (
+					<figure class="pg-hero__figure pg-hero__figure--editorial">
+						<div class="pg-hero__frame">
+							<div class="parallax">
+								<Image image={heroImage} />
+							</div>
+						</div>
+					</figure>
+				)}
+				<div class="pg-hero__copy pg-hero__copy--editorial">
+					{title && <h1 class="type-hero pg-hero__title">{title}</h1>}
+					{subtitle && <p class="type-lead pg-hero__lede">{subtitle}</p>}
+					<div class="pg-hero__actions">
+						{tourCtaLabel && (
+							<a class="btn btn-primary" href="/tours">
+								{tourCtaLabel}
+							</a>
+						)}
+						<a class="btn btn-outline" href="/puglia-the-book">
+							Il libro
+						</a>
+					</div>
+				</div>
+			</div>
+		)
+	}
+</section>
