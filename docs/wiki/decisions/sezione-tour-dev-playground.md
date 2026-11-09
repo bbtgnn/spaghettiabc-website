@@ -27,7 +27,8 @@ Compact review rail in the mock is a **UI experiment** only. **Recensione Google
 
 ## Playground UX (2026-11-09)
 
-- Three variants stacked; each shows side-by-side frames (~1280 desktop | ~390 mobile) with internal scroll.
+- Three variants stacked; each shows desktop (~1280 max) and mobile (~390) frames with internal scroll.
+- **Review layout (same day, later):** frames **stack vertically** by default so both stay on-screen for stakeholder review; side-by-side only from ~1720px viewport width up (was always row + horizontal page scroll, which hid mobile on typical laptops).
 - Frames contain the section only (head + tours + reviews) — no SiteHeader.
 - Section head matches current Sezione Tour: CMS title/subtitle + CTA to `/tours`.
 - Large pair: 50/50 on desktop frame, stacked in mobile frame.
