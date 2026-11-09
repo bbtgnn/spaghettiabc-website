@@ -24,6 +24,8 @@ interface Props {
 	overlayHeader?: boolean;
 	/** Hide SiteHeader (e.g. `/_dev` playgrounds with their own chrome) */
 	hideHeader?: boolean;
+	/** DEV multi-slot palette: id for `<main data-palette-slot>` on non-home templates */
+	paletteSlot?: string | null;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
 }
@@ -35,6 +37,7 @@ const {
 	image,
 	canonical,
 	hideHeader = false,
+	paletteSlot = null,
 	content,
 } = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
@@ -98,19 +101,16 @@ const pageCtx = createPublicPageContext({
 							display: "spaghettiabc-font-display",
 							body: "spaghettiabc-font-body",
 							ui: "spaghettiabc-font-ui",
-							palette: "spaghettiabc-color-palette",
 						};
 						const DEFAULTS = {
 							display: "fraunces",
 							body: "source-serif-4",
 							ui: "fira-sans",
-							palette: "walnut",
 						};
 						const VALID = {
 							display: ["newsreader", "fraunces", "lora", "cormorant"],
 							body: ["source-serif-4", "literata"],
 							ui: ["body", "tsukimi", "fira-sans"],
-							palette: ["walnut", "pomodoro", "pascali", "bottiglia"],
 						};
 						const pick = (key, valid, fallback) => {
 							try {
@@ -136,10 +136,45 @@ const pageCtx = createPublicPageContext({
 							"data-font-ui-case",
 							ui === "body" ? "serif" : "sans",
 						);
-						root.setAttribute(
-							"data-palette",
-							pick(KEYS.palette, VALID.palette, DEFAULTS.palette),
-						);
+					})();
+				</script>
+			)
+		}
+		{
+			isDev && (
+				<script is:inline>
+					(() => {
+						const PREFIX = "spaghettiabc-palette-";
+						const VALID = ["walnut", "pomodoro", "pascali", "bottiglia"];
+						const COLORS = {
+							walnut: { accent: "#8a5322", title: "#6b3f18" },
+							pomodoro: { accent: "#c43c2c", title: "#8f2418" },
+							pascali: { accent: "#2f5f8a", title: "#1e3f5c" },
+							bottiglia: { accent: "#2f6b4f", title: "#1e4a36" },
+						};
+						const rules = [];
+						try {
+							for (let i = 0; i < localStorage.length; i++) {
+								const key = localStorage.key(i);
+								if (!key || !key.startsWith(PREFIX)) continue;
+								const slotId = key.slice(PREFIX.length);
+								if (!/^[a-z0-9-]+$/.test(slotId)) continue;
+								const palette = localStorage.getItem(key);
+								if (!palette || !VALID.includes(palette)) continue;
+								const colors = COLORS[palette];
+								if (!colors) continue;
+								rules.push(
+									`[data-palette-slot="${slotId}"]{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff}`,
+								);
+							}
+						} catch {
+							/* no-op */
+						}
+						if (!rules.length) return;
+						const style = document.createElement("style");
+						style.id = "palette-fouc";
+						style.textContent = rules.join("");
+						document.head.appendChild(style);
 					})();
 				</script>
 			)
@@ -161,7 +196,12 @@ const pageCtx = createPublicPageContext({
 			)
 		}
 
-		<main class="site-main" id="main-content">
+		<main
+			class="site-main"
+			id="main-content"
+			data-palette-slot={paletteSlot || undefined}
+			data-palette={paletteSlot ? "walnut" : undefined}
+		>
 			<slot />
 		</main>
 

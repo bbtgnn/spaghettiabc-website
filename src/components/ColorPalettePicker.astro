@@ -1,7 +1,7 @@
 ---
 /**
- * DEV-only color palette preview (#12). Stripped from production builds.
- * Row of 4 swatches (bright + dark); independent of FontPairingPicker.
+ * DEV-only multi-slot color palette preview (#12). Stripped from production builds.
+ * One row per `data-palette-slot` on the page; independent of FontPairingPicker.
  */
 import Palette from "@lucide/astro/icons/palette";
 import X from "@lucide/astro/icons/x";
@@ -32,6 +32,23 @@ const PALETTES = [
 		title: "#1e4a36",
 	},
 ] as const;
+
+const SLOT_LABELS: Record<string, string> = {
+	chrome: "Chrome",
+	hero: "Hero",
+	"sezione-tour": "Sezione Tour",
+	"sezione-libro": "Sezione Libro",
+	"sezione-formazione": "Sezione Formazione",
+	"sezione-dicono": "Sezione Dicono di me",
+	"sezione-newsletter": "Sezione Newsletter",
+	"page-tours": "Catalogo Tour",
+	"page-tour": "Scheda Tour",
+	"page-book": "Libro",
+	"page-training": "Formazione",
+	"page-posts": "Posts",
+	"page-post": "Post",
+	"page-cms": "Pagina",
+};
 ---
 
 <div class="color-palette-picker" role="region" aria-label="Anteprima colori">
@@ -47,33 +64,40 @@ const PALETTES = [
 		</button>
 	</div>
 
-	<div class="color-palette-picker__panel">
-		<div class="color-palette-picker__swatches" role="group" aria-label="Palette">
-			{
-				PALETTES.map((palette) => (
-					<button
-						type="button"
-						class="color-palette-picker__swatch"
-						data-palette={palette.id}
-						aria-label={palette.label}
-						aria-pressed="false"
-						title={palette.label}
-					>
-						<span
-							class="color-palette-picker__swatch-half color-palette-picker__swatch-half--accent"
-							style={`background:${palette.accent}`}
-							aria-hidden="true"
-						/>
-						<span
-							class="color-palette-picker__swatch-half color-palette-picker__swatch-half--title"
-							style={`background:${palette.title}`}
-							aria-hidden="true"
-						/>
-					</button>
-				))
-			}
-		</div>
+	<div class="color-palette-picker__panel" data-slots-panel>
+		{/* Rows injected by client script from DOM slots */}
 	</div>
+
+	<template data-swatch-row-template>
+		<div class="color-palette-picker__row" data-slot-row>
+			<p class="color-palette-picker__slot-label" data-slot-label></p>
+			<div class="color-palette-picker__swatches" role="group">
+				{
+					PALETTES.map((palette) => (
+						<button
+							type="button"
+							class="color-palette-picker__swatch"
+							data-palette={palette.id}
+							aria-label={palette.label}
+							aria-pressed="false"
+							title={palette.label}
+						>
+							<span
+								class="color-palette-picker__swatch-half color-palette-picker__swatch-half--accent"
+								style={`background:${palette.accent}`}
+								aria-hidden="true"
+							/>
+							<span
+								class="color-palette-picker__swatch-half color-palette-picker__swatch-half--title"
+								style={`background:${palette.title}`}
+								aria-hidden="true"
+							/>
+						</button>
+					))
+				}
+			</div>
+		</div>
+	</template>
 
 	<button
 		type="button"
@@ -85,20 +109,32 @@ const PALETTES = [
 	</button>
 </div>
 
-<script>
-	const KEY_PALETTE = "spaghettiabc-color-palette";
+<script
+	define:vars={{
+		SLOT_LABELS,
+		PALETTE_IDS: PALETTES.map((p) => p.id),
+		PALETTE_COLORS: Object.fromEntries(
+			PALETTES.map((p) => [p.id, { accent: p.accent, title: p.title }]),
+		),
+	}}
+>
+	const KEY_PREFIX = "spaghettiabc-palette-";
 	const KEY_COLLAPSED = "spaghettiabc-color-picker-collapsed";
-
 	const DEFAULT_PALETTE = "walnut";
-	const VALID_PALETTES = ["walnut", "pomodoro", "pascali", "bottiglia"];
+	const VALID_PALETTES = PALETTE_IDS;
+	const FOUC_STYLE_ID = "palette-fouc";
 
-	const root = document.documentElement;
 	const picker = document.querySelector(".color-palette-picker");
-	const swatches = picker?.querySelectorAll(".color-palette-picker__swatch");
+	const panel = picker?.querySelector("[data-slots-panel]");
+	const rowTemplate = picker?.querySelector(
+		"[data-swatch-row-template]",
+	);
 	const collapseBtn = picker?.querySelector(".color-palette-picker__collapse");
 	const launchBtn = picker?.querySelector(".color-palette-picker__launch");
 
-	const read = (key: string, valid: string[], fallback: string) => {
+	const storageKey = (slotId) => `${KEY_PREFIX}${slotId}`;
+
+	const read = (key, valid, fallback) => {
 		try {
 			const stored = localStorage.getItem(key);
 			if (stored && valid.includes(stored)) return stored;
@@ -108,7 +144,7 @@ const PALETTES = [
 		return fallback;
 	};
 
-	const write = (key: string, value: string) => {
+	const write = (key, value) => {
 		try {
 			localStorage.setItem(key, value);
 		} catch {
@@ -124,7 +160,7 @@ const PALETTES = [
 		}
 	};
 
-	const setCollapsed = (collapsed: boolean, { focus = false } = {}) => {
+	const setCollapsed = (collapsed, { focus = false } = {}) => {
 		if (!(picker instanceof HTMLElement)) return;
 		picker.classList.toggle("is-collapsed", collapsed);
 		picker.setAttribute(
@@ -149,12 +185,49 @@ const PALETTES = [
 		write(KEY_COLLAPSED, collapsed ? "1" : "0");
 	};
 
-	const applyPalette = (palette: string) => {
-		const next = VALID_PALETTES.includes(palette) ? palette : DEFAULT_PALETTE;
-		root.setAttribute("data-palette", next);
-		write(KEY_PALETTE, next);
+	const syncFoucStyle = () => {
+		const rules = [];
+		try {
+			for (let i = 0; i < localStorage.length; i++) {
+				const key = localStorage.key(i);
+				if (!key || !key.startsWith(KEY_PREFIX)) continue;
+				const slotId = key.slice(KEY_PREFIX.length);
+				if (!/^[a-z0-9-]+$/.test(slotId)) continue;
+				const palette = localStorage.getItem(key);
+				if (!palette || !VALID_PALETTES.includes(palette)) continue;
+				const colors = PALETTE_COLORS[palette];
+				if (!colors) continue;
+				rules.push(
+					`[data-palette-slot="${slotId}"]{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff}`,
+				);
+			}
+		} catch {
+			/* no-op */
+		}
 
-		swatches?.forEach((swatch) => {
+		let style = document.getElementById(FOUC_STYLE_ID);
+		if (!rules.length) {
+			style?.remove();
+			return;
+		}
+		if (!(style instanceof HTMLStyleElement)) {
+			style = document.createElement("style");
+			style.id = FOUC_STYLE_ID;
+			document.head.appendChild(style);
+		}
+		style.textContent = rules.join("");
+	};
+
+	const applyPaletteToSlot = (slotEl, palette, row) => {
+		const next = VALID_PALETTES.includes(palette) ? palette : DEFAULT_PALETTE;
+		const slotId = slotEl.getAttribute("data-palette-slot");
+		if (!slotId) return;
+
+		slotEl.setAttribute("data-palette", next);
+		write(storageKey(slotId), next);
+		syncFoucStyle();
+
+		row?.querySelectorAll(".color-palette-picker__swatch").forEach((swatch) => {
 			if (!(swatch instanceof HTMLButtonElement)) return;
 			const selected = swatch.dataset.palette === next;
 			swatch.setAttribute("aria-pressed", selected ? "true" : "false");
@@ -162,15 +235,63 @@ const PALETTES = [
 		});
 	};
 
-	applyPalette(read(KEY_PALETTE, VALID_PALETTES, DEFAULT_PALETTE));
-	setCollapsed(readCollapsed());
-
-	swatches?.forEach((swatch) => {
-		swatch.addEventListener("click", () => {
-			if (!(swatch instanceof HTMLButtonElement)) return;
-			applyPalette(swatch.dataset.palette ?? "");
+	const discoverSlots = () => {
+		const seen = new Set();
+		const slots = [];
+		document.querySelectorAll("[data-palette-slot]").forEach((el) => {
+			if (!(el instanceof HTMLElement)) return;
+			const id = el.getAttribute("data-palette-slot");
+			if (!id || seen.has(id)) return;
+			seen.add(id);
+			slots.push(el);
 		});
-	});
+		return slots;
+	};
+
+	const buildRows = () => {
+		if (!(panel instanceof HTMLElement) || !(rowTemplate instanceof HTMLTemplateElement)) {
+			return;
+		}
+		panel.replaceChildren();
+
+		const slots = discoverSlots();
+		if (!slots.length) {
+			picker?.setAttribute("hidden", "");
+			return;
+		}
+		picker?.removeAttribute("hidden");
+
+		for (const slotEl of slots) {
+			const slotId = slotEl.getAttribute("data-palette-slot") ?? "";
+			const fragment = rowTemplate.content.cloneNode(true);
+			const row = fragment.querySelector("[data-slot-row]");
+			const labelEl = fragment.querySelector("[data-slot-label]");
+			const swatchGroup = fragment.querySelector(".color-palette-picker__swatches");
+
+			if (!(row instanceof HTMLElement) || !(labelEl instanceof HTMLElement)) continue;
+
+			row.dataset.slotId = slotId;
+			labelEl.textContent = SLOT_LABELS[slotId] ?? slotId;
+			if (swatchGroup instanceof HTMLElement) {
+				swatchGroup.setAttribute("aria-label", labelEl.textContent);
+			}
+
+			const stored = read(storageKey(slotId), VALID_PALETTES, DEFAULT_PALETTE);
+			applyPaletteToSlot(slotEl, stored, row);
+
+			row.querySelectorAll(".color-palette-picker__swatch").forEach((swatch) => {
+				swatch.addEventListener("click", () => {
+					if (!(swatch instanceof HTMLButtonElement)) return;
+					applyPaletteToSlot(slotEl, swatch.dataset.palette ?? "", row);
+				});
+			});
+
+			panel.appendChild(fragment);
+		}
+	};
+
+	buildRows();
+	setCollapsed(readCollapsed());
 
 	collapseBtn?.addEventListener("click", () => {
 		setCollapsed(true, { focus: true });
@@ -189,12 +310,13 @@ const PALETTES = [
 		bottom: max(0.5rem, env(safe-area-inset-bottom));
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
-		padding: 0.55rem 0.6rem 0.65rem;
+		gap: 0.35rem;
+		padding: 0.4rem 0.45rem 0.45rem;
 		background: var(--surface);
 		border: 1px solid var(--line-strong);
 		color: var(--ink);
-		width: min(16rem, calc(100vw - 1rem));
+		width: fit-content;
+		max-width: calc(100vw - 1rem);
 		max-height: min(70svh, 28rem);
 		overflow: auto;
 		box-shadow: 0 8px 24px color-mix(in oklab, var(--ink) 12%, transparent);
@@ -288,22 +410,44 @@ const PALETTES = [
 	.color-palette-picker__panel {
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0.3rem;
+		width: max-content;
+		max-width: 100%;
 		min-width: 0;
+	}
+
+	.color-palette-picker__row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.55rem;
+		min-width: 0;
+	}
+
+	.color-palette-picker__slot-label {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--ink);
+		white-space: nowrap;
 	}
 
 	.color-palette-picker__swatches {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 0.4rem;
+		grid-template-columns: repeat(4, 1.25rem);
+		gap: 0.25rem;
+		flex-shrink: 0;
 	}
 
 	.color-palette-picker__swatch {
 		display: grid;
 		grid-template-rows: 1fr 1fr;
 		aspect-ratio: 1;
-		min-width: 2rem;
-		min-height: 2rem;
+		width: 1.25rem;
+		min-width: 1.25rem;
+		min-height: 1.25rem;
 		padding: 0;
 		overflow: hidden;
 		border: 1px solid var(--line);

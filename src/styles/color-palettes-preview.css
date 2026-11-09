@@ -1,25 +1,26 @@
 /* DEV-only color palette preview (#12). Imported from Base.astro when DEV.
-   Prod baseline (walnut accent/title) lives in theme.css :root. */
+   Prod baseline (walnut accent/title) lives in theme.css :root.
+   Slots use [data-palette] on header / sections / main — not html[data-palette]. */
 
-html[data-palette="walnut"] {
+[data-palette="walnut"] {
 	--accent: #8a5322;
 	--title: #6b3f18;
 	--accent-ink: #ffffff;
 }
 
-html[data-palette="pomodoro"] {
+[data-palette="pomodoro"] {
 	--accent: #c43c2c;
 	--title: #8f2418;
 	--accent-ink: #ffffff;
 }
 
-html[data-palette="pascali"] {
+[data-palette="pascali"] {
 	--accent: #2f5f8a;
 	--title: #1e3f5c;
 	--accent-ink: #ffffff;
 }
 
-html[data-palette="bottiglia"] {
+[data-palette="bottiglia"] {
 	--accent: #2f6b4f;
 	--title: #1e4a36;
 	--accent-ink: #ffffff;

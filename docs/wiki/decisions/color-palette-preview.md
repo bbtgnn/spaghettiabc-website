@@ -3,7 +3,7 @@
 ## Sources
 
 - GitHub issue [#12](https://github.com/bbtgnn/spaghettiabc-website/issues/12) — color palette preview
-- Grilling with Chiara: agreed 2026-11-09
+- Grilling with Chiara: agreed 2026-11-09 (single-page wiring), multi-slot grill 2026-11-09
 - Related: [Font pairing preview](./font-pairing-preview.md) (DEV picker lifecycle, issue [#9](https://github.com/bbtgnn/spaghettiabc-website/issues/9))
 - Related: [Chiara / working style](../preferences/chiara.md)
 
@@ -45,16 +45,39 @@ Seed hex values are **provisional**. Walnut accent/title match the existing toke
 
 - Separate DEV panel from `FontPairingPicker`, same visual style
 - Placement: bottom-left (fonts stay bottom-right)
-- Control: row of 4 swatches (bright + dark visible on each) — not a `<select>`, not a matrix
+- Control: contextual rows — one row per `data-palette-slot` present on the page; each row has Italian label + 4 swatches (bright + dark) — not a `<select>`, not a matrix
+- Always include `chrome` when SiteHeader is present
 - New twin component `ColorPalettePicker.astro` (mirror FontPairingPicker styles; no shared `DevPicker` extract this round)
+- Collapse behavior kept
 
-### Wiring
+### Multi-slot wiring (grill 2026-11-09)
 
-- Attribute: `html[data-palette]`
-- DEV CSS preview overrides for remapped brand tokens
-- Persist via `localStorage` key `spaghettiabc-color-palette`
-- Early script in `Base.astro` (same pattern as font pairing)
-- Default: `walnut`
+Slots are independent; each remaps `--accent` / `--title` / `--accent-ink` on its subtree via CSS variables.
+
+| Slot id | Where | Label (IT) |
+| --- | --- | --- |
+| `chrome` | SiteHeader root | Chrome |
+| `hero` | Homepage hero section | Hero |
+| `sezione-tour` | Homepage Sezione Tour | Sezione Tour |
+| `sezione-libro` | Homepage Sezione Libro | Sezione Libro |
+| `sezione-formazione` | Homepage Sezione Formazione | Sezione Formazione |
+| `sezione-dicono` | Homepage Sezione Dicono di me | Sezione Dicono di me |
+| `sezione-newsletter` | Homepage Sezione Newsletter | Sezione Newsletter |
+| `page-tours` | Catalogo Tour `<main>` | Catalogo Tour |
+| `page-tour` | Scheda Tour `<main>` | Scheda Tour |
+| `page-book` | Libro `<main>` | Libro |
+| `page-training` | Formazione `<main>` | Formazione |
+| `page-posts` | Posts index `<main>` | Posts |
+| `page-post` | Post detail `<main>` | Post |
+| `page-cms` | CMS page `[slug]` `<main>` | Pagina |
+
+Markup: `data-palette-slot="<id>"` + default `data-palette="walnut"` (JS overwrites from storage).
+
+- CSS: `[data-palette="walnut|pomodoro|pascali|bottiglia"]` in `color-palettes-preview.css` (not `html[data-palette]` only)
+- Persist: `localStorage` key `spaghettiabc-palette-<slotId>` (supersedes single key `spaghettiabc-color-palette`)
+- FOUC: head inline script injects `<style id="palette-fouc">` from all `spaghettiabc-palette-*` keys before paint
+- `Base.astro` optional prop `paletteSlot` sets attributes on `<main>` for non-home templates
+- Out of scope for dedicated slots: 404, admin, `/_dev` playgrounds
 
 ### Production lock
 
@@ -66,9 +89,11 @@ No `GLOSSARY.md` update — Palette / swatch ids are design-system terms, not si
 
 ## Working-tree note (2026-11-09)
 
-Subagent implemented the DEV palette preview on branch `feat/color-palette-preview` in worktree `color-palette-10c2486a` on 2026-11-09 (uncommitted; base HEAD `38dd9cd746c5cc89388f241d5a5de1b16bf41d6c`). Paths:
+Subagent implemented the DEV palette preview on branch `feat/color-palette-preview` (uncommitted; base HEAD `38dd9cd746c5cc89388f241d5a5de1b16bf41d6c`), then multi-slot wiring per grill. Paths:
 
 - `src/components/ColorPalettePicker.astro`
 - `src/styles/color-palettes-preview.css`
-- `src/layouts/Base.astro` (DEV import + FOUC script + mount)
+- `src/layouts/Base.astro` (DEV import + FOUC style + `paletteSlot` on main + mount)
+- `src/components/SiteHeader.astro` (`chrome` slot)
+- Homepage sections + listed page templates
 - `docs/wiki/decisions/color-palette-preview.md` + `docs/wiki/index.md`
