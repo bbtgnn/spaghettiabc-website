@@ -18,3 +18,9 @@ On 2026-10-23 the implementer observed:
 ## Agent pitfall
 
 After schema changes: do not assume CLI output alone updates `emdash-env.d.ts`. Confirm root types include new collections/fields (or run `bun dev` and re-check), especially if only `.emdash/types.ts` changed.
+
+## Live DB vs seed drift (2026-11-09)
+
+During [#14](https://github.com/bbtgnn/spaghettiabc-website/issues/14) follow-up, `npx emdash types` + `/_emdash/api/typegen` regenerated types from the **live** instance schema. That schema still exposed homepage `collaborations_*` fields, not seed’s `dicono_*` / `partner_logos` / `google_score` / richer `google_reviews` subfields agreed in [Sezione Dicono di me](../decisions/dicono-di-me-section.md) (2026-11-06).
+
+Consequence observed 2026-11-09: `astro check` still reported ~12 errors in `src/pages/index.astro` (Homepage field names). Playground `/_dev` files were clean after a separate `gateDevOnly` typing fix. **Types regen alone does not fix this** until the running DB schema is migrated (or re-seeded) to match seed.

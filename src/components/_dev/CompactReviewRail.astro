@@ -1,0 +1,86 @@
+---
+import { Image } from "emdash/ui";
+import Star from "@lucide/astro/icons/star";
+
+interface Review {
+	author: string;
+	quote: string;
+	rating?: number | null;
+	avatar?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+	} | null;
+	review_url?: string | null;
+}
+
+interface Props {
+	reviews: Review[];
+	/** Slightly quieter chrome when nestled inside variant B */
+	integrated?: boolean;
+}
+
+const { reviews, integrated = false } = Astro.props;
+const starSlots = [1, 2, 3, 4, 5] as const;
+---
+
+{
+	reviews.length > 0 && (
+		<div
+			class:list={["pg-review-rail", integrated && "pg-review-rail--integrated"]}
+		>
+			{integrated && (
+				<p class="label pg-review-rail__label">Recensioni</p>
+			)}
+			<div
+				class="pg-review-rail__track"
+				role="list"
+				aria-label="Recensioni Google"
+			>
+				{reviews.map((item) => {
+					const rating = Math.min(5, Math.max(0, Number(item.rating) || 5));
+					const CardTag = item.review_url ? "a" : "div";
+					const cardProps = item.review_url
+						? {
+								href: item.review_url,
+								target: "_blank",
+								rel: "noopener noreferrer",
+							}
+						: {};
+					return (
+						<div class="pg-review-rail__item" role="listitem">
+							<CardTag class="pg-review-card" {...cardProps}>
+								<div
+									class="star-row pg-review-card__stars"
+									aria-label={`Valutazione: ${rating} su 5`}
+								>
+									{starSlots.map((n) => (
+										<Star
+											class={`star-row__icon${n <= rating ? " is-filled" : ""}`}
+											size={12}
+											stroke-width={1.5}
+											aria-hidden="true"
+										/>
+									))}
+								</div>
+								<blockquote class="pg-review-card__quote">
+									<p>{item.quote}</p>
+								</blockquote>
+								<div class="pg-review-card__author">
+									{item.avatar && (
+										<span class="pg-review-card__avatar">
+											<Image image={item.avatar} />
+										</span>
+									)}
+									<span class="pg-review-card__name">{item.author}</span>
+								</div>
+							</CardTag>
+						</div>
+					);
+				})}
+			</div>
+		</div>
+	)
+}

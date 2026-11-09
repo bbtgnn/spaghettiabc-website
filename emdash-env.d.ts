@@ -5,21 +5,6 @@
 
 import type { BylineSummary, ContentBylineCredit, TaxonomyTerm, PortableTextBlock, ReferencePage } from "emdash";
 
-export interface AgniSlide {
-  id: string;
-  slug: string | null;
-  status: string;
-  title: string;
-  content?: PortableTextBlock[];
-  excerpt?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  byline?: BylineSummary | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
 export interface Book {
   id: string;
   slug: string | null;
@@ -37,41 +22,56 @@ export interface Book {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface Collaboration {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  subtitle?: string;
+  excerpt?: string;
+  content?: PortableTextBlock[];
+  logos?: { "logo": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } }; "name"?: string | null }[];
+  gallery?: { "image": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } }[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Homepage {
   id: string;
   slug: string | null;
   status: string;
+  form_heading_hero?: boolean;
   hero_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   hero_title: string;
   hero_subtitle?: string;
+  form_heading_tour?: boolean;
   tour_title: string;
   tour_subtitle?: string;
   tour_cta_label?: string;
+  form_heading_book?: boolean;
   book_title?: string;
   book_subtitle?: string;
   book_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   book_cta_label?: string;
+  form_heading_training?: boolean;
   training_title?: string;
   training_subtitle?: string;
   training_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   training_cta_label?: string;
+  form_heading_collaborations?: boolean;
+  collaborations_title?: string;
+  collaborations_subtitle?: string;
+  collaborations_cta_label?: string;
+  google_reviews?: { "author": string; "quote": string; "rating"?: number | null }[];
+  form_heading_newsletter?: boolean;
   newsletter_title?: string;
   newsletter_subtitle?: string;
   newsletter_button_label?: string;
   newsletter_email_placeholder?: string;
-  form_heading_hero?: boolean;
-  form_heading_tour?: boolean;
-  form_heading_book?: boolean;
-  form_heading_training?: boolean;
-  form_heading_newsletter?: boolean;
-  google_reviews?: { "author": string; "quote": string; "rating": number; "avatar"?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } | null; "review_url"?: string | null }[];
-  form_heading_dicono?: boolean;
-  dicono_title?: string;
-  dicono_subtitle?: string;
-  partner_logos?: { "logo": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } }; "name"?: string | null }[];
-  google_score?: number;
-  google_review_count?: number;
-  google_profile_url?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -86,7 +86,6 @@ export interface Page {
   status: string;
   title: string;
   content?: PortableTextBlock[];
-  excerpt?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -120,12 +119,12 @@ export interface Tour {
   excerpt?: string;
   destination?: string;
   duration?: string;
-  price?: string;
-  gallery?: { "image": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } }[];
-  content?: PortableTextBlock[];
   group_size?: string;
   language?: string;
   included?: string;
+  price?: string;
+  gallery?: { "image": { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } } }[];
+  content?: PortableTextBlock[];
   faq?: { "question": string; "answer": string }[];
   createdAt: Date;
   updatedAt: Date;
@@ -152,35 +151,19 @@ export interface Training {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
-export interface Wpcf7ContactForm {
-  id: string;
-  slug: string | null;
-  status: string;
-  title: string;
-  content?: PortableTextBlock[];
-  excerpt?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  publishedAt: Date | null;
-  byline?: BylineSummary | null;
-  bylines?: ContentBylineCredit[];
-  terms?: Record<string, TaxonomyTerm[]>;
-}
-
 export interface HomepageReferences {
   featured_tours: ReferencePage<Tour>;
 }
 
 declare module "emdash" {
   interface EmDashCollections {
-    agni_slides: AgniSlide;
     book: Book;
+    collaborations: Collaboration;
     homepage: Homepage;
     pages: Page;
     posts: Post;
     tours: Tour;
     training: Training;
-    wpcf7_contact_form: Wpcf7ContactForm;
   }
   interface EmDashCollectionReferences {
     homepage: HomepageReferences;

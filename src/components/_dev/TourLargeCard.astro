@@ -1,0 +1,66 @@
+---
+import { Image } from "emdash/ui";
+
+interface Props {
+	href: string;
+	title: string;
+	excerpt?: string | null;
+	destination?: string | null;
+	duration?: string | null;
+	price?: string | null;
+	image?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+	} | null;
+	/** Visual treatment for the playground large pair */
+	layout?: "stack" | "row" | "dominant" | "secondary";
+	index?: number;
+}
+
+const {
+	href,
+	title,
+	excerpt,
+	destination,
+	duration,
+	price,
+	image,
+	layout = "stack",
+	index = 0,
+} = Astro.props;
+
+const meta = [destination, duration].filter(Boolean).join(" · ");
+---
+
+<article class:list={["pg-tour-large", `pg-tour-large--${layout}`]}>
+	<a class="pg-tour-large__link" href={href}>
+		{
+			image && (
+				<div class="pg-tour-large__media">
+					<Image
+						image={image}
+						loading={index < 2 ? "eager" : "lazy"}
+						priority={index < 2}
+					/>
+				</div>
+			)
+		}
+		<div class="pg-tour-large__body">
+			<h3 class="type-h3 pg-tour-large__title">{title}</h3>
+			{
+				excerpt && (
+					<p class="type-body pg-tour-large__excerpt">{excerpt}</p>
+				)
+			}
+			{(price || meta) && (
+				<div class="pg-tour-large__footer">
+					{price && <p class="mono pg-tour-large__price">{price}</p>}
+					{meta && <p class="label pg-tour-large__meta">{meta}</p>}
+				</div>
+			)}
+		</div>
+	</a>
+</article>

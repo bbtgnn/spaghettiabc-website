@@ -1,0 +1,207 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import TourTeaser from "../TourTeaser.astro";
+import CompactReviewRail from "./CompactReviewRail.astro";
+import TourLargeCard from "./TourLargeCard.astro";
+
+interface TourEntry {
+	id: string;
+	data: {
+		title: string;
+		excerpt?: string | null;
+		destination?: string | null;
+		duration?: string | null;
+		price?: string | null;
+		featured_image?: {
+			id: string;
+			src?: string;
+			alt?: string;
+			width?: number;
+			height?: number;
+		} | null;
+	};
+}
+
+interface Review {
+	author: string;
+	quote: string;
+	rating?: number | null;
+	avatar?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+	} | null;
+	review_url?: string | null;
+}
+
+interface Props {
+	variant: "a" | "b" | "c";
+	viewport: "desktop" | "mobile";
+	tourTitle?: string | null;
+	tourSubtitle?: string | null;
+	tourCtaLabel?: string | null;
+	largeTours: TourEntry[];
+	railTours: TourEntry[];
+	reviews: Review[];
+}
+
+const {
+	variant,
+	viewport,
+	tourTitle,
+	tourSubtitle,
+	tourCtaLabel,
+	largeTours,
+	railTours,
+	reviews,
+} = Astro.props;
+
+const primary = largeTours[0];
+const secondary = largeTours[1];
+---
+
+<section
+	class:list={[
+		"shell",
+		"section",
+		"pg-sezione",
+		`pg-sezione--${variant}`,
+		`pg-sezione--${viewport}`,
+	]}
+	aria-label={tourTitle ?? "Sezione Tour"}
+>
+	<div class="rule" />
+	<div class="section__head">
+		{
+			tourTitle && (
+				<h2 class="type-h2">{tourTitle}</h2>
+			)
+		}
+		{
+			tourCtaLabel && (
+				<a class="btn btn-outline btn--arrow" href="/tours">
+					<span class="btn__label">Tutti i tour</span>
+					<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+				</a>
+			)
+		}
+	</div>
+	{
+		tourSubtitle && (
+			<p class="type-lead section__lede">{tourSubtitle}</p>
+		)
+	}
+
+	{
+		largeTours.length === 0 ? (
+			<p class="type-body">Nessun tour in evidenza.</p>
+		) : (
+			<>
+				{/* —— Variante A: 50/50 o stack —— */}
+				{variant === "a" && (
+					<div class="pg-large-pair pg-large-pair--equal">
+						{largeTours.slice(0, 2).map((tour, index) => (
+							<TourLargeCard
+								href={`/tours/${tour.id}`}
+								title={tour.data.title}
+								excerpt={tour.data.excerpt}
+								destination={tour.data.destination}
+								duration={tour.data.duration}
+								price={tour.data.price}
+								image={tour.data.featured_image}
+								layout="stack"
+								index={index}
+							/>
+						))}
+					</div>
+				)}
+
+				{/* —— Variante B: schede orizzontali —— */}
+				{variant === "b" && (
+					<div class="pg-large-pair pg-large-pair--rows">
+						{largeTours.slice(0, 2).map((tour, index) => (
+							<TourLargeCard
+								href={`/tours/${tour.id}`}
+								title={tour.data.title}
+								excerpt={tour.data.excerpt}
+								destination={tour.data.destination}
+								duration={tour.data.duration}
+								price={tour.data.price}
+								image={tour.data.featured_image}
+								layout={viewport === "mobile" ? "stack" : "row"}
+								index={index}
+							/>
+						))}
+					</div>
+				)}
+
+				{/* —— Variante C: dominante + secondaria —— */}
+				{variant === "c" && primary && (
+					<div class="pg-large-pair pg-large-pair--asymmetric">
+						<TourLargeCard
+							href={`/tours/${primary.id}`}
+							title={primary.data.title}
+							excerpt={primary.data.excerpt}
+							destination={primary.data.destination}
+							duration={primary.data.duration}
+							price={primary.data.price}
+							image={primary.data.featured_image}
+							layout="dominant"
+							index={0}
+						/>
+						{secondary && (
+							<TourLargeCard
+								href={`/tours/${secondary.id}`}
+								title={secondary.data.title}
+								excerpt={secondary.data.excerpt}
+								destination={secondary.data.destination}
+								duration={secondary.data.duration}
+								price={secondary.data.price}
+								image={secondary.data.featured_image}
+								layout="secondary"
+								index={1}
+							/>
+						)}
+					</div>
+				)}
+
+				{/* B: recensioni integrate tra grandi e rail */}
+				{variant === "b" && (
+					<CompactReviewRail reviews={reviews} integrated />
+				)}
+
+				{railTours.length > 0 && (
+					<div class="tour-rail">
+						<div
+							class="tour-rail__track"
+							role="list"
+							aria-label="Altri tour in evidenza"
+						>
+							{railTours.map((tour, index) => (
+								<div role="listitem">
+									<TourTeaser
+										href={`/tours/${tour.id}`}
+										title={tour.data.title}
+										excerpt={tour.data.excerpt}
+										destination={tour.data.destination}
+										duration={tour.data.duration}
+										price={tour.data.price}
+										image={tour.data.featured_image}
+										index={index}
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				{/* A + C: rail recensioni in coda */}
+				{(variant === "a" || variant === "c") && (
+					<CompactReviewRail reviews={reviews} />
+				)}
+			</>
+		)
+	}
+</section>

@@ -1,0 +1,338 @@
+---
+/**
+ * DEV-only color palette preview (#12). Stripped from production builds.
+ * Row of 4 swatches (bright + dark); independent of FontPairingPicker.
+ */
+import Palette from "@lucide/astro/icons/palette";
+import X from "@lucide/astro/icons/x";
+
+const PALETTES = [
+	{
+		id: "walnut",
+		label: "Walnut",
+		accent: "#8a5322",
+		title: "#6b3f18",
+	},
+	{
+		id: "pomodoro",
+		label: "Rosso pomodoro",
+		accent: "#c43c2c",
+		title: "#8f2418",
+	},
+	{
+		id: "pascali",
+		label: "Blu Pascali",
+		accent: "#2f5f8a",
+		title: "#1e3f5c",
+	},
+	{
+		id: "bottiglia",
+		label: "Verde bottiglia",
+		accent: "#2f6b4f",
+		title: "#1e4a36",
+	},
+] as const;
+---
+
+<div class="color-palette-picker" role="region" aria-label="Anteprima colori">
+	<div class="color-palette-picker__header">
+		<p class="color-palette-picker__title">Palette colori</p>
+		<button
+			type="button"
+			class="color-palette-picker__collapse"
+			aria-label="Riduci pannello colori"
+			aria-expanded="true"
+		>
+			<X class="color-palette-picker__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+		</button>
+	</div>
+
+	<div class="color-palette-picker__panel">
+		<div class="color-palette-picker__swatches" role="group" aria-label="Palette">
+			{
+				PALETTES.map((palette) => (
+					<button
+						type="button"
+						class="color-palette-picker__swatch"
+						data-palette={palette.id}
+						aria-label={palette.label}
+						aria-pressed="false"
+						title={palette.label}
+					>
+						<span
+							class="color-palette-picker__swatch-half color-palette-picker__swatch-half--accent"
+							style={`background:${palette.accent}`}
+							aria-hidden="true"
+						/>
+						<span
+							class="color-palette-picker__swatch-half color-palette-picker__swatch-half--title"
+							style={`background:${palette.title}`}
+							aria-hidden="true"
+						/>
+					</button>
+				))
+			}
+		</div>
+	</div>
+
+	<button
+		type="button"
+		class="color-palette-picker__launch"
+		aria-label="Apri anteprima colori"
+		hidden
+	>
+		<Palette class="color-palette-picker__icon" size={18} stroke-width={1.75} aria-hidden="true" />
+	</button>
+</div>
+
+<script>
+	const KEY_PALETTE = "spaghettiabc-color-palette";
+	const KEY_COLLAPSED = "spaghettiabc-color-picker-collapsed";
+
+	const DEFAULT_PALETTE = "walnut";
+	const VALID_PALETTES = ["walnut", "pomodoro", "pascali", "bottiglia"];
+
+	const root = document.documentElement;
+	const picker = document.querySelector(".color-palette-picker");
+	const swatches = picker?.querySelectorAll(".color-palette-picker__swatch");
+	const collapseBtn = picker?.querySelector(".color-palette-picker__collapse");
+	const launchBtn = picker?.querySelector(".color-palette-picker__launch");
+
+	const read = (key: string, valid: string[], fallback: string) => {
+		try {
+			const stored = localStorage.getItem(key);
+			if (stored && valid.includes(stored)) return stored;
+		} catch {
+			/* no-op */
+		}
+		return fallback;
+	};
+
+	const write = (key: string, value: string) => {
+		try {
+			localStorage.setItem(key, value);
+		} catch {
+			/* no-op */
+		}
+	};
+
+	const readCollapsed = () => {
+		try {
+			return localStorage.getItem(KEY_COLLAPSED) === "1";
+		} catch {
+			return false;
+		}
+	};
+
+	const setCollapsed = (collapsed: boolean, { focus = false } = {}) => {
+		if (!(picker instanceof HTMLElement)) return;
+		picker.classList.toggle("is-collapsed", collapsed);
+		picker.setAttribute(
+			"aria-label",
+			collapsed ? "Anteprima colori (ridotta)" : "Anteprima colori",
+		);
+
+		if (collapseBtn instanceof HTMLButtonElement) {
+			collapseBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+			collapseBtn.hidden = collapsed;
+		}
+
+		if (launchBtn instanceof HTMLButtonElement) {
+			launchBtn.hidden = !collapsed;
+		}
+
+		if (focus) {
+			const next = collapsed ? launchBtn : collapseBtn;
+			if (next instanceof HTMLButtonElement) next.focus();
+		}
+
+		write(KEY_COLLAPSED, collapsed ? "1" : "0");
+	};
+
+	const applyPalette = (palette: string) => {
+		const next = VALID_PALETTES.includes(palette) ? palette : DEFAULT_PALETTE;
+		root.setAttribute("data-palette", next);
+		write(KEY_PALETTE, next);
+
+		swatches?.forEach((swatch) => {
+			if (!(swatch instanceof HTMLButtonElement)) return;
+			const selected = swatch.dataset.palette === next;
+			swatch.setAttribute("aria-pressed", selected ? "true" : "false");
+			swatch.classList.toggle("is-selected", selected);
+		});
+	};
+
+	applyPalette(read(KEY_PALETTE, VALID_PALETTES, DEFAULT_PALETTE));
+	setCollapsed(readCollapsed());
+
+	swatches?.forEach((swatch) => {
+		swatch.addEventListener("click", () => {
+			if (!(swatch instanceof HTMLButtonElement)) return;
+			applyPalette(swatch.dataset.palette ?? "");
+		});
+	});
+
+	collapseBtn?.addEventListener("click", () => {
+		setCollapsed(true, { focus: true });
+	});
+
+	launchBtn?.addEventListener("click", () => {
+		setCollapsed(false, { focus: true });
+	});
+</script>
+
+<style>
+	.color-palette-picker {
+		position: fixed;
+		z-index: 10000;
+		left: max(0.5rem, env(safe-area-inset-left));
+		bottom: max(0.5rem, env(safe-area-inset-bottom));
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.55rem 0.6rem 0.65rem;
+		background: var(--surface);
+		border: 1px solid var(--line-strong);
+		color: var(--ink);
+		width: min(16rem, calc(100vw - 1rem));
+		max-height: min(70svh, 28rem);
+		overflow: auto;
+		box-shadow: 0 8px 24px color-mix(in oklab, var(--ink) 12%, transparent);
+		pointer-events: auto;
+	}
+
+	.color-palette-picker.is-collapsed {
+		width: auto;
+		max-height: none;
+		padding: 0;
+		overflow: visible;
+		gap: 0;
+		background: transparent;
+		border: 0;
+		box-shadow: none;
+	}
+
+	.color-palette-picker__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.color-palette-picker.is-collapsed .color-palette-picker__header,
+	.color-palette-picker.is-collapsed .color-palette-picker__panel {
+		display: none;
+	}
+
+	.color-palette-picker__title {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--muted);
+	}
+
+	.color-palette-picker__collapse,
+	.color-palette-picker__launch {
+		display: grid;
+		place-items: center;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--canvas);
+		color: var(--ink);
+		cursor: pointer;
+		transition:
+			background 160ms ease,
+			border-color 160ms ease,
+			box-shadow 160ms ease,
+			color 160ms ease;
+	}
+
+	.color-palette-picker__collapse {
+		width: 1.75rem;
+		height: 1.75rem;
+		flex-shrink: 0;
+	}
+
+	.color-palette-picker__launch {
+		width: 2.75rem;
+		height: 2.75rem;
+		border-color: var(--line-strong);
+		background: var(--surface);
+		box-shadow: 0 8px 24px color-mix(in oklab, var(--ink) 12%, transparent);
+	}
+
+	.color-palette-picker__launch[hidden] {
+		display: none;
+	}
+
+	.color-palette-picker__collapse:hover,
+	.color-palette-picker__collapse:focus-visible,
+	.color-palette-picker__launch:hover,
+	.color-palette-picker__launch:focus-visible {
+		border-color: var(--line-strong);
+		color: var(--accent);
+		outline: none;
+	}
+
+	.color-palette-picker__collapse:focus-visible,
+	.color-palette-picker__launch:focus-visible {
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+	}
+
+	.color-palette-picker__icon {
+		display: block;
+	}
+
+	.color-palette-picker__panel {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		min-width: 0;
+	}
+
+	.color-palette-picker__swatches {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 0.4rem;
+	}
+
+	.color-palette-picker__swatch {
+		display: grid;
+		grid-template-rows: 1fr 1fr;
+		aspect-ratio: 1;
+		min-width: 2rem;
+		min-height: 2rem;
+		padding: 0;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--canvas);
+		cursor: pointer;
+		transition:
+			border-color 160ms ease,
+			box-shadow 160ms ease;
+	}
+
+	.color-palette-picker__swatch:hover,
+	.color-palette-picker__swatch:focus-visible {
+		border-color: var(--line-strong);
+		outline: none;
+	}
+
+	.color-palette-picker__swatch:focus-visible {
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+	}
+
+	.color-palette-picker__swatch.is-selected {
+		border-color: var(--ink);
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--ink) 35%, transparent);
+	}
+
+	.color-palette-picker__swatch-half {
+		display: block;
+		width: 100%;
+		min-height: 50%;
+	}
+</style>

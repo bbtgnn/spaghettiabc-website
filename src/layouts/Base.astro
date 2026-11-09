@@ -2,6 +2,7 @@
 import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
+import ColorPalettePicker from "../components/ColorPalettePicker.astro";
 import FontPairingPicker from "../components/FontPairingPicker.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
@@ -10,6 +11,7 @@ import "../styles/theme.css";
 const isDev = import.meta.env.DEV;
 if (isDev) {
 	await import("../styles/font-pairings-preview.css");
+	await import("../styles/color-palettes-preview.css");
 }
 
 interface Props {
@@ -20,6 +22,8 @@ interface Props {
 	canonical?: string | null;
 	/** Kept for call-site compatibility; header is always sticky in Atelier mode */
 	overlayHeader?: boolean;
+	/** Hide SiteHeader (e.g. `/_dev` playgrounds with their own chrome) */
+	hideHeader?: boolean;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
 }
@@ -30,6 +34,7 @@ const {
 	description,
 	image,
 	canonical,
+	hideHeader = false,
 	content,
 } = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
@@ -93,16 +98,19 @@ const pageCtx = createPublicPageContext({
 							display: "spaghettiabc-font-display",
 							body: "spaghettiabc-font-body",
 							ui: "spaghettiabc-font-ui",
+							palette: "spaghettiabc-color-palette",
 						};
 						const DEFAULTS = {
 							display: "fraunces",
 							body: "source-serif-4",
 							ui: "fira-sans",
+							palette: "walnut",
 						};
 						const VALID = {
 							display: ["newsreader", "fraunces", "lora", "cormorant"],
 							body: ["source-serif-4", "literata"],
 							ui: ["body", "tsukimi", "fira-sans"],
+							palette: ["walnut", "pomodoro", "pascali", "bottiglia"],
 						};
 						const pick = (key, valid, fallback) => {
 							try {
@@ -128,6 +136,10 @@ const pageCtx = createPublicPageContext({
 							"data-font-ui-case",
 							ui === "body" ? "serif" : "sans",
 						);
+						root.setAttribute(
+							"data-palette",
+							pick(KEYS.palette, VALID.palette, DEFAULTS.palette),
+						);
 					})();
 				</script>
 			)
@@ -138,12 +150,16 @@ const pageCtx = createPublicPageContext({
 
 		<a class="sr-only" href="#main-content">Vai al contenuto</a>
 
-		<SiteHeader
-			siteTitle={siteTitle}
-			siteLogo={siteLogo}
-			items={menu?.items}
-			currentPath={currentPath}
-		/>
+		{
+			!hideHeader && (
+				<SiteHeader
+					siteTitle={siteTitle}
+					siteLogo={siteLogo}
+					items={menu?.items}
+					currentPath={currentPath}
+				/>
+			)
+		}
 
 		<main class="site-main" id="main-content">
 			<slot />
@@ -151,6 +167,7 @@ const pageCtx = createPublicPageContext({
 
 		<EmDashBodyEnd page={pageCtx} />
 
+		{isDev && <ColorPalettePicker />}
 		{isDev && <FontPairingPicker />}
 
 		<script is:inline>

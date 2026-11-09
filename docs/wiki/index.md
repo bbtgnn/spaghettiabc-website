@@ -13,10 +13,12 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Homepage + Tours schema](./decisions/homepage-tours-schema.md) — first CMS slice before Libro (2026-10-23)
 - [Homepage form headings](./decisions/homepage-form-headings.md) — CMS editor section titles for Homepage only ([#5](https://github.com/bbtgnn/spaghettiabc-website/issues/5), 2026-10-28)
 - [Font pairing preview](./decisions/font-pairing-preview.md) — DEV matrix Body×Display + UI (Come testo / Tsukimi / Fira Sans); Archivo out, Cormorant in Display; serif UI larger + normal tracking (2026-11-05); supersedes 2026-11-04 four-option select ([#9](https://github.com/bbtgnn/spaghettiabc-website/issues/9))
+- [Color palette preview](./decisions/color-palette-preview.md) — DEV Palette unit (accent+title); 4 swatches (walnut default, pomodoro, pascali, bottiglia); twin picker bottom-left; preview only ([#12](https://github.com/bbtgnn/spaghettiabc-website/issues/12), 2026-11-09)
+- [Sezione Tour `/_dev` playground](./decisions/sezione-tour-dev-playground.md) — `#14` grill + ship note: `src/dev` + `injectRoute` (Astro skips `pages/_…`); `gateDevOnly`; Catalogo out of scope (2026-11-09)
 
 ## Operations
 
-- [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts` (2026-10-23)
+- [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts`; 2026-11-09: live DB still `collaborations_*`, seed has `dicono_*` (2026-10-23 / 2026-11-09)
 - [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — Libro/Formazione pattern; Collaborazioni logos claim **superseded 2026-11-06** (2026-10-23 / 2026-11-05 / 2026-11-06)
 - [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps now seeded on homepage `partner_logos` (2026-10-28 / 2026-11-05 / 2026-11-06; loopback SSRF noted 2026-10-23)
 

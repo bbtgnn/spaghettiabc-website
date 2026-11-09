@@ -1,0 +1,424 @@
+/* Playground-only styles for `/_dev/sezione-tour`. Do not import from production pages. */
+
+/* ---------------------------------------------------------------------------
+   Playground chrome (outside frames)
+---------------------------------------------------------------------------- */
+
+.pg {
+	padding-block: 2rem 4rem;
+	background:
+		radial-gradient(
+			120% 80% at 0% 0%,
+			color-mix(in oklab, var(--surface) 70%, transparent),
+			transparent 55%
+		),
+		var(--canvas);
+}
+
+.pg__intro {
+	max-width: var(--shell);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+	padding-bottom: 2rem;
+	border-bottom: 1px solid var(--line);
+}
+
+.pg__kicker {
+	margin: 0 0 0.75rem;
+	color: var(--muted);
+}
+
+.pg__title {
+	margin: 0;
+	max-width: 18ch;
+	color: var(--title);
+}
+
+.pg__lede {
+	margin: 1rem 0 0;
+	max-width: 52ch;
+	color: var(--muted);
+}
+
+.pg__variant {
+	max-width: var(--shell);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+	padding-block: 2.75rem 1rem;
+}
+
+.pg__variant-head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.75rem 1.5rem;
+	margin-bottom: 1.25rem;
+}
+
+.pg__variant-title {
+	margin: 0;
+	font-family: var(--font-display);
+	font-size: clamp(1.35rem, 2vw, 1.75rem);
+	font-weight: var(--font-display-weight);
+	letter-spacing: -0.02em;
+	color: var(--title);
+}
+
+.pg__variant-desc {
+	margin: 0;
+	max-width: 42ch;
+	font-size: 0.9375rem;
+	color: var(--muted);
+}
+
+.pg__frames {
+	display: flex;
+	align-items: flex-start;
+	gap: 1.25rem;
+	overflow-x: auto;
+	padding-bottom: 0.5rem;
+	scroll-snap-type: x proximity;
+	-webkit-overflow-scrolling: touch;
+}
+
+.pg-frame {
+	flex: 0 0 auto;
+	scroll-snap-align: start;
+	display: grid;
+	gap: 0.5rem;
+}
+
+.pg-frame__label {
+	margin: 0;
+	color: var(--muted);
+}
+
+.pg-frame__viewport {
+	height: min(78vh, 46rem);
+	overflow: auto;
+	overscroll-behavior: contain;
+	background: var(--canvas);
+	border: 1px solid var(--line-strong);
+	box-shadow:
+		0 1px 0 color-mix(in oklab, var(--ink) 6%, transparent),
+		0 18px 40px color-mix(in oklab, var(--ink) 8%, transparent);
+}
+
+.pg-frame[data-viewport="desktop"] .pg-frame__viewport {
+	width: 1280px;
+}
+
+.pg-frame[data-viewport="mobile"] .pg-frame__viewport {
+	width: 390px;
+}
+
+/* Section chrome mirrored from homepage (scoped names avoid leaking) */
+.pg-sezione.section {
+	padding-block: 0 2.5rem;
+}
+
+.pg-sezione .section__head {
+	margin-top: 2rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: end;
+	justify-content: space-between;
+	gap: 1rem 2rem;
+}
+
+.pg-sezione .section__head .type-h2 {
+	max-width: 14ch;
+}
+
+.pg-sezione .section__lede {
+	margin-top: 1.25rem;
+	max-width: 48ch;
+}
+
+/* Force rail sizing from frame width, not the browser viewport */
+.pg-frame[data-viewport="mobile"] {
+	--gutter: 1.25rem;
+}
+
+.pg-frame[data-viewport="mobile"] .tour-rail {
+	--tour-rail-item: min(72%, 14.5rem);
+	margin-top: 2rem;
+}
+
+.pg-frame[data-viewport="desktop"] .tour-rail {
+	--tour-rail-item: 18.5rem;
+	margin-top: 3rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Large tour cards (playground-local)
+---------------------------------------------------------------------------- */
+
+.pg-large-pair {
+	margin-top: 2.25rem;
+	display: grid;
+	gap: 1rem;
+}
+
+.pg-sezione--desktop .pg-large-pair--equal {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1.25rem;
+}
+
+.pg-sezione--desktop .pg-large-pair--asymmetric {
+	grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+	gap: 1.25rem;
+	align-items: stretch;
+}
+
+.pg-sezione--mobile .pg-large-pair--equal,
+.pg-sezione--mobile .pg-large-pair--asymmetric,
+.pg-large-pair--rows {
+	grid-template-columns: 1fr;
+}
+
+.pg-tour-large {
+	min-width: 0;
+	height: 100%;
+}
+
+.pg-tour-large__link {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	text-decoration: none;
+	color: inherit;
+	background: color-mix(in oklab, var(--canvas) 40%, white);
+	border: 1px solid var(--line);
+	transition: border-color 280ms ease;
+}
+
+.pg-tour-large__link:hover,
+.pg-tour-large__link:focus-visible {
+	border-color: var(--accent);
+	outline: none;
+}
+
+.pg-tour-large--row .pg-tour-large__link {
+	flex-direction: row;
+	align-items: stretch;
+}
+
+.pg-tour-large__media {
+	overflow: hidden;
+	background: var(--surface);
+}
+
+.pg-tour-large__media img {
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+	display: block;
+	transition: transform 1100ms var(--ease-out-expo);
+}
+
+.pg-tour-large--dominant .pg-tour-large__media img {
+	aspect-ratio: 5 / 4;
+}
+
+.pg-tour-large--secondary .pg-tour-large__media img {
+	aspect-ratio: 1 / 1;
+}
+
+.pg-tour-large--row .pg-tour-large__media {
+	flex: 0 0 46%;
+	max-width: 46%;
+}
+
+.pg-tour-large--row .pg-tour-large__media img {
+	aspect-ratio: auto;
+	height: 100%;
+	min-height: 14rem;
+}
+
+.pg-tour-large__link:hover .pg-tour-large__media img {
+	transform: scale(1.04);
+}
+
+.pg-tour-large__body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	flex: 1 1 auto;
+	padding: 1.15rem 1.25rem 1.25rem;
+}
+
+.pg-tour-large--dominant .pg-tour-large__body {
+	padding: 1.35rem 1.4rem 1.5rem;
+}
+
+.pg-tour-large--row .pg-tour-large__body {
+	justify-content: center;
+	padding: 1.25rem 1.5rem;
+}
+
+.pg-tour-large__title {
+	margin: 0;
+}
+
+.pg-tour-large--dominant .pg-tour-large__title {
+	font-size: clamp(1.35rem, 1.8vw, 1.75rem);
+}
+
+.pg-tour-large__excerpt {
+	margin: 0;
+	max-width: 38ch;
+	font-size: 0.9375rem;
+}
+
+.pg-tour-large--secondary .pg-tour-large__excerpt {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.pg-tour-large__footer {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: auto;
+	padding-top: 0.35rem;
+}
+
+.pg-tour-large__price {
+	margin: 0;
+	font-size: 0.8125rem;
+	color: var(--ink);
+}
+
+.pg-tour-large__meta {
+	margin: 0;
+	text-align: right;
+}
+
+/* ---------------------------------------------------------------------------
+   Compact review rail
+---------------------------------------------------------------------------- */
+
+.pg-review-rail {
+	margin-top: 2.5rem;
+}
+
+.pg-review-rail--integrated {
+	margin-top: 1.75rem;
+	padding-top: 1.25rem;
+	border-top: 1px solid var(--line);
+}
+
+.pg-review-rail__label {
+	margin: 0 0 0.85rem;
+	padding-inline: var(--gutter);
+}
+
+.pg-review-rail__track {
+	display: flex;
+	align-items: stretch;
+	gap: 0.75rem;
+	overflow-x: auto;
+	overflow-y: hidden;
+	overscroll-behavior-x: contain;
+	scroll-snap-type: x mandatory;
+	scroll-padding-inline: var(--gutter);
+	padding-inline: var(--gutter);
+	margin-inline: calc(var(--gutter) * -1);
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
+}
+
+.pg-review-rail__track::-webkit-scrollbar {
+	display: none;
+}
+
+.pg-review-rail__item {
+	flex: 0 0 min(72%, 15.5rem);
+	scroll-snap-align: start;
+}
+
+.pg-frame[data-viewport="desktop"] .pg-review-rail__item {
+	flex-basis: 16.5rem;
+}
+
+.pg-review-card {
+	display: grid;
+	gap: 0.65rem;
+	height: 100%;
+	padding: 0.9rem 1rem 1rem;
+	background: color-mix(in oklab, var(--canvas) 55%, white);
+	border: 1px solid var(--line);
+	text-decoration: none;
+	color: inherit;
+	transition: border-color 240ms ease;
+}
+
+a.pg-review-card:hover,
+a.pg-review-card:focus-visible {
+	border-color: var(--accent);
+	outline: none;
+}
+
+.pg-review-card__stars.star-row {
+	display: flex;
+	gap: 0.12rem;
+	color: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+
+.pg-review-card__stars .star-row__icon.is-filled {
+	color: color-mix(in oklab, var(--muted) 72%, transparent);
+	fill: currentColor;
+}
+
+.pg-review-card__quote {
+	margin: 0;
+}
+
+.pg-review-card__quote p {
+	margin: 0;
+	font-family: var(--font-body);
+	font-size: 0.875rem;
+	line-height: 1.45;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.pg-review-card__author {
+	display: flex;
+	align-items: center;
+	gap: 0.45rem;
+	margin-top: auto;
+}
+
+.pg-review-card__avatar {
+	display: grid;
+	width: 1.35rem;
+	height: 1.35rem;
+	border-radius: 50%;
+	overflow: hidden;
+	flex-shrink: 0;
+	background: var(--line);
+}
+
+.pg-review-card__avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	filter: grayscale(1);
+	opacity: 0.5;
+}
+
+.pg-review-card__name {
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
+	letter-spacing: var(--font-ui-tracking);
+	font-weight: 500;
+	min-width: 0;
+}
