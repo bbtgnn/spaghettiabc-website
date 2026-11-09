@@ -2,7 +2,7 @@
 
 ## Sources
 
-- Concrete playgrounds: [Sezione Tour `/_dev`](./sezione-tour-dev-playground.md) (#14), [Sezione Hero `/_dev`](./hero-dev-playground.md) (#13)
+- Concrete playgrounds: [Sezione Tour `/_dev`](./sezione-tour-dev-playground.md) (#14), [Sezione Hero `/_dev`](./hero-dev-playground.md) (#13), [Ricette + Sezione Il mio mondo](./il-mio-mondo-recipes.md) (#16 Track B `/_dev/il-mio-mondo`)
 - Wiring research (same day): [2026-11-09-hero-dev-playground-reuse.md](../research/2026-11-09-hero-dev-playground-reuse.md)
 
 This page records **cross-cutting conventions** settled while building #14 and agreeing #13 (2026-11-09). Per-section variant directions and CMS field choices stay on the feature decision pages — do not invent new product decisions here.

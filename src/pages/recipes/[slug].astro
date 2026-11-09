@@ -1,0 +1,98 @@
+---
+import {
+	getEmDashEntry,
+	getSeoMeta,
+	decodeSlug,
+	getSiteSettings,
+} from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+
+const slug = decodeSlug(Astro.params.slug);
+
+if (!slug) {
+	return Astro.rewrite("/404");
+}
+
+const { entry: recipe, cacheHint } = await getEmDashEntry("recipes", slug);
+
+if (!recipe) {
+	return Astro.rewrite("/404");
+}
+
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+
+const seo = getSeoMeta(recipe, {
+	siteTitle,
+	siteUrl: Astro.url.origin,
+	path: Astro.url.pathname.replace(/\/$/, ""),
+});
+
+const categories = recipe.data.terms?.recipe_category ?? [];
+---
+
+<Base
+	title={seo.title}
+	pageTitle={seo.ogTitle}
+	description={seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={{ collection: "recipes", id: recipe.data.id, slug }}
+	paletteSlot="page-recipe"
+>
+	<article class="shell recipe-detail">
+		{
+			recipe.data.featured_image && (
+				<div class="recipe-detail__media" {...recipe.edit.featured_image}>
+					<Image image={recipe.data.featured_image} />
+				</div>
+			)
+		}
+
+		<header class="recipe-detail__intro">
+			{
+				categories.length > 0 && (
+					<p class="label recipe-detail__cats">
+						{categories.map((c) => c.label).join(" · ")}
+					</p>
+				)
+			}
+			<h1 class="type-hero" {...recipe.edit.title}>{recipe.data.title}</h1>
+		</header>
+
+		<div class="recipe-detail__body type-body">
+			<PortableText value={recipe.data.content} />
+		</div>
+	</article>
+</Base>
+
+<style>
+	.recipe-detail {
+		padding-block: 2.5rem 4rem;
+		display: grid;
+		gap: 2rem;
+		max-width: min(var(--shell), 48rem);
+	}
+
+	.recipe-detail__media :global(img) {
+		width: 100%;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+	}
+
+	.recipe-detail__intro {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	.recipe-detail__cats {
+		margin: 0;
+	}
+
+	.recipe-detail__body {
+		display: grid;
+		gap: 1rem;
+	}
+</style>

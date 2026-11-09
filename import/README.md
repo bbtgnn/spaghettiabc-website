@@ -1,0 +1,1 @@
+WordPress WXR export from spaghettiabc.com, dated **2026-10-29**. Text/metadata only — media binaries are not in this file (featured images resolve to remote `https://spaghettiabc.com/wp-content/...` URLs).

@@ -26,6 +26,14 @@ export function devPlaygrounds(): AstroIntegration {
 					pattern: "/_dev/hero/[variant]",
 					entrypoint: "./src/dev/hero/[variant].astro",
 				});
+				injectRoute({
+					pattern: "/_dev/il-mio-mondo",
+					entrypoint: "./src/dev/il-mio-mondo/index.astro",
+				});
+				injectRoute({
+					pattern: "/_dev/il-mio-mondo/[variant]",
+					entrypoint: "./src/dev/il-mio-mondo/[variant].astro",
+				});
 			},
 		},
 	};

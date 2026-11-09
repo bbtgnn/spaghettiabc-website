@@ -5,7 +5,7 @@ Dominio del sito di Flavia: tour e contenuti editoriali presentati tramite EmDas
 ## Language
 
 **Sezione Hero**:
-Blocco iniziale della homepage con titolo, sottotitolo, immagine e CTA: l'ingresso di brand di Flavia. Distinta dal Catalogo Tour, dalla Scheda Tour e dalle altre Sezioni.
+Blocco iniziale della homepage con titolo, sottotitolo, immagine e CTA: l’ingresso di brand di Flavia. Distinta dal Catalogo Tour, dalla Scheda Tour e dalle altre Sezioni.
 _Avoid_: hero (da solo come nome di sezione nel dominio); above-the-fold; banner; jumbotron
 
 **Libro**:
@@ -63,3 +63,35 @@ _Avoid_: mailing list (come nome UI), iscriviti (come nome di entità)
 **Sezione Newsletter**:
 Blocco della homepage con titolo, sottotitolo e casella email per l’iscrizione (UI; invio reale deferred).
 _Avoid_: pagina newsletter, form contatti
+
+**Ricetta**:
+Contenuto di prima classe nel CMS: una ricetta di Flavia (collection dedicata, URL `/recipes/{slug}`). Distinta da Post e dal canale Newsletter (anche se la Newsletter può parlare di ricette di stagione).
+_Avoid_: post, articolo, recipe post, `posts`
+
+**Catalogo Ricette**:
+La pagina `/recipes` che elenca tutte le entry Ricetta (teaser verso le Schede Ricetta). Voce di menu **Ricette**.
+_Avoid_: lista ricette; blog ricette; recipe index
+
+**Scheda Ricetta**:
+La pagina dettaglio di una Ricetta a `/recipes/{slug}`: titolo, immagine, contenuto (prosa; ingredienti/tempi nel body in v1).
+_Avoid_: recipe page, pagina ricetta (come nome di dominio), PDP
+
+**Categoria ricetta**:
+Classificazione di una Ricetta (tipo di piatto, dieta, stagione), portata dal vecchio sito. Distinta dalle category/tag del blog `posts`.
+_Avoid_: tag ricetta, recipe tag, `category` (dei post)
+
+**Ricetta selezionata**:
+La singola Ricetta messa in evidenza nello slot della Sezione Il mio mondo (reference curata sulla homepage).
+_Avoid_: featured recipes (plurale), ricetta del mese (salvo copy)
+
+**Sezione Il mio mondo**:
+Blocco della homepage (dopo Sezione Formazione, prima di Sezione Dicono di me): vetrina curata a tre posti fissi, in ordine Post Instagram → Articolo Substack → Ricetta selezionata; chrome + CTA verso il Catalogo Ricette. Titolo UI editabile nel CMS; nome di dominio fisso.
+_Avoid_: feed, social wall, mondo editoriale (come nome di sezione), blog section
+
+**Post Instagram**:
+Snapshot curato di un post Instagram di Flavia (immagine, didascalia breve, URL), gestito nel CMS per lo slot della Sezione Il mio mondo. Non è un feed live.
+_Avoid_: reel (salvo copy), stories, embed Instagram live
+
+**Articolo Substack**:
+Snapshot curato di un pezzo Substack di Flavia (titolo, estratto, URL, immagine opzionale), gestito nel CMS per lo slot della Sezione Il mio mondo. Non è sync live né import automatico continuo.
+_Avoid_: newsletter Substack (come nome di entità sul sito), post blog

@@ -1,0 +1,126 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../../layouts/Base.astro";
+import IlMioMondoMock from "../../components/_dev/IlMioMondoMock.astro";
+import { gateDevOnly } from "../../utils/dev-only";
+import {
+	INSTAGRAM_FIXTURE,
+	SECTION_CHROME,
+	SUBSTACK_FIXTURE,
+} from "./fixtures";
+import {
+	getIlMioMondoVariant,
+	IL_MIO_MONDO_VARIANTS,
+	IL_MIO_MONDO_VIEWPORTS,
+} from "./variants";
+import "../../styles/_dev/il-mio-mondo-playground.css";
+
+const denied = await gateDevOnly(Astro);
+if (denied) return denied;
+
+const variant = getIlMioMondoVariant(Astro.params.variant);
+if (!variant) {
+	return Astro.rewrite("/404");
+}
+
+const { entries: recipes, cacheHint } = await getEmDashCollection("recipes", {
+	orderBy: { published_at: "desc" },
+	limit: 24,
+});
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+
+const selectedRecipe =
+	recipes.find((recipe) => recipe.data.featured_image) ?? recipes[0] ?? null;
+---
+
+<Base
+	title={`${variant.title} · Playground`}
+	description={variant.desc}
+	hideHeader
+>
+	<div class="pg">
+		<header class="pg__intro">
+			<p class="mono pg__kicker">
+				<a class="link" href="/_dev/il-mio-mondo">/_dev · playground</a>
+			</p>
+			<h1 class="type-h2 pg__title">{variant.title}</h1>
+			<p class="type-body pg__lede">{variant.desc}</p>
+			<nav class="pg-switch" aria-label="Altre varianti">
+				{
+					IL_MIO_MONDO_VARIANTS.map((item) => (
+						<a
+							class:list={["pg-switch__link", item.id === variant.id && "is-current"]}
+							href={item.href}
+							aria-current={item.id === variant.id ? "page" : undefined}
+						>
+							{item.id.toUpperCase()}
+						</a>
+					))
+				}
+			</nav>
+		</header>
+
+		<section class="pg__variant" aria-labelledby={`variant-${variant.id}`}>
+			{
+				!selectedRecipe && (
+					<p class="type-body">
+						Nessuna ricetta pubblicata nel CMS.{" "}
+						<a class="link" href="/_emdash/admin/content/recipes/new">
+							Creane una
+						</a>
+						.
+					</p>
+				)
+			}
+			<div class="pg__frames">
+				{
+					IL_MIO_MONDO_VIEWPORTS.map((viewport) => (
+						<figure class="pg-frame" data-viewport={viewport.id}>
+							<figcaption class="mono pg-frame__label">{viewport.label}</figcaption>
+							<div class="pg-frame__viewport">
+								<IlMioMondoMock
+									variant={variant.id}
+									viewport={viewport.id}
+									sectionTitle={SECTION_CHROME.title}
+									sectionSubtitle={SECTION_CHROME.subtitle}
+									ctaLabel={SECTION_CHROME.ctaLabel}
+									ctaHref={SECTION_CHROME.ctaHref}
+									instagram={INSTAGRAM_FIXTURE}
+									substack={SUBSTACK_FIXTURE}
+									recipe={selectedRecipe}
+								/>
+							</div>
+						</figure>
+					))
+				}
+			</div>
+		</section>
+	</div>
+</Base>
+
+<script>
+	/* Vertical-scroll passthrough into the frame for the horizontal rail (variant C). */
+	(() => {
+		const tracks = document.querySelectorAll(".pg-mondo-rail__track");
+		for (const track of tracks) {
+			track.addEventListener(
+				"wheel",
+				(event) => {
+					const e = event as WheelEvent;
+					if (e.shiftKey) return;
+					if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+					if (e.deltaY === 0) return;
+					const el = track as HTMLElement;
+					const canScroll = el.scrollWidth > el.clientWidth + 4;
+					if (!canScroll) return;
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					el.scrollBy({ left: e.deltaY, top: 0, behavior: "instant" });
+				},
+				{ passive: false, capture: true },
+			);
+		}
+	})();
+</script>

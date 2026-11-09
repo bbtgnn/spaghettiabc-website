@@ -17,9 +17,13 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [`/_dev/*` playgrounds](./decisions/_dev-playgrounds.md) — shared pattern: `injectRoute` + `src/dev/`, `gateDevOnly`, hub + one-page-per-variant, stacked frames (2026-11-09)
 - [Sezione Tour `/_dev` playground](./decisions/sezione-tour-dev-playground.md) — `#14`: hub + `/a|/b|/c` pages; stacked desktop/mobile frames; `injectRoute` + `gateDevOnly` (2026-11-09)
 - [Sezione Hero `/_dev` playground](./decisions/hero-dev-playground.md) — `#13` shipped 2026-11-09 (uncommitted): hub `/_dev/hero` + `a`–`f` via `injectRoute`; `HeroMock` + shared `playground-chrome.css`; 6 directions (3 Standard + 3 Sperimentale)
+- [Ricette + Sezione Il mio mondo](./decisions/il-mio-mondo-recipes.md) — `#16`: Track A Catalogo/Schede; Track B `/_dev/il-mio-mondo` + `a|b|c` playground (2026-11-09); prod homepage section deferred
 
 ## Operations
 
+- [Issue #16 status (CoS)](./ops/issue-16-status.md) — Track A Ricette prod vs Track B `/_dev`; WXR path; env improvements (2026-11-09)
+- [Recipe WXR → seed fragment](./ops/recipe-wxr-import.md) — re-run `scripts/wxr-to-recipes-seed.mjs`; 79 recipes / 19 terms; known limitations (2026-11-09)
+- [Recipe seed apply](./ops/recipe-seed-apply.md) — live `data.db` schema+content; backup path; media OK; 79 recipes smoke (2026-11-09)
 - [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts`; 2026-11-09 drift **addressed** same day via DB migration (2026-10-23 / 2026-11-09)
 - [Homepage Dicono schema migration](./ops/homepage-dicono-schema-migration.md) — live DB → Dicono fields; backup path; field map; `collaborations` removed (2026-11-09)
 - [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — Libro/Formazione pattern; Collaborazioni logos claim **superseded 2026-11-06** (2026-10-23 / 2026-11-05 / 2026-11-06)

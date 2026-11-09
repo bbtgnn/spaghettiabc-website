@@ -1,0 +1,249 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import { Image } from "emdash/ui";
+
+interface FixtureImage {
+	src: string;
+	alt: string;
+}
+
+interface InstagramFixture {
+	caption: string;
+	url: string;
+	image: FixtureImage;
+}
+
+interface SubstackFixture {
+	title: string;
+	excerpt: string;
+	url: string;
+	image?: FixtureImage | null;
+}
+
+interface RecipeEntry {
+	id: string;
+	data: {
+		title: string;
+		featured_image?: {
+			id: string;
+			src?: string;
+			alt?: string;
+			width?: number;
+			height?: number;
+		} | null;
+	};
+}
+
+interface Props {
+	variant: "a" | "b" | "c";
+	viewport: "desktop" | "mobile";
+	sectionTitle: string;
+	sectionSubtitle: string;
+	ctaLabel: string;
+	ctaHref: string;
+	instagram: InstagramFixture;
+	substack: SubstackFixture;
+	recipe: RecipeEntry | null;
+}
+
+const {
+	variant,
+	viewport,
+	sectionTitle,
+	sectionSubtitle,
+	ctaLabel,
+	ctaHref,
+	instagram,
+	substack,
+	recipe,
+} = Astro.props;
+---
+
+<section
+	class:list={[
+		"shell",
+		"section",
+		"pg-mondo",
+		`pg-mondo--${variant}`,
+		`pg-mondo--${viewport}`,
+	]}
+	aria-label={sectionTitle}
+>
+	<div class="rule" />
+	<div class="section__head">
+		<h2 class="type-h2">{sectionTitle}</h2>
+		<a class="btn btn-outline btn--arrow" href={ctaHref}>
+			<span class="btn__label">{ctaLabel}</span>
+			<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+		</a>
+	</div>
+	<p class="type-lead section__lede">{sectionSubtitle}</p>
+
+	{
+		variant === "a" && (
+			<div class="pg-mondo-strip" role="list">
+				<article class="pg-mondo-col" role="listitem">
+					<p class="mono pg-mondo-col__slot">01 · Instagram</p>
+					<a class="pg-mondo-col__link" href={instagram.url} target="_blank" rel="noopener noreferrer">
+						<figure class="pg-mondo-col__media">
+							<img src={instagram.image.src} alt={instagram.image.alt} loading="lazy" />
+						</figure>
+						<p class="pg-mondo-col__caption">{instagram.caption}</p>
+					</a>
+				</article>
+
+				<article class="pg-mondo-col" role="listitem">
+					<p class="mono pg-mondo-col__slot">02 · Substack</p>
+					<a class="pg-mondo-col__link" href={substack.url} target="_blank" rel="noopener noreferrer">
+						{substack.image && (
+							<figure class="pg-mondo-col__media pg-mondo-col__media--letter">
+								<img src={substack.image.src} alt={substack.image.alt} loading="lazy" />
+							</figure>
+						)}
+						<h3 class="type-h3 pg-mondo-col__title">{substack.title}</h3>
+						<p class="type-body pg-mondo-col__excerpt">{substack.excerpt}</p>
+					</a>
+				</article>
+
+				<article class="pg-mondo-col" role="listitem">
+					<p class="mono pg-mondo-col__slot">03 · Ricetta</p>
+					{recipe ? (
+						<a class="pg-mondo-col__link" href={`/recipes/${recipe.id}`}>
+							{recipe.data.featured_image && (
+								<figure class="pg-mondo-col__media">
+									<Image image={recipe.data.featured_image} />
+								</figure>
+							)}
+							<h3 class="type-h3 pg-mondo-col__title">{recipe.data.title}</h3>
+							<p class="pg-mondo-col__kicker">Ricetta selezionata</p>
+						</a>
+					) : (
+						<p class="type-body">Nessuna ricetta disponibile.</p>
+					)}
+				</article>
+			</div>
+		)
+	}
+
+	{
+		variant === "b" && (
+			<div class="pg-mondo-asymm">
+				<article class="pg-mondo-asymm__primary">
+					<p class="mono pg-mondo-col__slot">Post Instagram</p>
+					<a
+						class="pg-mondo-asymm__ig"
+						href={instagram.url}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						<figure class="pg-mondo-asymm__ig-media">
+							<img src={instagram.image.src} alt={instagram.image.alt} loading="lazy" />
+						</figure>
+						<p class="pg-mondo-asymm__ig-caption">{instagram.caption}</p>
+					</a>
+				</article>
+
+				<div class="pg-mondo-asymm__stack">
+					<article class="pg-mondo-asymm__secondary">
+						<p class="mono pg-mondo-col__slot">Articolo Substack</p>
+						<a
+							class="pg-mondo-asymm__row"
+							href={substack.url}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{substack.image && (
+								<figure class="pg-mondo-asymm__thumb">
+									<img src={substack.image.src} alt={substack.image.alt} loading="lazy" />
+								</figure>
+							)}
+							<div>
+								<h3 class="type-h3 pg-mondo-col__title">{substack.title}</h3>
+								<p class="type-body pg-mondo-col__excerpt">{substack.excerpt}</p>
+							</div>
+						</a>
+					</article>
+
+					<article class="pg-mondo-asymm__secondary">
+						<p class="mono pg-mondo-col__slot">Ricetta selezionata</p>
+						{recipe ? (
+							<a class="pg-mondo-asymm__row" href={`/recipes/${recipe.id}`}>
+								{recipe.data.featured_image && (
+									<figure class="pg-mondo-asymm__thumb">
+										<Image image={recipe.data.featured_image} />
+									</figure>
+								)}
+								<div>
+									<h3 class="type-h3 pg-mondo-col__title">{recipe.data.title}</h3>
+									<p class="pg-mondo-col__kicker">Dal Catalogo Ricette</p>
+								</div>
+							</a>
+						) : (
+							<p class="type-body">Nessuna ricetta disponibile.</p>
+						)}
+					</article>
+				</div>
+			</div>
+		)
+	}
+
+	{
+		variant === "c" && (
+			<div class="pg-mondo-rail" aria-label="Il mio mondo — tre pezzi">
+				<div class="pg-mondo-rail__track" role="list">
+					<article class="pg-mondo-panel" role="listitem" data-slot="instagram">
+						<p class="mono pg-mondo-panel__index">01</p>
+						<p class="pg-mondo-panel__kind">Post Instagram</p>
+						<a
+							class="pg-mondo-panel__link"
+							href={instagram.url}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<figure class="pg-mondo-panel__media">
+								<img src={instagram.image.src} alt={instagram.image.alt} loading="lazy" />
+							</figure>
+							<p class="pg-mondo-panel__display">{instagram.caption}</p>
+						</a>
+					</article>
+
+					<article class="pg-mondo-panel" role="listitem" data-slot="substack">
+						<p class="mono pg-mondo-panel__index">02</p>
+						<p class="pg-mondo-panel__kind">Articolo Substack</p>
+						<a
+							class="pg-mondo-panel__link"
+							href={substack.url}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{substack.image && (
+								<figure class="pg-mondo-panel__media pg-mondo-panel__media--wide">
+									<img src={substack.image.src} alt={substack.image.alt} loading="lazy" />
+								</figure>
+							)}
+							<h3 class="pg-mondo-panel__display">{substack.title}</h3>
+							<p class="type-body pg-mondo-col__excerpt">{substack.excerpt}</p>
+						</a>
+					</article>
+
+					<article class="pg-mondo-panel" role="listitem" data-slot="recipe">
+						<p class="mono pg-mondo-panel__index">03</p>
+						<p class="pg-mondo-panel__kind">Ricetta selezionata</p>
+						{recipe ? (
+							<a class="pg-mondo-panel__link" href={`/recipes/${recipe.id}`}>
+								{recipe.data.featured_image && (
+									<figure class="pg-mondo-panel__media">
+										<Image image={recipe.data.featured_image} />
+									</figure>
+								)}
+								<h3 class="pg-mondo-panel__display">{recipe.data.title}</h3>
+							</a>
+						) : (
+							<p class="type-body">Nessuna ricetta disponibile.</p>
+						)}
+					</article>
+				</div>
+			</div>
+		)
+	}
+</section>

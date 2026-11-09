@@ -1,0 +1,289 @@
+/* Playground-only styles for `/_dev/il-mio-mondo`. Do not import from production pages. */
+@import "./playground-chrome.css";
+
+.pg-mondo.section {
+	padding-block: 0 2.5rem;
+}
+
+.pg-mondo .section__head {
+	margin-top: 2rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: end;
+	justify-content: space-between;
+	gap: 1rem 2rem;
+}
+
+.pg-mondo .section__head .type-h2 {
+	max-width: 14ch;
+}
+
+.pg-mondo .section__lede {
+	margin-top: 1.25rem;
+	max-width: 48ch;
+}
+
+.pg-mondo-col__slot {
+	margin: 0 0 0.75rem;
+	color: var(--muted);
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	font-size: 0.6875rem;
+}
+
+.pg-mondo-col__link,
+.pg-mondo-asymm__ig,
+.pg-mondo-asymm__row,
+.pg-mondo-panel__link {
+	display: grid;
+	gap: 0.85rem;
+	text-decoration: none;
+	color: inherit;
+}
+
+.pg-mondo-col__media,
+.pg-mondo-asymm__ig-media,
+.pg-mondo-asymm__thumb,
+.pg-mondo-panel__media {
+	margin: 0;
+	overflow: hidden;
+	background: var(--surface);
+}
+
+.pg-mondo-col__media img,
+.pg-mondo-asymm__ig-media img,
+.pg-mondo-asymm__thumb img,
+.pg-mondo-panel__media img,
+.pg-mondo-col__media :global(img),
+.pg-mondo-asymm__thumb :global(img),
+.pg-mondo-panel__media :global(img) {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 480ms var(--ease-out-expo);
+}
+
+.pg-mondo-col__link:hover .pg-mondo-col__media img,
+.pg-mondo-col__link:focus-visible .pg-mondo-col__media img,
+.pg-mondo-asymm__ig:hover .pg-mondo-asymm__ig-media img,
+.pg-mondo-asymm__ig:focus-visible .pg-mondo-asymm__ig-media img,
+.pg-mondo-asymm__row:hover .pg-mondo-asymm__thumb img,
+.pg-mondo-asymm__row:focus-visible .pg-mondo-asymm__thumb img,
+.pg-mondo-panel__link:hover .pg-mondo-panel__media img,
+.pg-mondo-panel__link:focus-visible .pg-mondo-panel__media img,
+.pg-mondo-col__link:hover .pg-mondo-col__media :global(img),
+.pg-mondo-asymm__row:hover .pg-mondo-asymm__thumb :global(img),
+.pg-mondo-panel__link:hover .pg-mondo-panel__media :global(img) {
+	transform: scale(1.03);
+}
+
+.pg-mondo-col__title {
+	margin: 0;
+	max-width: 18ch;
+}
+
+.pg-mondo-col__caption,
+.pg-mondo-col__excerpt,
+.pg-mondo-asymm__ig-caption {
+	margin: 0;
+	color: var(--muted);
+}
+
+.pg-mondo-col__kicker {
+	margin: 0;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
+	letter-spacing: var(--font-ui-tracking);
+	text-transform: uppercase;
+	color: var(--accent);
+}
+
+/* ---------------------------------------------------------------------------
+   A — equal editorial magazine strip
+---------------------------------------------------------------------------- */
+
+.pg-mondo-strip {
+	margin-top: 2.5rem;
+	display: grid;
+	gap: 1.75rem;
+	border-top: 1px solid var(--line-strong);
+	padding-top: 1.5rem;
+}
+
+.pg-mondo--desktop .pg-mondo-strip {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0;
+}
+
+.pg-mondo--desktop .pg-mondo-col {
+	padding-inline: 1.25rem;
+	border-inline-end: 1px solid var(--line);
+}
+
+.pg-mondo--desktop .pg-mondo-col:first-child {
+	padding-inline-start: 0;
+}
+
+.pg-mondo--desktop .pg-mondo-col:last-child {
+	padding-inline-end: 0;
+	border-inline-end: none;
+}
+
+.pg-mondo-col__media {
+	aspect-ratio: 4 / 5;
+}
+
+.pg-mondo-col__media--letter {
+	aspect-ratio: 16 / 10;
+}
+
+.pg-mondo-col__caption {
+	font-family: var(--font-display);
+	font-size: 1.05rem;
+	line-height: 1.35;
+	letter-spacing: -0.01em;
+	color: var(--ink);
+}
+
+/* ---------------------------------------------------------------------------
+   B — Instagram dominant + secondary stack
+---------------------------------------------------------------------------- */
+
+.pg-mondo-asymm {
+	margin-top: 2.5rem;
+	display: grid;
+	gap: 1.5rem;
+}
+
+.pg-mondo--desktop .pg-mondo-asymm {
+	grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+	gap: 1.75rem;
+	align-items: start;
+}
+
+.pg-mondo-asymm__stack {
+	display: grid;
+	gap: 1.25rem;
+}
+
+.pg-mondo-asymm__ig-media {
+	aspect-ratio: 4 / 5;
+}
+
+.pg-mondo-asymm__ig-caption {
+	font-family: var(--font-display);
+	font-size: clamp(1.15rem, 2.2vw, 1.55rem);
+	line-height: 1.3;
+	letter-spacing: -0.02em;
+	color: var(--title);
+	max-width: 28ch;
+}
+
+.pg-mondo-asymm__secondary {
+	padding-block: 1rem;
+	border-top: 1px solid var(--line);
+}
+
+.pg-mondo-asymm__row {
+	grid-template-columns: minmax(5.5rem, 7.5rem) minmax(0, 1fr);
+	align-items: start;
+	gap: 1rem;
+}
+
+.pg-mondo--mobile .pg-mondo-asymm__row {
+	grid-template-columns: 1fr;
+}
+
+.pg-mondo-asymm__thumb {
+	aspect-ratio: 1;
+}
+
+.pg-mondo--mobile .pg-mondo-asymm__thumb {
+	aspect-ratio: 16 / 10;
+}
+
+/* ---------------------------------------------------------------------------
+   C — horizontal rail of three panels
+---------------------------------------------------------------------------- */
+
+.pg-mondo-rail {
+	margin-top: 2.25rem;
+}
+
+.pg-mondo-rail__track {
+	display: flex;
+	gap: 1rem;
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+	scroll-snap-type: x mandatory;
+	padding-bottom: 0.75rem;
+	-webkit-overflow-scrolling: touch;
+}
+
+.pg-mondo-panel {
+	flex: 0 0 auto;
+	scroll-snap-align: start;
+	display: grid;
+	align-content: start;
+	gap: 0.65rem;
+	padding: 1.1rem 1.15rem 1.35rem;
+	border: 1px solid var(--line);
+	background: color-mix(in oklab, var(--canvas) 55%, white);
+	transition: border-color 280ms ease;
+}
+
+.pg-mondo-panel:hover,
+.pg-mondo-panel:focus-within {
+	border-color: var(--accent);
+}
+
+.pg-mondo--desktop .pg-mondo-panel {
+	width: min(22rem, 72%);
+}
+
+.pg-mondo--mobile .pg-mondo-panel {
+	width: min(18.5rem, 86%);
+}
+
+.pg-mondo-panel[data-slot="instagram"] {
+	width: min(26rem, 78%);
+}
+
+.pg-mondo--mobile .pg-mondo-panel[data-slot="instagram"] {
+	width: min(20rem, 88%);
+}
+
+.pg-mondo-panel__index {
+	margin: 0;
+	color: var(--accent);
+	font-size: 0.75rem;
+}
+
+.pg-mondo-panel__kind {
+	margin: 0;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size);
+	letter-spacing: var(--font-ui-tracking);
+	text-transform: uppercase;
+	color: var(--muted);
+}
+
+.pg-mondo-panel__media {
+	aspect-ratio: 4 / 5;
+}
+
+.pg-mondo-panel__media--wide {
+	aspect-ratio: 16 / 10;
+}
+
+.pg-mondo-panel__display {
+	margin: 0;
+	font-family: var(--font-display);
+	font-size: clamp(1.35rem, 2.8vw, 1.85rem);
+	font-weight: var(--font-display-weight);
+	line-height: 1.15;
+	letter-spacing: -0.03em;
+	color: var(--title);
+	max-width: 16ch;
+}

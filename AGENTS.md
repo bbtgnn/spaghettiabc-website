@@ -62,6 +62,8 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 | Home          | `/`                | Site title + tagline, links into Posts / About     |
 | Catalogo Tour | `/tours`           | Shell intro + shared `.tour-grid` + `TourTeaser` |
 | Scheda Tour   | `/tours/[slug]`    | Product-split layout; no related; unwired Add to cart |
+| Catalogo Ricette | `/recipes`      | Shell intro + teaser list of Ricette               |
+| Scheda Ricetta | `/recipes/[slug]` | Title, image, Portable Text body; Categoria ricetta |
 | All posts     | `/posts`           | Post list                                          |
 | Post detail   | `/posts/[slug]`    | Post content                                       |
 | Page          | `/[slug]`          | Static page content (e.g. `/about`)                |
@@ -71,9 +73,10 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 ## Schema
 
 - `posts` collection: `title`, `featured_image`, `content` (Portable Text), `excerpt` (text).
+- `recipes` collection (Ricetta): `title`, `featured_image`, `content` (Portable Text). Taxonomy `recipe_category` (Categoria ricetta).
 - `pages` collection: `title`, `content` (Portable Text).
-- Taxonomies: `category`, `tag`.
-- Single `primary` menu.
+- Taxonomies: `category`, `tag` (posts); `recipe_category` (recipes).
+- Single `primary` menu (includes **Ricette** → `/recipes`).
 
 Site settings have `title` and `tagline`.
 
