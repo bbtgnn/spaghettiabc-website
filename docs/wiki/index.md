@@ -14,7 +14,7 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Homepage form headings](./decisions/homepage-form-headings.md) — CMS editor section titles for Homepage only ([#5](https://github.com/bbtgnn/spaghettiabc-website/issues/5), 2026-10-28)
 - [Font pairing preview](./decisions/font-pairing-preview.md) — DEV matrix Body×Display + UI (Come testo / Tsukimi / Fira Sans); Archivo out, Cormorant in Display; serif UI larger + normal tracking (2026-11-05); supersedes 2026-11-04 four-option select ([#9](https://github.com/bbtgnn/spaghettiabc-website/issues/9))
 - [Color palette preview](./decisions/color-palette-preview.md) — DEV multi-slot Palettes (homepage regions + template pages + chrome); per-slot `localStorage`; supersedes 2026-11-09 single `html[data-palette]` ([#12](https://github.com/bbtgnn/spaghettiabc-website/issues/12), revised 2026-11-09)
-- [Sezione Tour `/_dev` playground](./decisions/sezione-tour-dev-playground.md) — `#14` grill + ship note: `src/dev` + `injectRoute` (Astro skips `pages/_…`); `gateDevOnly`; Catalogo out of scope (2026-11-09)
+- [Sezione Tour `/_dev` playground](./decisions/sezione-tour-dev-playground.md) — `#14`: hub + `/a|/b|/c` pages; stacked desktop/mobile frames; `injectRoute` + `gateDevOnly` (2026-11-09)
 
 ## Operations
 

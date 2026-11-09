@@ -12,7 +12,11 @@ export function devPlaygrounds(): AstroIntegration {
 			"astro:config:setup": ({ injectRoute }) => {
 				injectRoute({
 					pattern: "/_dev/sezione-tour",
-					entrypoint: "./src/dev/sezione-tour.astro",
+					entrypoint: "./src/dev/sezione-tour/index.astro",
+				});
+				injectRoute({
+					pattern: "/_dev/sezione-tour/[variant]",
+					entrypoint: "./src/dev/sezione-tour/[variant].astro",
 				});
 			},
 		},

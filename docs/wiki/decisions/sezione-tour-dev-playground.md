@@ -27,8 +27,9 @@ Compact review rail in the mock is a **UI experiment** only. **Recensione Google
 
 ## Playground UX (2026-11-09)
 
-- Three variants stacked; each shows desktop (~1280 max) and mobile (~390) frames with internal scroll.
-- **Review layout (same day, later):** frames **stack vertically** by default so both stay on-screen for stakeholder review; side-by-side only from ~1720px viewport width up (was always row + horizontal page scroll, which hid mobile on typical laptops).
+- Originally: three variants on one page; each shows desktop (~1280 max) and mobile (~390) frames with internal scroll.
+- **Review layout (same day):** frames **stack vertically** by default so both stay on-screen for stakeholder review; side-by-side only from ~1720px viewport width up (was always row + horizontal page scroll, which hid mobile on typical laptops).
+- **One page per variant (same day, later):** Chiara preferred separate pages for boss review. Hub `/_dev/sezione-tour` links to `/_dev/sezione-tour/a|b|c`; each variant page shows only that layout’s desktop + mobile frames, with A/B/C switcher. Supersedes “all three on one page”.
 - Frames contain the section only (head + tours + reviews) — no SiteHeader.
 - Section head matches current Sezione Tour: CMS title/subtitle + CTA to `/tours`.
 - Large pair: 50/50 on desktop frame, stacked in mobile frame.
@@ -61,7 +62,7 @@ Same spirit as #13: `/_dev/*` must **404 in production**. Agreed mechanism: page
 
 Subagent shipped the playground in the working tree on 2026-11-09 (uncommitted; not locked to a git SHA). Public URL `/_dev/sezione-tour` verified HTTP 200 on the local DEV server that day.
 
-**Astro routing constraint:** Astro ignores `src/pages` paths whose names start with `_`, so `src/pages/_dev/…` cannot host the route. Files live under `src/dev/` (page + `devPlaygrounds()` integration with `injectRoute`) while the public path stays `/_dev/…`. Helper: `src/utils/dev-only.ts` (`gateDevOnly`). Related paths: `src/components/_dev/*`, `src/styles/_dev/sezione-tour-playground.css`, `Base.astro` `hideHeader` for frame isolation.
+**Astro routing constraint:** Astro ignores `src/pages` paths whose names start with `_`, so `src/pages/_dev/…` cannot host the route. Files live under `src/dev/sezione-tour/` (`index.astro`, `[variant].astro`, `variants.ts` + `devPlaygrounds()` `injectRoute`) while the public paths stay `/_dev/sezione-tour` and `/_dev/sezione-tour/[variant]`. Helper: `src/utils/dev-only.ts` (`gateDevOnly`). Related paths: `src/components/_dev/*`, `src/styles/_dev/sezione-tour-playground.css`, `Base.astro` `hideHeader` for frame isolation.
 
 Reuse for [#13](https://github.com/bbtgnn/spaghettiabc-website/issues/13): add another `injectRoute` in `devPlaygrounds()` + call `gateDevOnly` on the page.
 

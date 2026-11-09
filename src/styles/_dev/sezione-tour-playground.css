@@ -40,6 +40,87 @@
 	color: var(--muted);
 }
 
+.pg-switch {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 1.25rem;
+}
+
+.pg-switch__link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 2.5rem;
+	padding: 0.4rem 0.75rem;
+	border: 1px solid var(--line);
+	color: var(--ink);
+	text-decoration: none;
+	font-family: var(--font-ui);
+	font-size: var(--font-ui-size, 0.8125rem);
+	letter-spacing: var(--font-ui-tracking, 0.04em);
+}
+
+.pg-switch__link:hover,
+.pg-switch__link:focus-visible {
+	border-color: var(--accent);
+	outline: none;
+}
+
+.pg-switch__link.is-current {
+	border-color: var(--accent);
+	background: color-mix(in oklab, var(--accent) 10%, var(--canvas));
+}
+
+.pg-hub__list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 1rem;
+}
+
+@media (min-width: 768px) {
+	.pg-hub__list {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+}
+
+.pg-hub__card {
+	display: grid;
+	gap: 0.5rem;
+	height: 100%;
+	padding: 1.25rem;
+	border: 1px solid var(--line);
+	background: color-mix(in oklab, var(--canvas) 45%, white);
+	text-decoration: none;
+	color: inherit;
+	transition: border-color 280ms ease;
+}
+
+.pg-hub__card:hover,
+.pg-hub__card:focus-visible {
+	border-color: var(--accent);
+	outline: none;
+}
+
+.pg-hub__id {
+	color: var(--muted);
+}
+
+.pg-hub__title {
+	font-family: var(--font-display);
+	font-size: 1.125rem;
+	font-weight: var(--font-display-weight);
+	letter-spacing: -0.02em;
+	color: var(--title);
+}
+
+.pg-hub__desc {
+	font-size: 0.9375rem;
+	color: var(--muted);
+}
+
 .pg__variant {
 	max-width: min(100%, calc(1280px + 2 * var(--gutter)));
 	margin-inline: auto;

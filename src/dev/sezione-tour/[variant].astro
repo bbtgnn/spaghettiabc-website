@@ -1,0 +1,132 @@
+---
+import { getEmDashEntry } from "emdash";
+import Base from "../../layouts/Base.astro";
+import SezioneTourMock from "../../components/_dev/SezioneTourMock.astro";
+import { gateDevOnly } from "../../utils/dev-only";
+import {
+	getSezioneTourVariant,
+	SEZIONE_TOUR_VARIANTS,
+	SEZIONE_TOUR_VIEWPORTS,
+} from "./variants";
+import "../../styles/_dev/sezione-tour-playground.css";
+
+const denied = await gateDevOnly(Astro);
+if (denied) return denied;
+
+const variant = getSezioneTourVariant(Astro.params.variant);
+if (!variant) {
+	return Astro.rewrite("/404");
+}
+
+const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
+	references: { featured_tours: true },
+});
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+
+const featuredTours = home?.references?.featured_tours?.entries ?? [];
+const largeTours = featuredTours.slice(0, 2);
+const railTours = featuredTours.slice(2);
+const googleReviews = (home?.data.google_reviews ?? []) as Array<{
+	author: string;
+	quote: string;
+	rating?: number | null;
+	avatar?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+	} | null;
+	review_url?: string | null;
+}>;
+---
+
+<Base
+	title={`${variant.title} · Playground`}
+	description={variant.desc}
+	hideHeader
+>
+	<div class="pg">
+		<header class="pg__intro">
+			<p class="mono pg__kicker">
+				<a class="link" href="/_dev/sezione-tour">/_dev · playground</a>
+			</p>
+			<h1 class="type-h2 pg__title">{variant.title}</h1>
+			<p class="type-body pg__lede">{variant.desc}</p>
+			<nav class="pg-switch" aria-label="Altre varianti">
+				{
+					SEZIONE_TOUR_VARIANTS.map((item) => (
+						<a
+							class:list={["pg-switch__link", item.id === variant.id && "is-current"]}
+							href={item.href}
+							aria-current={item.id === variant.id ? "page" : undefined}
+						>
+							{item.id.toUpperCase()}
+						</a>
+					))
+				}
+			</nav>
+		</header>
+
+		{
+			!home ? (
+				<section class="pg__variant">
+					<p class="type-body">
+						Homepage non configurata.{" "}
+						<a class="link" href="/_emdash/admin/content/homepage">Apri l’admin</a>.
+					</p>
+				</section>
+			) : (
+				<section class="pg__variant" aria-labelledby={`variant-${variant.id}`}>
+					<div class="pg__frames">
+						{SEZIONE_TOUR_VIEWPORTS.map((viewport) => (
+							<figure class="pg-frame" data-viewport={viewport.id}>
+								<figcaption class="mono pg-frame__label">{viewport.label}</figcaption>
+								<div class="pg-frame__viewport">
+									<SezioneTourMock
+										variant={variant.id}
+										viewport={viewport.id}
+										tourTitle={home.data.tour_title}
+										tourSubtitle={home.data.tour_subtitle}
+										tourCtaLabel={home.data.tour_cta_label}
+										largeTours={largeTours}
+										railTours={railTours}
+										reviews={googleReviews}
+									/>
+								</div>
+							</figure>
+						))}
+					</div>
+				</section>
+			)
+		}
+	</div>
+</Base>
+
+<script>
+	/* Vertical-scroll passthrough into the frame viewport (captures before Base’s window scroll). */
+	(() => {
+		const tracks = document.querySelectorAll(
+			".pg-review-rail__track, .pg-frame__viewport .tour-rail__track",
+		);
+		for (const track of tracks) {
+			track.addEventListener(
+				"wheel",
+				(event) => {
+					const e = event as WheelEvent;
+					if (e.shiftKey) return;
+					if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+					if (e.deltaY === 0) return;
+					const viewport = track.closest(".pg-frame__viewport");
+					if (!(viewport instanceof HTMLElement)) return;
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					viewport.scrollBy({ top: e.deltaY, left: 0, behavior: "instant" });
+				},
+				{ passive: false, capture: true },
+			);
+		}
+	})();
+</script>
