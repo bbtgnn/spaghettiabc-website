@@ -7,6 +7,7 @@ import {
 } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
+import CalendlyEmbed from "../../components/CalendlyEmbed.astro";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 
 const slug = decodeSlug(Astro.params.slug);
@@ -77,6 +78,12 @@ const faqItems = (tour.data.faq ?? []).filter(
 	(row): row is { question: string; answer: string } =>
 		Boolean(row?.question && row?.answer),
 );
+
+const calendlyUrl =
+	typeof tour.data.calendly_url === "string"
+		? tour.data.calendly_url.trim()
+		: "";
+const hasPrenota = Boolean(calendlyUrl);
 ---
 
 <Base
@@ -181,9 +188,21 @@ const faqItems = (tour.data.faq ?? []).filter(
 					)
 				}
 
-				<button type="button" class="btn btn-primary scheda-tour__cart">
-					Add to cart
-				</button>
+				{
+					hasPrenota && (
+						<section
+							id="prenota-calendly"
+							class="scheda-tour__prenota-panel"
+							aria-labelledby="prenota-heading"
+							{...tour.edit.calendly_url}
+						>
+							<h2 id="prenota-heading" class="label scheda-tour__prenota-heading">
+								Prenota
+							</h2>
+							<CalendlyEmbed url={calendlyUrl} />
+						</section>
+					)
+				}
 			</div>
 		</div>
 
@@ -365,9 +384,15 @@ const faqItems = (tour.data.faq ?? []).filter(
 		color: var(--ink);
 	}
 
-	.scheda-tour__cart {
-		margin-top: 2.5rem;
+	.scheda-tour__prenota-panel {
 		width: 100%;
+		margin-top: 2.5rem;
+		border-top: 1px solid var(--line);
+		padding-top: 1.5rem;
+	}
+
+	.scheda-tour__prenota-heading {
+		margin: 0 0 1rem;
 	}
 
 	.scheda-tour__content {
@@ -443,8 +468,12 @@ const faqItems = (tour.data.faq ?? []).filter(
 		const gallery = document.querySelector("[data-tour-gallery]");
 		if (!gallery) return;
 
-		const panels = Array.from(gallery.querySelectorAll("[data-gallery-panel]"));
-		const thumbs = Array.from(gallery.querySelectorAll("[data-gallery-thumb]"));
+		const panels = Array.from(
+			gallery.querySelectorAll("[data-gallery-panel]"),
+		);
+		const thumbs = Array.from(
+			gallery.querySelectorAll("[data-gallery-thumb]"),
+		);
 
 		thumbs.forEach((thumb) => {
 			thumb.addEventListener("click", () => {
@@ -456,7 +485,10 @@ const faqItems = (tour.data.faq ?? []).filter(
 					),
 				);
 				thumbs.forEach((button) => {
-					button.setAttribute("aria-pressed", String(button === thumb));
+					button.setAttribute(
+						"aria-pressed",
+						String(button === thumb),
+					);
 				});
 			});
 		});

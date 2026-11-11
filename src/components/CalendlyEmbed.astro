@@ -1,0 +1,84 @@
+---
+interface Props {
+	url: string;
+	id?: string;
+}
+
+const { url, id } = Astro.props;
+---
+
+<!--
+  Host for Calendly.initInlineWidget.
+  resize: true grows the host to the full scheduling UI (no inner iframe scroll).
+  Only one auto-resizing embed per page (Calendly docs).
+-->
+<div
+	id={id}
+	class="calendly-embed"
+	data-calendly-embed
+	data-url={url}
+	style="min-width:320px;min-height:700px;"
+>
+</div>
+
+<style>
+	.calendly-embed {
+		width: 100%;
+		min-width: 320px;
+		min-height: 700px;
+		overflow: hidden;
+	}
+
+	.calendly-embed :global(iframe) {
+		width: 100%;
+		min-width: 320px;
+	}
+</style>
+
+<script is:inline>
+	(() => {
+		const SCRIPT_SRC =
+			"https://assets.calendly.com/assets/external/widget.js";
+
+		/**
+		 * @param {ParentNode} [root]
+		 * @param {{ force?: boolean }} [opts]
+		 */
+		function bootEmbeds(root = document, opts = {}) {
+			if (!window.Calendly?.initInlineWidget) return;
+
+			root.querySelectorAll("[data-calendly-embed]").forEach((host) => {
+				if (!(host instanceof HTMLElement)) return;
+				const embedUrl = host.dataset.url;
+				if (!embedUrl) return;
+
+				if (!opts.force && host.dataset.calendlyBooted === "1") return;
+
+				host.replaceChildren();
+				window.Calendly.initInlineWidget({
+					url: embedUrl,
+					parentElement: host,
+					resize: true,
+				});
+				host.dataset.calendlyBooted = "1";
+			});
+		}
+
+		window.__spaghettiBootCalendly = bootEmbeds;
+
+		const existing = document.querySelector(
+			`script[src="${SCRIPT_SRC}"]`,
+		);
+		if (existing) {
+			if (window.Calendly) bootEmbeds();
+			else existing.addEventListener("load", () => bootEmbeds());
+			return;
+		}
+
+		const script = document.createElement("script");
+		script.src = SCRIPT_SRC;
+		script.async = true;
+		script.addEventListener("load", () => bootEmbeds());
+		document.head.appendChild(script);
+	})();
+</script>

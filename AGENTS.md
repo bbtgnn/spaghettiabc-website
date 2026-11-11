@@ -43,7 +43,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
 - A **Tour** is a guided food experience in one Puglia town — not multi-stop Italy travel. See `GLOSSARY.md` for Catalogo Tour / Scheda Tour / Sezione Tour / Tour.
 - **Catalogo Tour** (`/tours`) = shell intro + shared `.tour-grid` + `TourTeaser`.
-- **Scheda Tour** (`/tours/[slug]`) = Atelier product-split layout (gallery left, sticky info right); no related tours; «Add to cart» is an unwired visual placeholder (no qty stepper, no cart JS).
+- **Scheda Tour** (`/tours/[slug]`) = Atelier product-split layout (gallery left, sticky info right); no related tours; Calendly Prenotazione embed in the info column when `calendly_url` is set; empty URL → no embed.
 - `.tour-grid` lives in `src/styles/theme.css` — Catalogo Tour grid; do not redefine page-locally.
 - Homepage Sezione Tour uses `.tour-rail` (horizontal scroll + baseline) in `theme.css`, not `.tour-grid`.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
@@ -61,7 +61,7 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 | ------------- | ------------------ | -------------------------------------------------- |
 | Home          | `/`                | Site title + tagline, links into Posts / About     |
 | Catalogo Tour | `/tours`           | Shell intro + shared `.tour-grid` + `TourTeaser` |
-| Scheda Tour   | `/tours/[slug]`    | Product-split layout; no related; unwired Add to cart |
+| Scheda Tour   | `/tours/[slug]`    | Product-split; Calendly embed in info column; no related |
 | All posts     | `/posts`           | Post list                                          |
 | Post detail   | `/posts/[slug]`    | Post content                                       |
 | Page          | `/[slug]`          | Static page content (e.g. `/about`)                |

@@ -68,6 +68,11 @@
 					"type": "string"
 				},
 				{
+					"slug": "calendly_url",
+					"label": "URL Calendly",
+					"type": "url"
+				},
+				{
 					"slug": "gallery",
 					"label": "Gallery",
 					"type": "repeater",
@@ -586,6 +591,7 @@
 					"language": "Italiano / Inglese",
 					"included": "5 tappe degustazione + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/polignano-sensory-food-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1697310904924-ec1c03c8ba9b?w=1600&h=1067&fit=crop",
