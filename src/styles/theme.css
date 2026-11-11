@@ -424,6 +424,16 @@ html[data-font-ui-case="serif"]
 	padding-inline: 1.5rem 1.25rem;
 }
 
+.btn--sm {
+	padding: 0.625rem 1.125rem;
+	font-size: var(--font-ui-size-sm);
+}
+
+.btn--sm.btn--arrow {
+	gap: 0.4rem;
+	padding-inline: 0.95rem 0.85rem;
+}
+
 .btn__label {
 	display: inline-block;
 }

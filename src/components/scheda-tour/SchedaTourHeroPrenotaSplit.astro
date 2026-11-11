@@ -1,0 +1,397 @@
+---
+/**
+ * PROTOTYPE variant for ?variant= compare on Scheda Tour.
+ * VARIANT B — info | Calendly; square image above title in info column.
+ */
+import { Image } from "emdash/ui";
+import ArrowLeft from "@lucide/astro/icons/arrow-left";
+import CalendlyEmbed from "../CalendlyEmbed.astro";
+
+/** EmDash image field shape (same as featured_image / Variant A). */
+type TourImage = {
+	id: string;
+	src?: string;
+	alt?: string;
+	caption?: string;
+	width?: number;
+	height?: number;
+	filename?: string;
+	mimeType?: string;
+	blurhash?: string;
+	dominantColor?: string;
+	focalX?: number;
+	focalY?: number;
+	provider?: string;
+	previewUrl?: string;
+	meta?: Record<string, unknown>;
+};
+
+interface Props {
+	title: string;
+	destination?: string | null;
+	price?: string | null;
+	excerpt?: string | null;
+	galleryImages: TourImage[];
+	specs: Array<{
+		term: string;
+		value: string;
+		edit?: Record<string, unknown>;
+	}>;
+	/** Empty string = muted empty state (no embed). */
+	calendlyUrl: string;
+	edit: {
+		title?: Record<string, unknown>;
+		destination?: Record<string, unknown>;
+		price?: Record<string, unknown>;
+		excerpt?: Record<string, unknown>;
+		featured_image?: Record<string, unknown>;
+		calendly_url?: Record<string, unknown>;
+	};
+}
+
+const {
+	title,
+	excerpt,
+	galleryImages,
+	specs,
+	calendlyUrl,
+	edit,
+} = Astro.props;
+
+const hasPrenota = Boolean(calendlyUrl);
+const leadImage = galleryImages[0];
+const extraImages = galleryImages.slice(1);
+---
+
+<section class="sth-prenota" aria-label={title}>
+	<div class="sth-prenota__hero">
+		<div class="sth-prenota__info">
+			<nav class="sth-prenota__back" aria-label="Breadcrumb">
+				<a class="btn btn-outline btn--arrow btn--sm" href="/tours">
+					<ArrowLeft class="btn__icon" size={14} stroke-width={1.75} aria-hidden="true" />
+					<span class="btn__label">Catalogo tour</span>
+				</a>
+			</nav>
+
+			<h1 class="sth-prenota__title" {...edit.title}>{title}</h1>
+
+			{
+				excerpt && (
+					<p class="type-body sth-prenota__excerpt" {...edit.excerpt}>
+						{excerpt}
+					</p>
+				)
+			}
+
+			{
+				leadImage && (
+					<div
+						class="sth-prenota__lead"
+						{...edit.featured_image}
+						data-tour-gallery
+					>
+						<div class="sth-prenota__lead-stage">
+							{galleryImages.map((image, index) => (
+								<div
+									class:list={[
+										"gallery-panel",
+										index !== 0 && "is-hidden",
+									]}
+									data-gallery-panel={index}
+								>
+									<Image image={image} />
+								</div>
+							))}
+						</div>
+
+						{extraImages.length > 0 && (
+							<div
+								class="sth-prenota__thumbs"
+								role="group"
+								aria-label="Choose an image"
+							>
+								{galleryImages.map((image, index) => (
+									<button
+										type="button"
+										class="gallery-thumb"
+										data-gallery-thumb={index}
+										aria-label={`Show view ${index + 1}`}
+										aria-pressed={index === 0 ? "true" : "false"}
+									>
+										<Image image={image} />
+									</button>
+								))}
+							</div>
+						)}
+					</div>
+				)
+			}
+
+			{
+				specs.length > 0 && (
+					<dl class="mono sth-prenota__specs">
+						{specs.map(({ term, value, edit: specEdit }) => (
+							<div class="sth-prenota__spec" {...specEdit}>
+								<dt>{term}</dt>
+								<dd>{value}</dd>
+							</div>
+						))}
+					</dl>
+				)
+			}
+		</div>
+
+		{
+			hasPrenota ? (
+				<aside
+					id="prenota-calendly"
+					class="sth-prenota__book"
+					aria-label="Prenota"
+					{...edit.calendly_url}
+				>
+					<CalendlyEmbed url={calendlyUrl} />
+				</aside>
+			) : (
+				<aside class="sth-prenota__book sth-prenota__book--empty" aria-live="polite">
+					<p class="mono sth-prenota__empty">Prenotazione non disponibile</p>
+				</aside>
+			)
+		}
+	</div>
+</section>
+
+<style>
+	.sth-prenota {
+		padding-block: 0;
+	}
+
+	.sth-prenota__hero {
+		display: grid;
+		align-items: start;
+		gap: 2.5rem;
+		border-top: 1px solid var(--line);
+		padding-top: 2rem;
+	}
+
+	@media (min-width: 1024px) {
+		.sth-prenota__hero {
+			/* Calendly: <650 = small layout (content fills); >=650 adds side chrome. */
+			grid-template-columns: minmax(0, 1fr) minmax(320px, 480px);
+			gap: 3rem;
+			justify-content: start;
+		}
+	}
+
+	.sth-prenota__info {
+		display: grid;
+		justify-items: stretch;
+		align-content: start;
+		order: 1;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.sth-prenota__book {
+		order: 2;
+		width: 100%;
+		max-width: 480px;
+		min-width: 320px;
+		justify-self: start;
+	}
+
+	.sth-prenota__book :global(.calendly-embed) {
+		margin: 0;
+		width: 100%;
+		max-width: 480px;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		border: 1px solid var(--title);
+		box-sizing: border-box;
+		background: #fff;
+	}
+
+	.sth-prenota__book :global(.calendly-embed iframe) {
+		display: block;
+		border: 0;
+		border-radius: 0.75rem;
+	}
+
+	@media (min-width: 1024px) {
+		.sth-prenota__info {
+			position: sticky;
+			top: 7rem;
+		}
+	}
+
+	.sth-prenota__back {
+		display: flex;
+		flex-wrap: wrap;
+		padding-block: 0 1.5rem;
+		justify-self: start;
+	}
+
+	.sth-prenota__title {
+		margin-top: 0;
+		justify-self: start;
+		font-family: var(--font-display);
+		font-size: clamp(1.625rem, 3.2vw, 2.5rem);
+		line-height: 1.15;
+		letter-spacing: -0.02em;
+		font-weight: var(--font-display-weight);
+		color: var(--title);
+	}
+
+	.sth-prenota__excerpt {
+		margin-top: 1.25rem;
+		width: 100%;
+		max-width: none;
+	}
+
+	.sth-prenota__lead {
+		width: 100%;
+		margin-top: 1.75rem;
+	}
+
+	.sth-prenota__lead-stage {
+		position: relative;
+		overflow: hidden;
+		background: var(--surface);
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		max-height: 22rem;
+		border-radius: 0.75rem;
+	}
+
+	.sth-prenota__lead-stage :global(img) {
+		width: 100%;
+		height: 100%;
+		max-height: 22rem;
+		object-fit: cover;
+		display: block;
+		border-radius: 0.75rem;
+	}
+
+	.sth-prenota__specs {
+		width: 100%;
+		margin-top: 2.5rem;
+		border-top: 1px solid var(--line);
+		font-size: 0.8125rem;
+	}
+
+	.sth-prenota__spec {
+		display: flex;
+		justify-content: space-between;
+		gap: 1.5rem;
+		border-bottom: 1px solid var(--line);
+		padding-block: 0.75rem;
+	}
+
+	.sth-prenota__spec dt {
+		color: var(--muted);
+	}
+
+	.sth-prenota__spec dd {
+		margin: 0;
+		text-align: right;
+		color: var(--ink);
+	}
+
+	.sth-prenota__book--empty {
+		display: flex;
+		align-items: flex-start;
+		padding-top: 0.25rem;
+	}
+
+	.sth-prenota__empty {
+		margin: 0;
+		font-size: 0.6875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--muted);
+	}
+
+	.sth-prenota__thumbs {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.75rem;
+		margin-top: 0.75rem;
+	}
+
+	.gallery-thumb {
+		overflow: hidden;
+		padding: 0;
+		border: 0;
+		background: var(--surface);
+		cursor: pointer;
+		box-shadow: inset 0 0 0 1px var(--line);
+		transition: box-shadow 260ms ease;
+	}
+
+	.gallery-thumb:hover {
+		box-shadow: inset 0 0 0 1px var(--line-strong);
+	}
+
+	.gallery-thumb[aria-pressed="true"] {
+		box-shadow: inset 0 0 0 2px var(--accent);
+	}
+
+	.gallery-thumb :global(img) {
+		aspect-ratio: 1;
+		width: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.gallery-panel.is-hidden {
+		display: none;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.gallery-panel:not(.is-hidden) {
+			animation: sth-panel-in 600ms var(--ease-out-expo) both;
+		}
+
+		@keyframes sth-panel-in {
+			from {
+				opacity: 0;
+				transform: scale(1.015);
+			}
+		}
+	}
+</style>
+
+<script is:inline>
+	(() => {
+		const galleries = document.querySelectorAll("[data-tour-gallery]");
+		galleries.forEach((gallery) => {
+			const panels = Array.from(
+				gallery.querySelectorAll("[data-gallery-panel]"),
+			);
+			const thumbs = Array.from(
+				gallery.querySelectorAll("[data-gallery-thumb]"),
+			);
+
+			thumbs.forEach((thumb) => {
+				if (!(thumb instanceof HTMLElement)) return;
+				if (thumb.dataset.galleryBound === "1") return;
+				thumb.dataset.galleryBound = "1";
+
+				thumb.addEventListener("click", () => {
+					const active = thumb.dataset.galleryThumb;
+					panels.forEach((panel) =>
+						panel.classList.toggle(
+							"is-hidden",
+							panel.dataset.galleryPanel !== active,
+						),
+					);
+					thumbs.forEach((button) => {
+						button.setAttribute(
+							"aria-pressed",
+							String(button === thumb),
+						);
+					});
+				});
+			});
+		});
+	})();
+</script>

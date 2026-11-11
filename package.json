@@ -28,6 +28,7 @@
     "@fontsource/tsukimi-rounded": "^5.3.0",
     "@lucide/astro": "^1.69.0",
     "@spaghettiabc/form-headings": "file:./plugins/form-headings",
+    "animejs": "^4.5.0",
     "astro": "^7.3.2",
     "emdash": "^1.4.0",
     "react": "19.2.4",

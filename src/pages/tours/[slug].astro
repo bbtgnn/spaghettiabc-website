@@ -1,13 +1,20 @@
 ---
+/**
+ * Scheda Tour — PROTOTYPE hero compare via ?variant=
+ * atelier = current gallery|info (default)
+ * prenota = info|Calendly, gallery below
+ */
 import {
 	getEmDashEntry,
 	getSeoMeta,
 	decodeSlug,
 	getSiteSettings,
 } from "emdash";
-import { Image, PortableText } from "emdash/ui";
+import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
-import CalendlyEmbed from "../../components/CalendlyEmbed.astro";
+import SchedaTourHeroAtelier from "../../components/scheda-tour/SchedaTourHeroAtelier.astro";
+import SchedaTourHeroPrenotaSplit from "../../components/scheda-tour/SchedaTourHeroPrenotaSplit.astro";
+import PrototypeVariantSwitcher from "../../components/scheda-tour/PrototypeVariantSwitcher.astro";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 
 const slug = decodeSlug(Astro.params.slug);
@@ -83,7 +90,33 @@ const calendlyUrl =
 	typeof tour.data.calendly_url === "string"
 		? tour.data.calendly_url.trim()
 		: "";
-const hasPrenota = Boolean(calendlyUrl);
+
+const heroVariants = [
+	{ key: "atelier", label: "Atelier gallery|info" },
+	{ key: "prenota", label: "Info|Calendly split" },
+] as const;
+
+const variantParam = Astro.url.searchParams.get("variant");
+const heroVariant =
+	variantParam === "prenota" ? "prenota" : ("atelier" as const);
+
+const heroProps = {
+	title: tour.data.title,
+	destination: tour.data.destination ?? undefined,
+	price: tour.data.price ?? undefined,
+	excerpt: tour.data.excerpt ?? undefined,
+	galleryImages,
+	specs,
+	calendlyUrl,
+	edit: {
+		title: tour.edit.title,
+		destination: tour.edit.destination,
+		price: tour.edit.price,
+		excerpt: tour.edit.excerpt,
+		featured_image: tour.edit.featured_image,
+		calendly_url: tour.edit.calendly_url,
+	},
+};
 ---
 
 <Base
@@ -95,116 +128,13 @@ const hasPrenota = Boolean(calendlyUrl);
 	content={{ collection: "tours", id: tour.data.id, slug }}
 >
 	<article class="shell scheda-tour">
-		<nav class="mono scheda-tour__crumb" aria-label="Breadcrumb">
-			<a href="/tours" class="link">Catalogo tour</a>
-			<span aria-hidden="true">/</span>
-			<span class="scheda-tour__crumb-current" aria-current="page"
-				>{tour.data.title}</span
-			>
-		</nav>
-
-		<div class="scheda-tour__split">
-			{
-				galleryImages.length > 0 && (
-					<section
-						class="scheda-tour__gallery"
-						aria-label={`${tour.data.title} images`}
-						data-tour-gallery
-					>
-						<div class="scheda-tour__stage" {...tour.edit.featured_image}>
-							{galleryImages.map((image, index) => (
-								<div
-									class:list={[
-										"gallery-panel",
-										index !== 0 && "is-hidden",
-									]}
-									data-gallery-panel={index}
-								>
-									<Image image={image} />
-								</div>
-							))}
-						</div>
-
-						{galleryImages.length >= 2 && (
-							<div
-								class="scheda-tour__thumbs"
-								role="group"
-								aria-label="Choose an image"
-							>
-								{galleryImages.map((image, index) => (
-									<button
-										type="button"
-										class="gallery-thumb"
-										data-gallery-thumb={index}
-										aria-label={`Show view ${index + 1}`}
-										aria-pressed={index === 0 ? "true" : "false"}
-									>
-										<Image image={image} />
-									</button>
-								))}
-							</div>
-						)}
-					</section>
-				)
-			}
-
-			<div class="scheda-tour__info">
-				{
-					tour.data.destination && (
-						<p class="label" {...tour.edit.destination}>
-							{tour.data.destination}
-						</p>
-					)
-				}
-				<h1 class="type-h2 scheda-tour__title" {...tour.edit.title}>
-					{tour.data.title}
-				</h1>
-				{
-					tour.data.price && (
-						<p class="mono scheda-tour__price" {...tour.edit.price}>
-							{tour.data.price}
-						</p>
-					)
-				}
-
-				{
-					tour.data.excerpt && (
-						<p class="type-body scheda-tour__excerpt" {...tour.edit.excerpt}>
-							{tour.data.excerpt}
-						</p>
-					)
-				}
-
-				{
-					specs.length > 0 && (
-						<dl class="mono scheda-tour__specs">
-							{specs.map(({ term, value, edit }) => (
-								<div class="scheda-tour__spec" {...edit}>
-									<dt>{term}</dt>
-									<dd>{value}</dd>
-								</div>
-							))}
-						</dl>
-					)
-				}
-
-				{
-					hasPrenota && (
-						<section
-							id="prenota-calendly"
-							class="scheda-tour__prenota-panel"
-							aria-labelledby="prenota-heading"
-							{...tour.edit.calendly_url}
-						>
-							<h2 id="prenota-heading" class="label scheda-tour__prenota-heading">
-								Prenota
-							</h2>
-							<CalendlyEmbed url={calendlyUrl} />
-						</section>
-					)
-				}
-			</div>
-		</div>
+		{
+			heroVariant === "prenota" ? (
+				<SchedaTourHeroPrenotaSplit {...heroProps} />
+			) : (
+				<SchedaTourHeroAtelier {...heroProps} />
+			)
+		}
 
 		{
 			tour.data.content && (
@@ -232,167 +162,16 @@ const hasPrenota = Boolean(calendlyUrl);
 			)
 		}
 	</article>
+
+	<PrototypeVariantSwitcher
+		variants={[...heroVariants]}
+		current={heroVariant}
+	/>
 </Base>
 
 <style>
 	.scheda-tour {
 		padding-block: 0 4rem;
-	}
-
-	.scheda-tour__crumb {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		padding-block: 1.5rem;
-		font-size: 0.6875rem;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		color: var(--muted);
-	}
-
-	.scheda-tour__crumb-current {
-		color: var(--ink);
-	}
-
-	.scheda-tour__split {
-		display: grid;
-		align-items: start;
-		gap: 2.5rem;
-		border-top: 1px solid var(--line);
-		padding-top: 2rem;
-	}
-
-	@media (min-width: 1024px) {
-		.scheda-tour__split {
-			grid-template-columns: 7fr 5fr;
-			gap: 3rem;
-		}
-	}
-
-	.scheda-tour__stage {
-		position: relative;
-		overflow: hidden;
-		background: var(--surface);
-	}
-
-	.scheda-tour__stage :global(img) {
-		aspect-ratio: 4 / 5;
-		width: 100%;
-		object-fit: cover;
-		display: block;
-	}
-
-	.scheda-tour__thumbs {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.75rem;
-		margin-top: 0.75rem;
-	}
-
-	.gallery-thumb {
-		overflow: hidden;
-		padding: 0;
-		border: 0;
-		background: var(--surface);
-		cursor: pointer;
-		box-shadow: inset 0 0 0 1px var(--line);
-		transition: box-shadow 260ms ease;
-	}
-
-	.gallery-thumb:hover {
-		box-shadow: inset 0 0 0 1px var(--line-strong);
-	}
-
-	.gallery-thumb[aria-pressed="true"] {
-		box-shadow: inset 0 0 0 2px var(--accent);
-	}
-
-	.gallery-thumb :global(img) {
-		aspect-ratio: 1;
-		width: 100%;
-		object-fit: cover;
-		display: block;
-	}
-
-	.gallery-panel.is-hidden {
-		display: none;
-	}
-
-	@media (prefers-reduced-motion: no-preference) {
-		.gallery-panel:not(.is-hidden) {
-			animation: panel-in 600ms var(--ease-out-expo) both;
-		}
-
-		@keyframes panel-in {
-			from {
-				opacity: 0;
-				transform: scale(1.015);
-			}
-		}
-	}
-
-	.scheda-tour__info {
-		display: grid;
-		justify-items: start;
-		align-content: start;
-	}
-
-	@media (min-width: 1024px) {
-		.scheda-tour__info {
-			position: sticky;
-			top: 7rem;
-		}
-	}
-
-	.scheda-tour__title {
-		margin-top: 1.25rem;
-	}
-
-	.scheda-tour__price {
-		margin-top: 1.25rem;
-		font-size: 1.25rem;
-		color: var(--ink);
-	}
-
-	.scheda-tour__excerpt {
-		margin-top: 2rem;
-		max-width: 46ch;
-	}
-
-	.scheda-tour__specs {
-		width: 100%;
-		margin-top: 2.5rem;
-		border-top: 1px solid var(--line);
-		font-size: 0.8125rem;
-	}
-
-	.scheda-tour__spec {
-		display: flex;
-		justify-content: space-between;
-		gap: 1.5rem;
-		border-bottom: 1px solid var(--line);
-		padding-block: 0.75rem;
-	}
-
-	.scheda-tour__spec dt {
-		color: var(--muted);
-	}
-
-	.scheda-tour__spec dd {
-		margin: 0;
-		text-align: right;
-		color: var(--ink);
-	}
-
-	.scheda-tour__prenota-panel {
-		width: 100%;
-		margin-top: 2.5rem;
-		border-top: 1px solid var(--line);
-		padding-top: 1.5rem;
-	}
-
-	.scheda-tour__prenota-heading {
-		margin: 0 0 1rem;
 	}
 
 	.scheda-tour__content {
@@ -462,35 +241,3 @@ const hasPrenota = Boolean(calendlyUrl);
 		color: var(--muted);
 	}
 </style>
-
-<script is:inline>
-	(() => {
-		const gallery = document.querySelector("[data-tour-gallery]");
-		if (!gallery) return;
-
-		const panels = Array.from(
-			gallery.querySelectorAll("[data-gallery-panel]"),
-		);
-		const thumbs = Array.from(
-			gallery.querySelectorAll("[data-gallery-thumb]"),
-		);
-
-		thumbs.forEach((thumb) => {
-			thumb.addEventListener("click", () => {
-				const active = thumb.dataset.galleryThumb;
-				panels.forEach((panel) =>
-					panel.classList.toggle(
-						"is-hidden",
-						panel.dataset.galleryPanel !== active,
-					),
-				);
-				thumbs.forEach((button) => {
-					button.setAttribute(
-						"aria-pressed",
-						String(button === thumb),
-					);
-				});
-			});
-		});
-	})();
-</script>
