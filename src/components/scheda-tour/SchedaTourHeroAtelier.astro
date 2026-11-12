@@ -51,8 +51,6 @@ interface Props {
 
 const {
 	title,
-	destination,
-	price,
 	excerpt,
 	galleryImages,
 	specs,
@@ -113,21 +111,7 @@ const hasPrenota = Boolean(calendlyUrl);
 	}
 
 	<div class="scheda-tour__info">
-		{
-			destination && (
-				<p class="label" {...edit.destination}>
-					{destination}
-				</p>
-			)
-		}
 		<h1 class="type-h2 scheda-tour__title" {...edit.title}>{title}</h1>
-		{
-			price && (
-				<p class="mono scheda-tour__price" {...edit.price}>
-					{price}
-				</p>
-			)
-		}
 
 		{
 			excerpt && (

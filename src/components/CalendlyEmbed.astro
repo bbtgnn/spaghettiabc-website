@@ -5,6 +5,25 @@ interface Props {
 }
 
 const { url, id } = Astro.props;
+
+/**
+ * Calendly embed query flags — see
+ * https://calendly.com/help/how-to-customize-your-embed
+ * Event-type + landing/team params so either URL shape hides chrome details.
+ */
+function withHiddenCalendlyDetails(raw: string): string {
+	try {
+		const parsed = new URL(raw);
+		parsed.searchParams.set("hide_event_type_details", "1");
+		parsed.searchParams.set("hide_landing_page_details", "1");
+		parsed.searchParams.set("hide_gdpr_banner", "1");
+		return parsed.toString();
+	} catch {
+		return raw;
+	}
+}
+
+const embedUrl = withHiddenCalendlyDetails(url);
 ---
 
 <!--
@@ -16,7 +35,7 @@ const { url, id } = Astro.props;
 	id={id}
 	class="calendly-embed"
 	data-calendly-embed
-	data-url={url}
+	data-url={embedUrl}
 	style="min-width:320px;height:700px;"
 >
 	<div

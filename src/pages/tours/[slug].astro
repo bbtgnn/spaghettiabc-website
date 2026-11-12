@@ -52,6 +52,13 @@ const specs: {
 	value: string;
 	edit?: Record<string, unknown>;
 }[] = [];
+if (tour.data.destination) {
+	specs.push({
+		term: "Luogo",
+		value: tour.data.destination,
+		edit: tour.edit.destination,
+	});
+}
 if (tour.data.duration) {
 	specs.push({
 		term: "Durata",
@@ -78,6 +85,13 @@ if (tour.data.included) {
 		term: "Incluso",
 		value: tour.data.included,
 		edit: tour.edit.included,
+	});
+}
+if (tour.data.price) {
+	specs.push({
+		term: "Prezzo",
+		value: tour.data.price,
+		edit: tour.edit.price,
 	});
 }
 
