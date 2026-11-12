@@ -371,6 +371,9 @@ const extraImages = galleryImages.slice(1);
 	}
 
 	.sth-prenota__body {
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
 		width: 100%;
 		min-width: 0;
 	}
@@ -408,7 +411,7 @@ const extraImages = galleryImages.slice(1);
 		}
 	}
 
-	/* Slotted content/FAQ: drop page-level 4rem / --measure; FAQ keeps its own border+padding. */
+	/* Slotted content/FAQ: drop page-level 4rem / --measure; body gap matches copycol. */
 	.sth-prenota__body:empty {
 		display: none;
 	}
