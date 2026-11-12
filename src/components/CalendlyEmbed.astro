@@ -7,29 +7,41 @@ interface Props {
 const { url, id } = Astro.props;
 
 /**
+ * Site tokens → Calendly embed colors (hex without #).
+ * Matches --ink / --accent in theme.css.
+ * https://calendly.com/help/how-to-customize-your-embed
+ */
+const CALENDLY_TEXT_COLOR = "101010";
+const CALENDLY_PRIMARY_COLOR = "8a5322";
+
+/**
  * Calendly embed query flags — see
  * https://calendly.com/help/how-to-customize-your-embed
  * Event-type + landing/team params so either URL shape hides chrome details.
+ * Colors match site --ink / --accent.
  */
-function withHiddenCalendlyDetails(raw: string): string {
+function withCalendlyEmbedParams(raw: string): string {
 	try {
 		const parsed = new URL(raw);
 		parsed.searchParams.set("hide_event_type_details", "1");
 		parsed.searchParams.set("hide_landing_page_details", "1");
 		parsed.searchParams.set("hide_gdpr_banner", "1");
+		parsed.searchParams.set("text_color", CALENDLY_TEXT_COLOR);
+		parsed.searchParams.set("primary_color", CALENDLY_PRIMARY_COLOR);
+		parsed.searchParams.set("button_text", "Book tour");
 		return parsed.toString();
 	} catch {
 		return raw;
 	}
 }
 
-const embedUrl = withHiddenCalendlyDetails(url);
+const embedUrl = withCalendlyEmbedParams(url);
 ---
 
 <!--
   Host for Calendly.initInlineWidget.
   Height is owned by us (resize:false): freeze at BASE until event_type_viewed,
-  ignore short/zero page_height blips, then anime.js to the real height.
+  ignore short/zero page_height blips, then anime.js WAAPI to the real height.
 -->
 <div
 	id={id}
@@ -136,7 +148,7 @@ const embedUrl = withHiddenCalendlyDetails(url);
 </style>
 
 <script>
-	import { animate } from "animejs";
+	import { waapi } from "animejs";
 
 	const SCRIPT_SRC = "https://assets.calendly.com/assets/external/widget.js";
 	/** Stable shell while Calendly boots / shows its internal spinner. */
@@ -169,6 +181,7 @@ const embedUrl = withHiddenCalendlyDetails(url);
 	type HeightAnim = {
 		cancel?: () => void;
 		pause?: () => void;
+		commitStyles?: () => void;
 		then?: (onFulfilled?: () => void) => Promise<unknown>;
 	};
 
@@ -288,12 +301,15 @@ const embedUrl = withHiddenCalendlyDetails(url);
 	}
 
 	function applyHostHeight(host: HostState, heightPx: number) {
+		const target = Math.ceil(heightPx + HEIGHT_BUFFER_PX);
+		const from = host.getBoundingClientRect().height || BASE_HEIGHT_PX;
+
+		// Capture current height before cancel — WAAPI cancel can revert styles.
 		const prev = host.__calendlyHeightAnim;
+		prev?.commitStyles?.();
 		prev?.pause?.();
 		prev?.cancel?.();
 
-		const target = Math.ceil(heightPx + HEIGHT_BUFFER_PX);
-		const from = host.getBoundingClientRect().height || BASE_HEIGHT_PX;
 		host.__calendlyTargetHeight = heightPx;
 		const gen = (host.__calendlyHeightGen ?? 0) + 1;
 		host.__calendlyHeightGen = gen;
@@ -317,8 +333,8 @@ const embedUrl = withHiddenCalendlyDetails(url);
 		}
 
 		host.style.height = `${from}px`;
-		const anim = animate(host, {
-			height: `${target}px`,
+		const anim = waapi.animate(host, {
+			height: target,
 			duration: 450,
 			ease: "inOutQuad",
 			onComplete: finish,
