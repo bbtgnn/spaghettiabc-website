@@ -6,7 +6,25 @@
  */
 import { Image } from "emdash/ui";
 import ArrowLeft from "@lucide/astro/icons/arrow-left";
+import MapPin from "@lucide/astro/icons/map-pin";
+import Clock from "@lucide/astro/icons/clock";
+import Users from "@lucide/astro/icons/users";
+import Languages from "@lucide/astro/icons/languages";
+import CircleCheck from "@lucide/astro/icons/circle-check";
+import Tag from "@lucide/astro/icons/tag";
 import CalendlyEmbed from "../CalendlyEmbed.astro";
+
+const SPEC_ICONS: Record<
+	string,
+	typeof MapPin
+> = {
+	Luogo: MapPin,
+	Durata: Clock,
+	Gruppo: Users,
+	Lingua: Languages,
+	Incluso: CircleCheck,
+	Prezzo: Tag,
+};
 
 /** EmDash image field shape (same as featured_image / Variant A). */
 type TourImage = {
@@ -148,12 +166,25 @@ const extraImages = galleryImages.slice(1);
 					specs.length > 0 && (
 						<div class="sth-prenota__data">
 							<dl class="mono sth-prenota__specs">
-								{specs.map(({ term, value, edit: specEdit }) => (
-									<div class="sth-prenota__spec" {...specEdit}>
-										<dt>{term}</dt>
-										<dd>{value}</dd>
-									</div>
-								))}
+								{specs.map(({ term, value, edit: specEdit }) => {
+									const Icon = SPEC_ICONS[term];
+									return (
+										<div class="sth-prenota__spec" {...specEdit}>
+											<dt>
+												{Icon && (
+													<Icon
+														class="sth-prenota__spec-icon"
+														size={14}
+														stroke-width={1.75}
+														aria-hidden="true"
+													/>
+												)}
+												<span>{term}</span>
+											</dt>
+											<dd>{value}</dd>
+										</div>
+									);
+								})}
 							</dl>
 						</div>
 					)
@@ -443,6 +474,14 @@ const extraImages = galleryImages.slice(1);
 	}
 
 	.sth-prenota__spec dt {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		color: var(--muted);
+	}
+
+	.sth-prenota__spec-icon {
+		flex-shrink: 0;
 		color: var(--muted);
 	}
 
