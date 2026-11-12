@@ -584,7 +584,7 @@
 				"status": "published",
 				"data": {
 					"title": "Polignano food tour",
-					"excerpt": "Esplora i banchi e i vicoli a strapiombo sul mare ed assaggia le migliori specialità artigianali di Polignano.",
+					"excerpt": "Discover Apulian cuisine with all your senses",
 					"destination": "Polignano a Mare",
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
@@ -606,11 +606,59 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Un'esperienza intima per piccoli gruppi guidata da esperti locali: dal centro storico alle terrazze sul mare, con assaggi della cucina polignanese.",
+									"text": "A gastronomic stroll through the heart of Polignano to uncover the typical products of Puglia and its artisan shops, guided by Flavia Giordano, cookbook author, taster, and food educator.",
 									"_key": "pol-c1"
 								}
 							],
 							"_key": "pol-c0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "A sensory experience dedicated to those who want to delve into the culture of Apulian food, its agricultural excellences (PDO, DOC, Slow Food presidia), and gastronomic traditions.",
+									"_key": "pol-c3"
+								}
+							],
+							"_key": "pol-c2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "From coffee to “caffe speciale”, passing through caciocavallo and mozzarella, traditional breads, and the finest EVO oils from the best local olive mills, artisanal cold cuts, focaccias, preserves, and wines from native grape varieties – the sensory food tour is a roaming masterclass on Apulian cuisine.",
+									"_key": "pol-c5"
+								}
+							],
+							"_key": "pol-c4"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Flavia Giordano – who for several years managed the first Italian cooking school in Malmö, Sweden – will also share golden rules and tips with guests on how to shop and choose quality products, as well as recipes and cooking techniques.",
+									"_key": "pol-c7"
+								}
+							],
+							"_key": "pol-c6"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "As a taster of oil, cheese, and wines, the sensory food tour will be a way to savor Apulian cuisine with all your senses.",
+									"_key": "pol-c9"
+								}
+							],
+							"_key": "pol-c8"
 						}
 					],
 					"faq": [

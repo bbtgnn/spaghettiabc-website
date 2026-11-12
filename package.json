@@ -12,7 +12,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "start": "node ./dist/server/entry.mjs",
-    "typecheck": "astro check"
+    "typecheck": "astro check",
+    "seed": "emdash seed seed/seed.json --on-conflict=update"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.5",
