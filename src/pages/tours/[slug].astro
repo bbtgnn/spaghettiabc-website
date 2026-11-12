@@ -130,35 +130,60 @@ const heroProps = {
 	<article class="shell scheda-tour">
 		{
 			heroVariant === "prenota" ? (
-				<SchedaTourHeroPrenotaSplit {...heroProps} />
+				<SchedaTourHeroPrenotaSplit {...heroProps}>
+					{tour.data.content && (
+						<div class="scheda-tour__content" {...tour.edit.content}>
+							<PortableText value={tour.data.content} />
+						</div>
+					)}
+					{faqItems.length > 0 && (
+						<section
+							class="scheda-tour__faq"
+							aria-labelledby="tour-faq-heading"
+							{...tour.edit.faq}
+						>
+							<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
+								Domande frequenti
+							</h2>
+							<div class="scheda-tour__faq-list">
+								{faqItems.map((item) => (
+									<details class="scheda-tour__faq-item">
+										<summary>{item.question}</summary>
+										<p class="type-body">{item.answer}</p>
+									</details>
+								))}
+							</div>
+						</section>
+					)}
+				</SchedaTourHeroPrenotaSplit>
 			) : (
-				<SchedaTourHeroAtelier {...heroProps} />
-			)
-		}
-
-		{
-			tour.data.content && (
-				<div class="scheda-tour__content" {...tour.edit.content}>
-					<PortableText value={tour.data.content} />
-				</div>
-			)
-		}
-
-		{
-			faqItems.length > 0 && (
-				<section class="scheda-tour__faq" aria-labelledby="tour-faq-heading" {...tour.edit.faq}>
-					<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
-						Domande frequenti
-					</h2>
-					<div class="scheda-tour__faq-list">
-						{faqItems.map((item) => (
-							<details class="scheda-tour__faq-item">
-								<summary>{item.question}</summary>
-								<p class="type-body">{item.answer}</p>
-							</details>
-						))}
-					</div>
-				</section>
+				<>
+					<SchedaTourHeroAtelier {...heroProps} />
+					{tour.data.content && (
+						<div class="scheda-tour__content" {...tour.edit.content}>
+							<PortableText value={tour.data.content} />
+						</div>
+					)}
+					{faqItems.length > 0 && (
+						<section
+							class="scheda-tour__faq"
+							aria-labelledby="tour-faq-heading"
+							{...tour.edit.faq}
+						>
+							<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
+								Domande frequenti
+							</h2>
+							<div class="scheda-tour__faq-list">
+								{faqItems.map((item) => (
+									<details class="scheda-tour__faq-item">
+										<summary>{item.question}</summary>
+										<p class="type-body">{item.answer}</p>
+									</details>
+								))}
+							</div>
+						</section>
+					)}
+				</>
 			)
 		}
 	</article>
