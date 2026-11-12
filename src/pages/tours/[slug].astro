@@ -179,7 +179,9 @@ const heroProps = {
 												aria-hidden="true"
 											/>
 										</summary>
-										<p class="type-body">{item.answer}</p>
+										<div class="scheda-tour__faq-panel">
+											<p class="type-body">{item.answer}</p>
+										</div>
 									</details>
 								))}
 							</div>
@@ -222,7 +224,9 @@ const heroProps = {
 												aria-hidden="true"
 											/>
 										</summary>
-										<p class="type-body">{item.answer}</p>
+										<div class="scheda-tour__faq-panel">
+											<p class="type-body">{item.answer}</p>
+										</div>
 									</details>
 								))}
 							</div>
@@ -328,9 +332,75 @@ const heroProps = {
 		}
 	}
 
+	.scheda-tour__faq-panel {
+		overflow: hidden;
+	}
+
 	.scheda-tour__faq-item p {
 		margin: 0 0 1.25rem;
 		font-size: 1rem;
 		color: var(--muted);
 	}
 </style>
+
+<script>
+	import { animate } from "animejs";
+
+	const reduceMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
+
+	document.querySelectorAll(".scheda-tour__faq-item").forEach((node) => {
+		if (!(node instanceof HTMLDetailsElement)) return;
+		const panel = node.querySelector(".scheda-tour__faq-panel");
+		if (!(panel instanceof HTMLElement)) return;
+		if (node.dataset.faqAnim === "1") return;
+		node.dataset.faqAnim = "1";
+		if (reduceMotion) return;
+
+		let busy = false;
+
+		node.addEventListener("click", (event) => {
+			const summary = node.querySelector("summary");
+			if (
+				!summary ||
+				!(event.target instanceof Node) ||
+				!summary.contains(event.target)
+			) {
+				return;
+			}
+			event.preventDefault();
+			if (busy) return;
+			busy = true;
+
+			if (node.open) {
+				const from = panel.getBoundingClientRect().height;
+				panel.style.height = `${from}px`;
+				animate(panel, {
+					height: "0px",
+					duration: 280,
+					ease: "outQuart",
+					onComplete: () => {
+						node.open = false;
+						panel.style.height = "";
+						busy = false;
+					},
+				});
+				return;
+			}
+
+			node.open = true;
+			const to = panel.scrollHeight;
+			panel.style.height = "0px";
+			animate(panel, {
+				height: `${to}px`,
+				duration: 320,
+				ease: "outExpo",
+				onComplete: () => {
+					panel.style.height = "";
+					busy = false;
+				},
+			});
+		});
+	});
+</script>
