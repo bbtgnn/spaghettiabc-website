@@ -139,42 +139,47 @@ const extraImages = galleryImages.slice(1);
 			}
 		</div>
 
-		{/* Data / specs */}
-		{
-			specs.length > 0 && (
-				<div class="sth-prenota__data">
-					<dl class="mono sth-prenota__specs">
-						{specs.map(({ term, value, edit: specEdit }) => (
-							<div class="sth-prenota__spec" {...specEdit}>
-								<dt>{term}</dt>
-								<dd>{value}</dd>
-							</div>
-						))}
-					</dl>
+		{/* Under hero: content | calendly — centered as a pair on ≥768.
+		    copycol is display:contents on mobile so order stays data→book→body;
+		    on ≥768 it becomes one left column so Calendly height can't push body. */}
+		<div class="sth-prenota__main">
+			<div class="sth-prenota__copycol">
+				{
+					specs.length > 0 && (
+						<div class="sth-prenota__data">
+							<dl class="mono sth-prenota__specs">
+								{specs.map(({ term, value, edit: specEdit }) => (
+									<div class="sth-prenota__spec" {...specEdit}>
+										<dt>{term}</dt>
+										<dd>{value}</dd>
+									</div>
+								))}
+							</dl>
+						</div>
+					)
+				}
+
+				<div class="sth-prenota__body">
+					<slot />
 				</div>
-			)
-		}
+			</div>
 
-		{
-			hasPrenota ? (
-				<aside
-					id="prenota-calendly"
-					class="sth-prenota__book"
-					aria-label="Prenota"
-					{...edit.calendly_url}
-				>
-					<CalendlyEmbed url={calendlyUrl} />
-				</aside>
-			) : (
-				<aside class="sth-prenota__book sth-prenota__book--empty" aria-live="polite">
-					<p class="mono sth-prenota__empty">Prenotazione non disponibile</p>
-				</aside>
-			)
-		}
-
-		{/* Editorial + FAQ (slot from page) */}
-		<div class="sth-prenota__body">
-			<slot />
+			{
+				hasPrenota ? (
+					<aside
+						id="prenota-calendly"
+						class="sth-prenota__book"
+						aria-label="Prenota"
+						{...edit.calendly_url}
+					>
+						<CalendlyEmbed url={calendlyUrl} />
+					</aside>
+				) : (
+					<aside class="sth-prenota__book sth-prenota__book--empty" aria-live="polite">
+						<p class="mono sth-prenota__empty">Prenotazione non disponibile</p>
+					</aside>
+				)
+			}
 		</div>
 	</div>
 </section>
@@ -185,64 +190,86 @@ const extraImages = galleryImages.slice(1);
 	}
 
 	/*
-	 * Mobile (<768): hero → data → iframe → editorial/FAQ
-	 * Tablet / mid (768–1279): hero full-bleed; then data+editorial | iframe
-	 * XL desktop (≥1280): full left column (hero+data+editorial) | iframe
+	 * Mobile (<768): hero → data → iframe → editorial/FAQ (flex order)
+	 * ≥768: hero full width; then centered | content | calendly |
 	 */
 	.sth-prenota__layout {
-		display: grid;
-		grid-template-areas:
-			"intro"
-			"data"
-			"book"
-			"body";
-		align-items: start;
+		display: flex;
+		flex-direction: column;
 		gap: 2.5rem;
 		border-top: 1px solid var(--line);
 		padding-top: 2rem;
 	}
 
-	@media (min-width: 768px) and (max-width: 1279px) {
-		.sth-prenota__layout {
-			grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
-			grid-template-areas:
-				"intro intro"
-				"data book"
-				"body book";
-			gap: 2rem;
-			justify-content: start;
-		}
-	}
-
-	@media (min-width: 1280px) {
-		.sth-prenota__layout {
-			/* Calendly: <650 = small layout; >=650 adds side chrome. */
-			grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
-			grid-template-areas:
-				"intro book"
-				"data book"
-				"body book";
-			gap: 3rem;
-			justify-content: start;
-		}
-	}
-
 	.sth-prenota__intro {
-		grid-area: intro;
-		display: grid;
+		display: flex;
+		flex-direction: column;
 		gap: 0.75rem;
-		justify-items: stretch;
-		align-content: start;
 		width: 100%;
 		min-width: 0;
 	}
 
+	.sth-prenota__main {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 2.5rem;
+		width: 100%;
+	}
+
+	/* Mobile: flatten so we can reorder data → book → body. */
+	.sth-prenota__copycol {
+		display: contents;
+	}
+
+	.sth-prenota__data {
+		order: 1;
+	}
+
+	.sth-prenota__book {
+		order: 2;
+	}
+
+	.sth-prenota__body {
+		order: 3;
+	}
+
+	@media (min-width: 768px) {
+		.sth-prenota__main {
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: center;
+			align-items: flex-start;
+			gap: 2.5rem;
+		}
+
+		.sth-prenota__copycol {
+			display: flex;
+			flex-direction: column;
+			gap: 2.5rem;
+			flex: 0 1 65ch;
+			width: 100%;
+			max-width: 65ch;
+			min-width: 0;
+			order: 1;
+		}
+
+		.sth-prenota__data,
+		.sth-prenota__body {
+			order: initial;
+		}
+
+		.sth-prenota__book {
+			order: 2;
+			flex: 0 0 auto;
+		}
+	}
+
 	.sth-prenota__stage {
 		position: relative;
-		display: grid;
-		grid-template-areas: "stack";
+		display: flex;
 		align-items: center;
-		justify-items: center;
+		justify-content: center;
 		overflow: hidden;
 		isolation: isolate;
 		width: 100%;
@@ -250,12 +277,6 @@ const extraImages = galleryImages.slice(1);
 		min-height: clamp(28rem, 62vh, 40rem);
 		border-radius: 0.75rem;
 		background: var(--surface-strong);
-	}
-
-	.sth-prenota__media,
-	.sth-prenota__scrim,
-	.sth-prenota__copy {
-		grid-area: stack;
 	}
 
 	.sth-prenota__media {
@@ -298,9 +319,10 @@ const extraImages = galleryImages.slice(1);
 	.sth-prenota__copy {
 		position: relative;
 		z-index: 2;
-		display: grid;
-		justify-items: center;
-		align-content: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 		gap: 1rem;
 		width: min(100%, 36rem);
 		padding: 4.5rem 1.5rem 3rem;
@@ -308,22 +330,16 @@ const extraImages = galleryImages.slice(1);
 	}
 
 	.sth-prenota__data {
-		grid-area: data;
 		width: 100%;
-		max-width: 65ch;
 		min-width: 0;
-		justify-self: center;
 	}
 
 	.sth-prenota__book {
-		grid-area: book;
 		width: 100%;
 		max-width: none;
-		justify-self: stretch;
 	}
 
 	.sth-prenota__body {
-		grid-area: body;
 		width: 100%;
 		min-width: 0;
 	}
@@ -348,12 +364,12 @@ const extraImages = galleryImages.slice(1);
 
 	@media (min-width: 768px) {
 		.sth-prenota__book {
+			width: 400px;
 			max-width: 400px;
 			min-width: 280px;
-			justify-self: start;
 			position: sticky;
 			top: 7rem;
-			align-self: start;
+			align-self: flex-start;
 		}
 
 		.sth-prenota__book :global(.calendly-embed) {
@@ -369,8 +385,7 @@ const extraImages = galleryImages.slice(1);
 	.sth-prenota__body :global(.scheda-tour__content),
 	.sth-prenota__body :global(.scheda-tour__faq) {
 		margin-top: 0;
-		margin-inline: auto;
-		max-width: 65ch;
+		max-width: none;
 	}
 
 	.sth-prenota__back {
@@ -419,13 +434,6 @@ const extraImages = galleryImages.slice(1);
 		font-size: 0.8125rem;
 	}
 
-	/* On XL desktop, specs sit under intro in the same column — keep separation. */
-	@media (min-width: 1280px) {
-		.sth-prenota__specs {
-			margin-top: 0;
-		}
-	}
-
 	.sth-prenota__spec {
 		display: flex;
 		justify-content: space-between;
@@ -459,10 +467,15 @@ const extraImages = galleryImages.slice(1);
 	}
 
 	.sth-prenota__thumbs {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		display: flex;
+		flex-wrap: wrap;
 		gap: 0.75rem;
 		width: 100%;
+	}
+
+	.sth-prenota__thumbs .gallery-thumb {
+		flex: 1 1 calc((100% - 1.5rem) / 3);
+		max-width: calc((100% - 1.5rem) / 3);
 	}
 
 	.gallery-thumb {

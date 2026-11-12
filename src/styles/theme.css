@@ -42,7 +42,7 @@
 
 	/* Layout */
 	--gutter: 1.5rem;
-	--shell: 96rem;
+	--shell: 80rem; /* 1280px @ 16px root */
 
 	/* Fonts — prod baseline:
 	   Display = Fraunces, Body = Source Serif 4, UI = Fira Sans */
