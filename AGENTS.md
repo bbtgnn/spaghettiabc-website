@@ -44,7 +44,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - A **Tour** is a guided food experience in one Puglia town — not multi-stop Italy travel. See `GLOSSARY.md` for Catalogo Tour / Scheda Tour / Sezione Tour / Tour.
 - **Catalogo Tour** (`/tours`) = shell intro + shared `.tour-grid` + `TourTeaser`.
 - **Scheda Tour** (`/tours/[slug]`) = Atelier product-split layout (gallery left, sticky info right); no related tours; Calendly Prenotazione embed in the info column when `calendly_url` is set; empty URL → no embed.
-- `?variant=prenota` layout (`.sth-prenota__layout`): `.sth-prenota__intro` (back/title/excerpt/image) + `.sth-prenota__data` (specs) + `.sth-prenota__book` (sticky Calendly, max 400px) + `.sth-prenota__body` (editorial+FAQ). Mobile (<768): intro→data→book→body. Tablet (768–1023): intro full width, then data+body | book. Desktop (≥1024): intro+data+body | book.
+- `?variant=prenota` layout (`.sth-prenota__layout`): `.sth-prenota__intro` (tall bg-image hero, title+excerpt centered) + `.sth-prenota__data` (specs) + `.sth-prenota__book` (sticky Calendly, max 400px; full-width on mobile) + `.sth-prenota__body` (editorial+FAQ). Mobile (<768): intro→data→book→body. Mid (768–1279): intro full width, then data+body | book. XL (≥1280): intro+data+body | book.
 - `.tour-grid` lives in `src/styles/theme.css` — Catalogo Tour grid; do not redefine page-locally.
 - Homepage Sezione Tour uses `.tour-rail` (horizontal scroll + baseline) in `theme.css`, not `.tour-grid`.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.

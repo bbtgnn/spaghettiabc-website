@@ -66,33 +66,21 @@ const extraImages = galleryImages.slice(1);
 
 <section class="sth-prenota" aria-label={title}>
 	<div class="sth-prenota__layout">
-		{/* Hero: back + title + description + lead image */}
-		<div class="sth-prenota__intro">
-			<nav class="sth-prenota__back" aria-label="Breadcrumb">
-				<a class="btn btn-outline btn--arrow btn--sm" href="/tours">
-					<ArrowLeft class="btn__icon" size={14} stroke-width={1.75} aria-hidden="true" />
-					<span class="btn__label">Catalogo tour</span>
-				</a>
-			</nav>
-
-			<h1 class="sth-prenota__title" {...edit.title}>{title}</h1>
-
-			{
-				excerpt && (
-					<p class="type-body sth-prenota__excerpt" {...edit.excerpt}>
-						{excerpt}
-					</p>
-				)
-			}
-
-			{
-				leadImage && (
-					<div
-						class="sth-prenota__lead"
-						{...edit.featured_image}
-						data-tour-gallery
-					>
-						<div class="sth-prenota__lead-stage">
+		{/* Hero: image as background; title + subtitle centered */}
+		<div
+			class="sth-prenota__intro"
+			data-tour-gallery={leadImage ? true : undefined}
+		>
+			<div
+				class:list={[
+					"sth-prenota__stage",
+					!leadImage && "sth-prenota__stage--empty",
+				]}
+				{...(leadImage ? edit.featured_image : {})}
+			>
+				{
+					leadImage && (
+						<div class="sth-prenota__media" aria-hidden="true">
 							{galleryImages.map((image, index) => (
 								<div
 									class:list={[
@@ -105,26 +93,47 @@ const extraImages = galleryImages.slice(1);
 								</div>
 							))}
 						</div>
+					)
+				}
+				<div class="sth-prenota__scrim" aria-hidden="true"></div>
 
-						{extraImages.length > 0 && (
-							<div
-								class="sth-prenota__thumbs"
-								role="group"
-								aria-label="Choose an image"
+				<nav class="sth-prenota__back" aria-label="Breadcrumb">
+					<a class="btn btn-outline btn--arrow btn--sm" href="/tours">
+						<ArrowLeft class="btn__icon" size={14} stroke-width={1.75} aria-hidden="true" />
+						<span class="btn__label">Catalogo tour</span>
+					</a>
+				</nav>
+
+				<div class="sth-prenota__copy">
+					<h1 class="sth-prenota__title" {...edit.title}>{title}</h1>
+					{
+						excerpt && (
+							<p class="type-body sth-prenota__excerpt" {...edit.excerpt}>
+								{excerpt}
+							</p>
+						)
+					}
+				</div>
+			</div>
+
+			{
+				extraImages.length > 0 && (
+					<div
+						class="sth-prenota__thumbs"
+						role="group"
+						aria-label="Choose an image"
+					>
+						{galleryImages.map((image, index) => (
+							<button
+								type="button"
+								class="gallery-thumb"
+								data-gallery-thumb={index}
+								aria-label={`Show view ${index + 1}`}
+								aria-pressed={index === 0 ? "true" : "false"}
 							>
-								{galleryImages.map((image, index) => (
-									<button
-										type="button"
-										class="gallery-thumb"
-										data-gallery-thumb={index}
-										aria-label={`Show view ${index + 1}`}
-										aria-pressed={index === 0 ? "true" : "false"}
-									>
-										<Image image={image} />
-									</button>
-								))}
-							</div>
-						)}
+								<Image image={image} />
+							</button>
+						))}
 					</div>
 				)
 			}
@@ -177,8 +186,8 @@ const extraImages = galleryImages.slice(1);
 
 	/*
 	 * Mobile (<768): hero → data → iframe → editorial/FAQ
-	 * Tablet (768–1023): hero full-bleed; then data+editorial | iframe
-	 * Desktop (≥1024): full left column (hero+data+editorial) | iframe
+	 * Tablet / mid (768–1279): hero full-bleed; then data+editorial | iframe
+	 * XL desktop (≥1280): full left column (hero+data+editorial) | iframe
 	 */
 	.sth-prenota__layout {
 		display: grid;
@@ -193,7 +202,7 @@ const extraImages = galleryImages.slice(1);
 		padding-top: 2rem;
 	}
 
-	@media (min-width: 768px) and (max-width: 1023px) {
+	@media (min-width: 768px) and (max-width: 1279px) {
 		.sth-prenota__layout {
 			grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
 			grid-template-areas:
@@ -205,7 +214,7 @@ const extraImages = galleryImages.slice(1);
 		}
 	}
 
-	@media (min-width: 1024px) {
+	@media (min-width: 1280px) {
 		.sth-prenota__layout {
 			/* Calendly: <650 = small layout; >=650 adds side chrome. */
 			grid-template-columns: minmax(0, 1fr) minmax(280px, 400px);
@@ -221,16 +230,89 @@ const extraImages = galleryImages.slice(1);
 	.sth-prenota__intro {
 		grid-area: intro;
 		display: grid;
+		gap: 0.75rem;
 		justify-items: stretch;
 		align-content: start;
 		width: 100%;
 		min-width: 0;
 	}
 
+	.sth-prenota__stage {
+		position: relative;
+		display: grid;
+		grid-template-areas: "stack";
+		align-items: center;
+		justify-items: center;
+		overflow: hidden;
+		isolation: isolate;
+		width: 100%;
+		/* Taller than the old 4:3 / 22rem lead image */
+		min-height: clamp(28rem, 62vh, 40rem);
+		border-radius: 0.75rem;
+		background: var(--surface-strong);
+	}
+
+	.sth-prenota__media,
+	.sth-prenota__scrim,
+	.sth-prenota__copy {
+		grid-area: stack;
+	}
+
+	.sth-prenota__media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+
+	.sth-prenota__media :global(img),
+	.sth-prenota__media .gallery-panel {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.sth-prenota__media .gallery-panel {
+		position: absolute;
+		inset: 0;
+	}
+
+	.sth-prenota__scrim {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in oklab, var(--ink) 45%, transparent) 0%,
+				color-mix(in oklab, var(--ink) 28%, transparent) 42%,
+				color-mix(in oklab, var(--ink) 55%, transparent) 100%
+			);
+		pointer-events: none;
+	}
+
+	.sth-prenota__stage--empty .sth-prenota__scrim {
+		background: color-mix(in oklab, var(--ink) 18%, var(--surface));
+	}
+
+	.sth-prenota__copy {
+		position: relative;
+		z-index: 2;
+		display: grid;
+		justify-items: center;
+		align-content: center;
+		gap: 1rem;
+		width: min(100%, 36rem);
+		padding: 4.5rem 1.5rem 3rem;
+		text-align: center;
+	}
+
 	.sth-prenota__data {
 		grid-area: data;
 		width: 100%;
+		max-width: 65ch;
 		min-width: 0;
+		justify-self: center;
 	}
 
 	.sth-prenota__book {
@@ -287,55 +369,47 @@ const extraImages = galleryImages.slice(1);
 	.sth-prenota__body :global(.scheda-tour__content),
 	.sth-prenota__body :global(.scheda-tour__faq) {
 		margin-top: 0;
-		max-width: none;
+		margin-inline: auto;
+		max-width: 65ch;
 	}
 
 	.sth-prenota__back {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		z-index: 3;
 		display: flex;
 		flex-wrap: wrap;
-		padding-block: 0 1.5rem;
-		justify-self: start;
+	}
+
+	.sth-prenota__back :global(.btn-outline) {
+		color: #fff;
+		border-color: color-mix(in oklab, #fff 55%, transparent);
+		background: color-mix(in oklab, var(--ink) 28%, transparent);
+	}
+
+	.sth-prenota__back :global(.btn-outline:hover),
+	.sth-prenota__back :global(.btn-outline:focus-visible) {
+		border-color: #fff;
+		background: color-mix(in oklab, var(--ink) 42%, transparent);
 	}
 
 	.sth-prenota__title {
-		margin-top: 0;
-		justify-self: start;
+		margin: 0;
 		font-family: var(--font-display);
-		font-size: clamp(1.625rem, 3.2vw, 2.5rem);
-		line-height: 1.15;
+		font-size: clamp(1.875rem, 4vw, 3rem);
+		line-height: 1.12;
 		letter-spacing: -0.02em;
 		font-weight: var(--font-display-weight);
-		color: var(--title);
+		color: #fff;
+		text-wrap: balance;
 	}
 
 	.sth-prenota__excerpt {
-		margin-top: 1.25rem;
+		margin: 0;
 		width: 100%;
-		max-width: none;
-	}
-
-	.sth-prenota__lead {
-		width: 100%;
-		margin-top: 1.75rem;
-	}
-
-	.sth-prenota__lead-stage {
-		position: relative;
-		overflow: hidden;
-		background: var(--surface);
-		width: 100%;
-		aspect-ratio: 4 / 3;
-		max-height: 22rem;
-		border-radius: 0.75rem;
-	}
-
-	.sth-prenota__lead-stage :global(img) {
-		width: 100%;
-		height: 100%;
-		max-height: 22rem;
-		object-fit: cover;
-		display: block;
-		border-radius: 0.75rem;
+		max-width: 32ch;
+		color: color-mix(in oklab, #fff 88%, transparent);
 	}
 
 	.sth-prenota__specs {
@@ -345,8 +419,8 @@ const extraImages = galleryImages.slice(1);
 		font-size: 0.8125rem;
 	}
 
-	/* On desktop, specs sit under intro in the same column — keep separation. */
-	@media (min-width: 1024px) {
+	/* On XL desktop, specs sit under intro in the same column — keep separation. */
+	@media (min-width: 1280px) {
 		.sth-prenota__specs {
 			margin-top: 0;
 		}
@@ -388,7 +462,7 @@ const extraImages = galleryImages.slice(1);
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 0.75rem;
-		margin-top: 0.75rem;
+		width: 100%;
 	}
 
 	.gallery-thumb {
