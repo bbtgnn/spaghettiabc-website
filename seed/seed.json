@@ -589,7 +589,7 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
 					"calendly_url": "https://calendly.com/spaghettiabc/polignano-sensory-food-tour",
 					"featured_image": {
@@ -692,7 +692,7 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
 					"featured_image": {
 						"$media": {
@@ -746,7 +746,7 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
 					"featured_image": {
 						"$media": {
@@ -800,7 +800,7 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
 					"featured_image": {
 						"$media": {
@@ -854,7 +854,7 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
 					"featured_image": {
 						"$media": {
