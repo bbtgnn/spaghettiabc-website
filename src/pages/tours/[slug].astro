@@ -1,8 +1,6 @@
 ---
 /**
- * Scheda Tour — PROTOTYPE hero compare via ?variant=
- * atelier = current gallery|info (default)
- * prenota = info|Calendly, gallery below
+ * Scheda Tour — hero + body | booking column (specs + Calendly).
  */
 import {
 	getEmDashEntry,
@@ -13,9 +11,7 @@ import {
 import { PortableText } from "emdash/ui";
 import ChevronDown from "@lucide/astro/icons/chevron-down";
 import Base from "../../layouts/Base.astro";
-import SchedaTourHeroAtelier from "../../components/scheda-tour/SchedaTourHeroAtelier.astro";
 import SchedaTourHeroPrenotaSplit from "../../components/scheda-tour/SchedaTourHeroPrenotaSplit.astro";
-import PrototypeVariantSwitcher from "../../components/scheda-tour/PrototypeVariantSwitcher.astro";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 
 const slug = decodeSlug(Astro.params.slug);
@@ -106,15 +102,6 @@ const calendlyUrl =
 		? tour.data.calendly_url.trim()
 		: "";
 
-const heroVariants = [
-	{ key: "atelier", label: "Atelier gallery|info" },
-	{ key: "prenota", label: "Info|Calendly split" },
-] as const;
-
-const variantParam = Astro.url.searchParams.get("variant");
-const heroVariant =
-	variantParam === "prenota" ? "prenota" : ("atelier" as const);
-
 const heroProps = {
 	title: tour.data.title,
 	destination: tour.data.destination ?? undefined,
@@ -143,104 +130,54 @@ const heroProps = {
 	content={{ collection: "tours", id: tour.data.id, slug }}
 >
 	<article class="shell scheda-tour">
-		{
-			heroVariant === "prenota" ? (
-				<SchedaTourHeroPrenotaSplit {...heroProps}>
-					{tour.data.content && (
-						<section
-							class="scheda-tour__content"
-							aria-labelledby="tour-content-heading"
-							{...tour.edit.content}
-						>
-							<h2 id="tour-content-heading" class="type-h3 scheda-tour__content-title">
-								Il tour
-							</h2>
-							<PortableText value={tour.data.content} />
-						</section>
-					)}
-					{faqItems.length > 0 && (
-						<section
-							class="scheda-tour__faq"
-							aria-labelledby="tour-faq-heading"
-							{...tour.edit.faq}
-						>
-							<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
-								Domande frequenti
-							</h2>
-							<div class="scheda-tour__faq-list">
-								{faqItems.map((item) => (
-									<details class="scheda-tour__faq-item">
-										<summary>
-											<span>{item.question}</span>
-											<ChevronDown
-												class="scheda-tour__faq-icon"
-												size={16}
-												stroke-width={1.75}
-												aria-hidden="true"
-											/>
-										</summary>
-										<div class="scheda-tour__faq-panel">
-											<p class="type-body">{item.answer}</p>
-										</div>
-									</details>
-								))}
-							</div>
-						</section>
-					)}
-				</SchedaTourHeroPrenotaSplit>
-			) : (
-				<>
-					<SchedaTourHeroAtelier {...heroProps} />
-					{tour.data.content && (
-						<section
-							class="scheda-tour__content"
-							aria-labelledby="tour-content-heading"
-							{...tour.edit.content}
-						>
-							<h2 id="tour-content-heading" class="type-h3 scheda-tour__content-title">
-								Il tour
-							</h2>
-							<PortableText value={tour.data.content} />
-						</section>
-					)}
-					{faqItems.length > 0 && (
-						<section
-							class="scheda-tour__faq"
-							aria-labelledby="tour-faq-heading"
-							{...tour.edit.faq}
-						>
-							<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
-								Domande frequenti
-							</h2>
-							<div class="scheda-tour__faq-list">
-								{faqItems.map((item) => (
-									<details class="scheda-tour__faq-item">
-										<summary>
-											<span>{item.question}</span>
-											<ChevronDown
-												class="scheda-tour__faq-icon"
-												size={16}
-												stroke-width={1.75}
-												aria-hidden="true"
-											/>
-										</summary>
-										<div class="scheda-tour__faq-panel">
-											<p class="type-body">{item.answer}</p>
-										</div>
-									</details>
-								))}
-							</div>
-						</section>
-					)}
-				</>
-			)
-		}
+		<SchedaTourHeroPrenotaSplit {...heroProps}>
+			{
+				tour.data.content && (
+					<section
+						class="scheda-tour__content"
+						aria-labelledby="tour-content-heading"
+						{...tour.edit.content}
+					>
+						<h2 id="tour-content-heading" class="type-h3 scheda-tour__content-title">
+							Il tour
+						</h2>
+						<PortableText value={tour.data.content} />
+					</section>
+				)
+			}
+			{
+				faqItems.length > 0 && (
+					<section
+						class="scheda-tour__faq"
+						aria-labelledby="tour-faq-heading"
+						{...tour.edit.faq}
+					>
+						<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
+							Domande frequenti
+						</h2>
+						<div class="scheda-tour__faq-list">
+							{faqItems.map((item) => (
+								<details class="scheda-tour__faq-item">
+									<summary>
+										<span>{item.question}</span>
+										<ChevronDown
+											class="scheda-tour__faq-icon"
+											size={16}
+											stroke-width={1.75}
+											aria-hidden="true"
+										/>
+									</summary>
+									<div class="scheda-tour__faq-panel">
+										<p class="type-body">{item.answer}</p>
+									</div>
+								</details>
+							))}
+						</div>
+					</section>
+				)
+			}
+		</SchedaTourHeroPrenotaSplit>
 	</article>
-
-	<PrototypeVariantSwitcher
-		variants={[...heroVariants]}
-		current={heroVariant}
-	/>
 </Base>
 
 <style>
