@@ -1,0 +1,283 @@
+---
+/**
+ * DEV-only color preview (#12): global primary + base text (ink).
+ * Mounted inside DevPreviewDock (same control area as FontPairingPicker).
+ */
+const PALETTES = [
+	{
+		id: "pomodoro",
+		label: "Rosso pomodoro",
+		accent: "#c43c2c",
+		title: "#8f2418",
+	},
+	{
+		id: "pascali",
+		label: "Blu Pascali",
+		accent: "#0A6DE4",
+		title: "#0855B0",
+	},
+	{
+		id: "bottiglia",
+		label: "Verde bottiglia",
+		accent: "#2f6b4f",
+		title: "#1e4a36",
+	},
+] as const;
+
+const INKS = [
+	{
+		id: "cool",
+		label: "Freddo",
+		ink: "#101010",
+		muted: "#5a5a56",
+	},
+	{
+		id: "warm",
+		label: "Caldo scuro",
+		ink: "#4a433c",
+		muted: "#6e6860",
+	},
+] as const;
+---
+
+<div class="color-palette-picker">
+	<div class="color-palette-picker__row">
+		<p class="color-palette-picker__label" id="color-primary-label">Primario</p>
+		<div
+			class="color-palette-picker__swatches"
+			role="group"
+			aria-labelledby="color-primary-label"
+			data-palette-swatches
+		>
+			{
+				PALETTES.map((palette) => (
+					<button
+						type="button"
+						class="color-palette-picker__swatch color-palette-picker__swatch--split"
+						data-palette={palette.id}
+						aria-label={palette.label}
+						aria-pressed="false"
+						title={palette.label}
+					>
+						<span
+							class="color-palette-picker__swatch-half"
+							style={`background:${palette.accent}`}
+							aria-hidden="true"
+						/>
+						<span
+							class="color-palette-picker__swatch-half"
+							style={`background:${palette.title}`}
+							aria-hidden="true"
+						/>
+					</button>
+				))
+			}
+		</div>
+	</div>
+
+	<div class="color-palette-picker__row">
+		<p class="color-palette-picker__label" id="color-ink-label">Testo</p>
+		<div
+			class="color-palette-picker__swatches"
+			role="group"
+			aria-labelledby="color-ink-label"
+			data-ink-swatches
+		>
+			{
+				INKS.map((ink) => (
+					<button
+						type="button"
+						class="color-palette-picker__swatch"
+						data-ink={ink.id}
+						aria-label={ink.label}
+						aria-pressed="false"
+						title={ink.label}
+						style={`background:${ink.ink}`}
+					/>
+				))
+			}
+		</div>
+	</div>
+</div>
+
+<script
+	define:vars={{
+		PALETTE_IDS: PALETTES.map((p) => p.id),
+		PALETTE_COLORS: Object.fromEntries(
+			PALETTES.map((p) => [p.id, { accent: p.accent, title: p.title }]),
+		),
+		INK_IDS: INKS.map((i) => i.id),
+		INK_COLORS: Object.fromEntries(
+			INKS.map((i) => [i.id, { ink: i.ink, muted: i.muted }]),
+		),
+	}}
+>
+	const KEY_PALETTE = "spaghettiabc-color-palette";
+	const KEY_INK = "spaghettiabc-ink";
+	const DEFAULT_PALETTE = "pomodoro";
+	const DEFAULT_INK = "cool";
+	const VALID_PALETTES = PALETTE_IDS;
+	const VALID_INKS = INK_IDS;
+	const FOUC_STYLE_ID = "palette-fouc";
+
+	const root = document.documentElement;
+	const picker = document.querySelector(".color-palette-picker");
+	const paletteSwatches = picker?.querySelectorAll("[data-palette-swatches] .color-palette-picker__swatch");
+	const inkSwatches = picker?.querySelectorAll("[data-ink-swatches] .color-palette-picker__swatch");
+
+	const read = (key, valid, fallback) => {
+		try {
+			const stored = localStorage.getItem(key);
+			if (stored && valid.includes(stored)) return stored;
+		} catch {
+			/* no-op */
+		}
+		return fallback;
+	};
+
+	const write = (key, value) => {
+		try {
+			localStorage.setItem(key, value);
+		} catch {
+			/* no-op */
+		}
+	};
+
+	const syncFoucStyle = () => {
+		const palette = root.getAttribute("data-palette") ?? DEFAULT_PALETTE;
+		const inkId = root.getAttribute("data-ink") ?? DEFAULT_INK;
+		const colors = PALETTE_COLORS[palette];
+		const inkColors = INK_COLORS[inkId];
+		if (!colors || !inkColors) return;
+
+		let style = document.getElementById(FOUC_STYLE_ID);
+		if (!(style instanceof HTMLStyleElement)) {
+			style = document.createElement("style");
+			style.id = FOUC_STYLE_ID;
+			document.head.appendChild(style);
+		}
+		style.textContent = `html{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff;--ink:${inkColors.ink};--muted:${inkColors.muted}}`;
+	};
+
+	const applyPalette = (palette) => {
+		const next = VALID_PALETTES.includes(palette) ? palette : DEFAULT_PALETTE;
+		root.setAttribute("data-palette", next);
+		write(KEY_PALETTE, next);
+		syncFoucStyle();
+
+		paletteSwatches?.forEach((swatch) => {
+			if (!(swatch instanceof HTMLButtonElement)) return;
+			const selected = swatch.dataset.palette === next;
+			swatch.setAttribute("aria-pressed", selected ? "true" : "false");
+			swatch.classList.toggle("is-selected", selected);
+		});
+	};
+
+	const applyInk = (inkId) => {
+		const next = VALID_INKS.includes(inkId) ? inkId : DEFAULT_INK;
+		root.setAttribute("data-ink", next);
+		write(KEY_INK, next);
+		syncFoucStyle();
+
+		inkSwatches?.forEach((swatch) => {
+			if (!(swatch instanceof HTMLButtonElement)) return;
+			const selected = swatch.dataset.ink === next;
+			swatch.setAttribute("aria-pressed", selected ? "true" : "false");
+			swatch.classList.toggle("is-selected", selected);
+		});
+	};
+
+	applyPalette(read(KEY_PALETTE, VALID_PALETTES, DEFAULT_PALETTE));
+	applyInk(read(KEY_INK, VALID_INKS, DEFAULT_INK));
+
+	paletteSwatches?.forEach((swatch) => {
+		swatch.addEventListener("click", () => {
+			if (!(swatch instanceof HTMLButtonElement)) return;
+			applyPalette(swatch.dataset.palette ?? "");
+		});
+	});
+
+	inkSwatches?.forEach((swatch) => {
+		swatch.addEventListener("click", () => {
+			if (!(swatch instanceof HTMLButtonElement)) return;
+			applyInk(swatch.dataset.ink ?? "");
+		});
+	});
+</script>
+
+<style>
+	.color-palette-picker {
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.color-palette-picker__row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		min-width: 0;
+	}
+
+	.color-palette-picker__label {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--muted);
+		white-space: nowrap;
+	}
+
+	.color-palette-picker__swatches {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		justify-content: flex-end;
+	}
+
+	.color-palette-picker__swatch {
+		display: block;
+		aspect-ratio: 1;
+		width: 1.75rem;
+		min-width: 1.75rem;
+		min-height: 1.75rem;
+		padding: 0;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--canvas);
+		cursor: pointer;
+		transition:
+			border-color 160ms ease,
+			box-shadow 160ms ease;
+	}
+
+	.color-palette-picker__swatch--split {
+		display: grid;
+		grid-template-rows: 1fr 1fr;
+	}
+
+	.color-palette-picker__swatch:hover,
+	.color-palette-picker__swatch:focus-visible {
+		border-color: var(--line-strong);
+		outline: none;
+	}
+
+	.color-palette-picker__swatch:focus-visible {
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+	}
+
+	.color-palette-picker__swatch.is-selected {
+		border-color: var(--ink);
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--ink) 35%, transparent);
+	}
+
+	.color-palette-picker__swatch-half {
+		display: block;
+		width: 100%;
+		min-height: 50%;
+	}
+</style>

@@ -266,14 +266,14 @@ hr {
 	font-size: clamp(1.0625rem, 1.35vw, 1.375rem);
 	line-height: 1.5;
 	letter-spacing: -0.011em;
-	color: var(--muted);
+	color: var(--ink);
 	text-wrap: pretty;
 }
 
 .type-body {
 	line-height: 1.65;
 	letter-spacing: -0.006em;
-	color: var(--muted);
+	color: var(--ink);
 	text-wrap: pretty;
 }
 
@@ -310,7 +310,8 @@ hr {
 	.field-label,
 	.newsletter-form__status,
 	.hero__caption > span,
-	.font-pairing-picker__title,
+	.dev-preview-dock__title,
+	.dev-preview-dock__section-title,
 	.font-pairing-picker__ui-label
 ) {
 	text-transform: uppercase;
@@ -325,7 +326,8 @@ html[data-font-ui-case="serif"]
 		.field-label,
 		.newsletter-form__status,
 		.hero__caption > span,
-		.font-pairing-picker__title,
+		.dev-preview-dock__title,
+		.dev-preview-dock__section-title,
 		.font-pairing-picker__ui-label
 	) {
 	text-transform: lowercase;
@@ -340,7 +342,8 @@ html[data-font-ui-case="serif"]
 		.field-label,
 		.newsletter-form__status,
 		.hero__caption > span,
-		.font-pairing-picker__title,
+		.dev-preview-dock__title,
+		.dev-preview-dock__section-title,
 		.font-pairing-picker__ui-label
 	)::first-letter {
 	text-transform: uppercase;
@@ -771,7 +774,7 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 .site-nav a:focus-visible,
 .site-nav a[aria-current="page"] {
 	background-size: 100% 1px;
-	color: var(--accent);
+	color: var(--title);
 }
 
 .site-main {

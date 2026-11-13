@@ -1,0 +1,253 @@
+---
+/**
+ * DEV-only preview dock (#9 + #12). Single bottom-right control area for
+ * font pairings and global primary color. Stripped from production builds.
+ */
+import SlidersHorizontal from "@lucide/astro/icons/sliders-horizontal";
+import X from "@lucide/astro/icons/x";
+import ColorPalettePicker from "./ColorPalettePicker.astro";
+import FontPairingPicker from "./FontPairingPicker.astro";
+---
+
+<div class="dev-preview-dock" role="region" aria-label="Anteprima design">
+	<div class="dev-preview-dock__header">
+		<p class="dev-preview-dock__title">Anteprima design</p>
+		<button
+			type="button"
+			class="dev-preview-dock__collapse"
+			aria-label="Riduci anteprima design"
+			aria-expanded="true"
+		>
+			<X class="dev-preview-dock__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+		</button>
+	</div>
+
+	<div class="dev-preview-dock__body">
+		<section class="dev-preview-dock__section" aria-labelledby="dev-preview-fonts">
+			<h2 class="dev-preview-dock__section-title" id="dev-preview-fonts">Abbinamento font</h2>
+			<FontPairingPicker />
+		</section>
+
+		<section class="dev-preview-dock__section" aria-labelledby="dev-preview-colors">
+			<h2 class="dev-preview-dock__section-title" id="dev-preview-colors">Colori</h2>
+			<ColorPalettePicker />
+		</section>
+	</div>
+
+	<button
+		type="button"
+		class="dev-preview-dock__launch"
+		aria-label="Apri anteprima design"
+		hidden
+	>
+		<SlidersHorizontal
+			class="dev-preview-dock__icon"
+			size={18}
+			stroke-width={1.75}
+			aria-hidden="true"
+		/>
+	</button>
+</div>
+
+<script>
+	const KEY_COLLAPSED = "spaghettiabc-dev-preview-collapsed";
+	const LEGACY_FONT_COLLAPSED = "spaghettiabc-font-picker-collapsed";
+
+	const dock = document.querySelector(".dev-preview-dock");
+	const collapseBtn = dock?.querySelector(".dev-preview-dock__collapse");
+	const launchBtn = dock?.querySelector(".dev-preview-dock__launch");
+
+	const write = (key: string, value: string) => {
+		try {
+			localStorage.setItem(key, value);
+		} catch {
+			/* no-op */
+		}
+	};
+
+	const readCollapsed = () => {
+		try {
+			const next = localStorage.getItem(KEY_COLLAPSED);
+			if (next === "1" || next === "0") return next === "1";
+			return localStorage.getItem(LEGACY_FONT_COLLAPSED) === "1";
+		} catch {
+			return false;
+		}
+	};
+
+	const setCollapsed = (collapsed: boolean, { focus = false } = {}) => {
+		if (!(dock instanceof HTMLElement)) return;
+		dock.classList.toggle("is-collapsed", collapsed);
+		dock.setAttribute(
+			"aria-label",
+			collapsed ? "Anteprima design (ridotta)" : "Anteprima design",
+		);
+
+		if (collapseBtn instanceof HTMLButtonElement) {
+			collapseBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+			collapseBtn.hidden = collapsed;
+		}
+
+		if (launchBtn instanceof HTMLButtonElement) {
+			launchBtn.hidden = !collapsed;
+		}
+
+		if (focus) {
+			const next = collapsed ? launchBtn : collapseBtn;
+			if (next instanceof HTMLButtonElement) next.focus();
+		}
+
+		write(KEY_COLLAPSED, collapsed ? "1" : "0");
+	};
+
+	setCollapsed(readCollapsed());
+
+	collapseBtn?.addEventListener("click", () => {
+		setCollapsed(true, { focus: true });
+	});
+
+	launchBtn?.addEventListener("click", () => {
+		setCollapsed(false, { focus: true });
+	});
+</script>
+
+<style>
+	.dev-preview-dock {
+		position: fixed;
+		z-index: 10000;
+		right: max(0.5rem, env(safe-area-inset-right));
+		bottom: max(0.5rem, env(safe-area-inset-bottom));
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 0.55rem 0.6rem 0.65rem;
+		background: var(--surface);
+		border: 1px solid var(--line-strong);
+		color: var(--ink);
+		width: min(22rem, calc(100vw - 1rem));
+		max-height: min(70svh, 36rem);
+		overflow: auto;
+		box-shadow: 0 8px 24px color-mix(in oklab, var(--ink) 12%, transparent);
+		pointer-events: auto;
+	}
+
+	.dev-preview-dock.is-collapsed {
+		width: auto;
+		max-height: none;
+		padding: 0;
+		overflow: visible;
+		gap: 0;
+		background: transparent;
+		border: 0;
+		box-shadow: none;
+	}
+
+	.dev-preview-dock__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.dev-preview-dock.is-collapsed .dev-preview-dock__header,
+	.dev-preview-dock.is-collapsed .dev-preview-dock__body {
+		display: none;
+	}
+
+	.dev-preview-dock__title {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--muted);
+	}
+
+	.dev-preview-dock__body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		min-width: 0;
+	}
+
+	.dev-preview-dock__section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		min-width: 0;
+	}
+
+	.dev-preview-dock__section + .dev-preview-dock__section {
+		padding-top: 0.65rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.dev-preview-dock__section-title {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		font-weight: 500;
+		color: var(--ink);
+	}
+
+	.dev-preview-dock__collapse,
+	.dev-preview-dock__launch {
+		display: grid;
+		place-items: center;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--canvas);
+		color: var(--ink);
+		cursor: pointer;
+		transition:
+			background 160ms ease,
+			border-color 160ms ease,
+			box-shadow 160ms ease,
+			color 160ms ease;
+	}
+
+	.dev-preview-dock__collapse {
+		width: 1.75rem;
+		height: 1.75rem;
+		flex-shrink: 0;
+	}
+
+	.dev-preview-dock__launch {
+		width: 2.75rem;
+		height: 2.75rem;
+		border-color: var(--line-strong);
+		background: var(--surface);
+		box-shadow: 0 8px 24px color-mix(in oklab, var(--ink) 12%, transparent);
+	}
+
+	.dev-preview-dock__launch[hidden] {
+		display: none;
+	}
+
+	.dev-preview-dock__collapse:hover,
+	.dev-preview-dock__collapse:focus-visible,
+	.dev-preview-dock__launch:hover,
+	.dev-preview-dock__launch:focus-visible {
+		border-color: var(--line-strong);
+		color: var(--accent);
+		outline: none;
+	}
+
+	.dev-preview-dock__collapse:focus-visible,
+	.dev-preview-dock__launch:focus-visible {
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+	}
+
+	.dev-preview-dock__icon {
+		display: block;
+	}
+
+	@media (max-width: 480px) {
+		.dev-preview-dock:not(.is-collapsed) {
+			left: max(0.5rem, env(safe-area-inset-left));
+			right: max(0.5rem, env(safe-area-inset-right));
+			width: auto;
+		}
+	}
+</style>

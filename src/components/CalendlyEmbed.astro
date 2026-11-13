@@ -7,18 +7,17 @@ interface Props {
 const { url, id } = Astro.props;
 
 /**
- * Site tokens → Calendly embed colors (hex without #).
- * Matches --ink / --accent in theme.css.
- * https://calendly.com/help/how-to-customize-your-embed
+ * SSR fallback only — client boot overwrites from live `--accent` / `--ink`.
+ * Hex without #. https://calendly.com/help/how-to-customize-your-embed
  */
 const CALENDLY_TEXT_COLOR = "101010";
-const CALENDLY_PRIMARY_COLOR = "8a5322";
+const CALENDLY_PRIMARY_COLOR = "c43c2c";
 
 /**
  * Calendly embed query flags — see
  * https://calendly.com/help/how-to-customize-your-embed
  * Event-type + landing/team params so either URL shape hides chrome details.
- * Colors match site --ink / --accent.
+ * Colors are refreshed from CSS tokens on the client before initInlineWidget.
  */
 function withCalendlyEmbedParams(raw: string): string {
 	try {
@@ -214,6 +213,7 @@ const embedUrl = withCalendlyEmbedParams(url);
 				opts?: { force?: boolean },
 			) => void;
 			__spaghettiCalendlyMsgBound?: boolean;
+			__spaghettiCalendlyColorWatch?: boolean;
 		}
 	}
 
@@ -445,16 +445,74 @@ const embedUrl = withCalendlyEmbedParams(url);
 		scheduleHostHeight(host, heightPx);
 	}
 
+	/** CSS color → Calendly hex (no #). Supports #rgb / #rrggbb / rgb[a](). */
+	function cssColorToCalendlyHex(raw: string, fallback: string) {
+		const value = raw.trim();
+		if (!value) return fallback;
+
+		const hex = value.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+		if (hex) {
+			const body = hex[1];
+			if (body.length === 3) {
+				return body
+					.split("")
+					.map((ch) => `${ch}${ch}`)
+					.join("")
+					.toLowerCase();
+			}
+			return body.toLowerCase();
+		}
+
+		const rgb = value.match(
+			/^rgba?\(\s*([\d.]+)\s*[, ]\s*([\d.]+)\s*[, ]\s*([\d.]+)/i,
+		);
+		if (rgb) {
+			const toHex = (n: string) =>
+				Math.max(0, Math.min(255, Math.round(Number(n))))
+					.toString(16)
+					.padStart(2, "0");
+			return `${toHex(rgb[1])}${toHex(rgb[2])}${toHex(rgb[3])}`;
+		}
+
+		return fallback;
+	}
+
+	function liveSiteColors() {
+		const styles = getComputedStyle(document.documentElement);
+		return {
+			primary: cssColorToCalendlyHex(
+				styles.getPropertyValue("--accent"),
+				"c43c2c",
+			),
+			text: cssColorToCalendlyHex(styles.getPropertyValue("--ink"), "101010"),
+		};
+	}
+
+	function withLiveCalendlyColors(raw: string) {
+		try {
+			const parsed = new URL(raw);
+			const { primary, text } = liveSiteColors();
+			parsed.searchParams.set("primary_color", primary);
+			parsed.searchParams.set("text_color", text);
+			return parsed.toString();
+		} catch {
+			return raw;
+		}
+	}
+
 	function bootEmbeds(root: ParentNode = document, opts: { force?: boolean } = {}) {
 		if (!window.Calendly?.initInlineWidget) return;
 
 		root.querySelectorAll("[data-calendly-embed]").forEach((node) => {
 			if (!(node instanceof HTMLElement)) return;
 			const host = node as HostState;
-			const embedUrl = host.dataset.url;
-			if (!embedUrl) return;
+			const baseUrl = host.dataset.url;
+			if (!baseUrl) return;
 
 			if (!opts.force && host.dataset.calendlyBooted === "1") return;
+
+			const embedUrl = withLiveCalendlyColors(baseUrl);
+			host.dataset.url = embedUrl;
 
 			const spinner = host.querySelector("[data-calendly-spinner]");
 			host.replaceChildren();
@@ -481,6 +539,23 @@ const embedUrl = withCalendlyEmbedParams(url);
 			});
 			lockIframeScroll(host);
 			host.dataset.calendlyBooted = "1";
+		});
+	}
+
+	/** DEV palette / ink changes → rebuild embed with new Calendly colors. */
+	if (!window.__spaghettiCalendlyColorWatch) {
+		window.__spaghettiCalendlyColorWatch = true;
+		const root = document.documentElement;
+		let lastKey = `${root.getAttribute("data-palette")}|${root.getAttribute("data-ink")}`;
+		new MutationObserver(() => {
+			const nextKey = `${root.getAttribute("data-palette")}|${root.getAttribute("data-ink")}`;
+			if (nextKey === lastKey) return;
+			lastKey = nextKey;
+			if (!document.querySelector("[data-calendly-embed]")) return;
+			window.__spaghettiBootCalendly?.(document, { force: true });
+		}).observe(root, {
+			attributes: true,
+			attributeFilter: ["data-palette", "data-ink"],
 		});
 	}
 

@@ -1,0 +1,30 @@
+/* DEV-only color preview (#12). Imported from Base.astro when DEV.
+   Primary default = pomodoro. Ink default = cool (#101010). Prod tokens stay in theme.css. */
+
+html[data-palette="pomodoro"] {
+	--accent: #c43c2c;
+	--title: #8f2418;
+	--accent-ink: #ffffff;
+}
+
+html[data-palette="pascali"] {
+	--accent: #0a6de4;
+	--title: #0855b0;
+	--accent-ink: #ffffff;
+}
+
+html[data-palette="bottiglia"] {
+	--accent: #2f6b4f;
+	--title: #1e4a36;
+	--accent-ink: #ffffff;
+}
+
+html[data-ink="cool"] {
+	--ink: #101010;
+	--muted: #5a5a56;
+}
+
+html[data-ink="warm"] {
+	--ink: #4a433c;
+	--muted: #6e6860;
+}

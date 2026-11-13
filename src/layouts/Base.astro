@@ -2,7 +2,7 @@
 import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import FontPairingPicker from "../components/FontPairingPicker.astro";
+import DevPreviewDock from "../components/DevPreviewDock.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import "../styles/theme.css";
@@ -10,6 +10,7 @@ import "../styles/theme.css";
 const isDev = import.meta.env.DEV;
 if (isDev) {
 	await import("../styles/font-pairings-preview.css");
+	await import("../styles/color-palettes-preview.css");
 }
 
 interface Props {
@@ -68,7 +69,12 @@ const pageCtx = createPublicPageContext({
 ---
 
 <!doctype html>
-<html lang="it" data-font-ui-case="sans">
+<html
+	lang="it"
+	data-font-ui-case="sans"
+	data-palette={isDev ? "pomodoro" : undefined}
+	data-ink={isDev ? "cool" : undefined}
+>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -132,6 +138,49 @@ const pageCtx = createPublicPageContext({
 				</script>
 			)
 		}
+		{
+			isDev && (
+				<script is:inline>
+					(() => {
+						const KEY_PALETTE = "spaghettiabc-color-palette";
+						const KEY_INK = "spaghettiabc-ink";
+						const VALID_PALETTE = ["pomodoro", "pascali", "bottiglia"];
+						const VALID_INK = ["cool", "warm"];
+						const COLORS = {
+							pomodoro: { accent: "#c43c2c", title: "#8f2418" },
+							pascali: { accent: "#0A6DE4", title: "#0855B0" },
+							bottiglia: { accent: "#2f6b4f", title: "#1e4a36" },
+						};
+						const INKS = {
+							cool: { ink: "#101010", muted: "#5a5a56" },
+							warm: { ink: "#4a433c", muted: "#6e6860" },
+						};
+						let palette = "pomodoro";
+						let ink = "cool";
+						try {
+							const storedPalette = localStorage.getItem(KEY_PALETTE);
+							if (storedPalette && VALID_PALETTE.includes(storedPalette)) {
+								palette = storedPalette;
+							}
+							const storedInk = localStorage.getItem(KEY_INK);
+							if (storedInk && VALID_INK.includes(storedInk)) ink = storedInk;
+						} catch {
+							/* no-op */
+						}
+						const colors = COLORS[palette];
+						const inkColors = INKS[ink];
+						if (!colors || !inkColors) return;
+						const root = document.documentElement;
+						root.setAttribute("data-palette", palette);
+						root.setAttribute("data-ink", ink);
+						const style = document.createElement("style");
+						style.id = "palette-fouc";
+						style.textContent = `html{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff;--ink:${inkColors.ink};--muted:${inkColors.muted}}`;
+						document.head.appendChild(style);
+					})();
+				</script>
+			)
+		}
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
@@ -151,7 +200,7 @@ const pageCtx = createPublicPageContext({
 
 		<EmDashBodyEnd page={pageCtx} />
 
-		{isDev && <FontPairingPicker />}
+		{isDev && <DevPreviewDock />}
 
 		<script is:inline>
 			(() => {
