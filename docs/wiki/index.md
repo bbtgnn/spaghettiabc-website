@@ -13,12 +13,14 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Homepage + Tours schema](./decisions/homepage-tours-schema.md) — first CMS slice before Libro (2026-10-23)
 - [Homepage form headings](./decisions/homepage-form-headings.md) — CMS editor section titles for Homepage only ([#5](https://github.com/bbtgnn/spaghettiabc-website/issues/5), 2026-10-28)
 - [Font pairing preview](./decisions/font-pairing-preview.md) — DEV matrix Body×Display + UI (Come testo / Tsukimi / Fira Sans); Archivo out, Cormorant in Display; serif UI larger + normal tracking (2026-11-05); supersedes 2026-11-04 four-option select ([#9](https://github.com/bbtgnn/spaghettiabc-website/issues/9))
+- [Color palette preview](./decisions/color-palette-preview.md) — DEV multi-slot Palettes in shared `DevPreviewDock` with fonts; per-slot `localStorage` ([#12](https://github.com/bbtgnn/spaghettiabc-website/issues/12), revised 2026-11-13)
 
 ## Operations
 
 - [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts` (2026-10-23)
 - [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — Libro/Formazione pattern; Collaborazioni logos claim **superseded 2026-11-06** (2026-10-23 / 2026-11-05 / 2026-11-06)
 - [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps now seeded on homepage `partner_logos` (2026-10-28 / 2026-11-05 / 2026-11-06; loopback SSRF noted 2026-10-23)
+- [Sezione Tour playground handoff](./ops/sezione-tour-playground-handoff.md) — extract #14 DEV playground from #17/#20 into a clean PR off `main` (2026-11-13)
 
 ## Domain language
 

@@ -1,0 +1,304 @@
+---
+/**
+ * DEV-only multi-slot color palette preview (#12). Stripped from production builds.
+ * Mounted inside DevPreviewDock (same control area as FontPairingPicker).
+ */
+const PALETTES = [
+	{
+		id: "walnut",
+		label: "Walnut",
+		accent: "#8a5322",
+		title: "#6b3f18",
+	},
+	{
+		id: "pomodoro",
+		label: "Rosso pomodoro",
+		accent: "#c43c2c",
+		title: "#8f2418",
+	},
+	{
+		id: "pascali",
+		label: "Blu Pascali",
+		accent: "#2f5f8a",
+		title: "#1e3f5c",
+	},
+	{
+		id: "bottiglia",
+		label: "Verde bottiglia",
+		accent: "#2f6b4f",
+		title: "#1e4a36",
+	},
+] as const;
+
+const SLOT_LABELS: Record<string, string> = {
+	chrome: "Chrome",
+	hero: "Hero",
+	"sezione-tour": "Sezione Tour",
+	"sezione-libro": "Sezione Libro",
+	"sezione-formazione": "Sezione Formazione",
+	"sezione-dicono": "Sezione Dicono di me",
+	"sezione-newsletter": "Sezione Newsletter",
+	"page-tours": "Catalogo Tour",
+	"page-tour": "Scheda Tour",
+	"page-book": "Libro",
+	"page-training": "Formazione",
+	"page-posts": "Posts",
+	"page-post": "Post",
+	"page-cms": "Pagina",
+};
+---
+
+<div class="color-palette-picker" data-slots-panel>
+	{/* Rows injected by client script from DOM slots */}
+</div>
+
+<template data-swatch-row-template>
+	<div class="color-palette-picker__row" data-slot-row>
+		<p class="color-palette-picker__slot-label" data-slot-label></p>
+		<div class="color-palette-picker__swatches" role="group">
+			{
+				PALETTES.map((palette) => (
+					<button
+						type="button"
+						class="color-palette-picker__swatch"
+						data-palette={palette.id}
+						aria-label={palette.label}
+						aria-pressed="false"
+						title={palette.label}
+					>
+						<span
+							class="color-palette-picker__swatch-half color-palette-picker__swatch-half--accent"
+							style={`background:${palette.accent}`}
+							aria-hidden="true"
+						/>
+						<span
+							class="color-palette-picker__swatch-half color-palette-picker__swatch-half--title"
+							style={`background:${palette.title}`}
+							aria-hidden="true"
+						/>
+					</button>
+				))
+			}
+		</div>
+	</div>
+</template>
+
+<script
+	define:vars={{
+		SLOT_LABELS,
+		PALETTE_IDS: PALETTES.map((p) => p.id),
+		PALETTE_COLORS: Object.fromEntries(
+			PALETTES.map((p) => [p.id, { accent: p.accent, title: p.title }]),
+		),
+	}}
+>
+	const KEY_PREFIX = "spaghettiabc-palette-";
+	const DEFAULT_PALETTE = "walnut";
+	const VALID_PALETTES = PALETTE_IDS;
+	const FOUC_STYLE_ID = "palette-fouc";
+
+	const panel = document.querySelector(".color-palette-picker[data-slots-panel]");
+	const rowTemplate = document.querySelector("[data-swatch-row-template]");
+	const section = panel?.closest(".dev-preview-dock__section");
+
+	const storageKey = (slotId) => `${KEY_PREFIX}${slotId}`;
+
+	const read = (key, valid, fallback) => {
+		try {
+			const stored = localStorage.getItem(key);
+			if (stored && valid.includes(stored)) return stored;
+		} catch {
+			/* no-op */
+		}
+		return fallback;
+	};
+
+	const write = (key, value) => {
+		try {
+			localStorage.setItem(key, value);
+		} catch {
+			/* no-op */
+		}
+	};
+
+	const syncFoucStyle = () => {
+		const rules = [];
+		try {
+			for (let i = 0; i < localStorage.length; i++) {
+				const key = localStorage.key(i);
+				if (!key || !key.startsWith(KEY_PREFIX)) continue;
+				const slotId = key.slice(KEY_PREFIX.length);
+				if (!/^[a-z0-9-]+$/.test(slotId)) continue;
+				const palette = localStorage.getItem(key);
+				if (!palette || !VALID_PALETTES.includes(palette)) continue;
+				const colors = PALETTE_COLORS[palette];
+				if (!colors) continue;
+				rules.push(
+					`[data-palette-slot="${slotId}"]{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff}`,
+				);
+			}
+		} catch {
+			/* no-op */
+		}
+
+		let style = document.getElementById(FOUC_STYLE_ID);
+		if (!rules.length) {
+			style?.remove();
+			return;
+		}
+		if (!(style instanceof HTMLStyleElement)) {
+			style = document.createElement("style");
+			style.id = FOUC_STYLE_ID;
+			document.head.appendChild(style);
+		}
+		style.textContent = rules.join("");
+	};
+
+	const applyPaletteToSlot = (slotEl, palette, row) => {
+		const next = VALID_PALETTES.includes(palette) ? palette : DEFAULT_PALETTE;
+		const slotId = slotEl.getAttribute("data-palette-slot");
+		if (!slotId) return;
+
+		slotEl.setAttribute("data-palette", next);
+		write(storageKey(slotId), next);
+		syncFoucStyle();
+
+		row?.querySelectorAll(".color-palette-picker__swatch").forEach((swatch) => {
+			if (!(swatch instanceof HTMLButtonElement)) return;
+			const selected = swatch.dataset.palette === next;
+			swatch.setAttribute("aria-pressed", selected ? "true" : "false");
+			swatch.classList.toggle("is-selected", selected);
+		});
+	};
+
+	const discoverSlots = () => {
+		const seen = new Set();
+		const slots = [];
+		document.querySelectorAll("[data-palette-slot]").forEach((el) => {
+			if (!(el instanceof HTMLElement)) return;
+			const id = el.getAttribute("data-palette-slot");
+			if (!id || seen.has(id)) return;
+			seen.add(id);
+			slots.push(el);
+		});
+		return slots;
+	};
+
+	const buildRows = () => {
+		if (!(panel instanceof HTMLElement) || !(rowTemplate instanceof HTMLTemplateElement)) {
+			return;
+		}
+		panel.replaceChildren();
+
+		const slots = discoverSlots();
+		if (!slots.length) {
+			section?.setAttribute("hidden", "");
+			return;
+		}
+		section?.removeAttribute("hidden");
+
+		for (const slotEl of slots) {
+			const slotId = slotEl.getAttribute("data-palette-slot") ?? "";
+			const fragment = rowTemplate.content.cloneNode(true);
+			const row = fragment.querySelector("[data-slot-row]");
+			const labelEl = fragment.querySelector("[data-slot-label]");
+			const swatchGroup = fragment.querySelector(".color-palette-picker__swatches");
+
+			if (!(row instanceof HTMLElement) || !(labelEl instanceof HTMLElement)) continue;
+
+			row.dataset.slotId = slotId;
+			labelEl.textContent = SLOT_LABELS[slotId] ?? slotId;
+			if (swatchGroup instanceof HTMLElement) {
+				swatchGroup.setAttribute("aria-label", labelEl.textContent);
+			}
+
+			const stored = read(storageKey(slotId), VALID_PALETTES, DEFAULT_PALETTE);
+			applyPaletteToSlot(slotEl, stored, row);
+
+			row.querySelectorAll(".color-palette-picker__swatch").forEach((swatch) => {
+				swatch.addEventListener("click", () => {
+					if (!(swatch instanceof HTMLButtonElement)) return;
+					applyPaletteToSlot(slotEl, swatch.dataset.palette ?? "", row);
+				});
+			});
+
+			panel.appendChild(fragment);
+		}
+	};
+
+	buildRows();
+</script>
+
+<style>
+	.color-palette-picker {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.color-palette-picker__row {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.55rem;
+		min-width: 0;
+	}
+
+	.color-palette-picker__slot-label {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--ink);
+		white-space: nowrap;
+	}
+
+	.color-palette-picker__swatches {
+		display: grid;
+		grid-template-columns: repeat(4, 1.25rem);
+		gap: 0.25rem;
+		flex-shrink: 0;
+	}
+
+	.color-palette-picker__swatch {
+		display: grid;
+		grid-template-rows: 1fr 1fr;
+		aspect-ratio: 1;
+		width: 1.25rem;
+		min-width: 1.25rem;
+		min-height: 1.25rem;
+		padding: 0;
+		overflow: hidden;
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		background: var(--canvas);
+		cursor: pointer;
+		transition:
+			border-color 160ms ease,
+			box-shadow 160ms ease;
+	}
+
+	.color-palette-picker__swatch:hover,
+	.color-palette-picker__swatch:focus-visible {
+		border-color: var(--line-strong);
+		outline: none;
+	}
+
+	.color-palette-picker__swatch:focus-visible {
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 45%, transparent);
+	}
+
+	.color-palette-picker__swatch.is-selected {
+		border-color: var(--ink);
+		box-shadow: 0 0 0 2px color-mix(in oklab, var(--ink) 35%, transparent);
+	}
+
+	.color-palette-picker__swatch-half {
+		display: block;
+		width: 100%;
+		min-height: 50%;
+	}
+</style>

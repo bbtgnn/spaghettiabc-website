@@ -37,7 +37,7 @@ const starSlots = [1, 2, 3, 4, 5] as const;
 	{
 		home ? (
 			<>
-				<section class="shell hero">
+				<section class="shell hero" data-palette-slot="hero" data-palette="walnut">
 					<div class="hero__copy hero-in">
 						<h1 class="type-hero" {...home.edit.hero_title}>
 							{home.data.hero_title}
@@ -74,7 +74,7 @@ const starSlots = [1, 2, 3, 4, 5] as const;
 					)}
 				</section>
 
-				<section class="shell section">
+				<section class="shell section" data-palette-slot="sezione-tour" data-palette="walnut">
 					<div class="rule" data-reveal="line" />
 					<div class="section__head" data-reveal>
 						<h2 class="type-h2" {...home.edit.tour_title}>
@@ -121,7 +121,7 @@ const starSlots = [1, 2, 3, 4, 5] as const;
 					)}
 				</section>
 
-				<section class="shell section feature">
+				<section class="shell section feature" data-palette-slot="sezione-libro" data-palette="walnut">
 					<div class="rule" data-reveal="line" />
 					<div class="feature__layout">
 						{home.data.book_image && (
@@ -157,7 +157,11 @@ const starSlots = [1, 2, 3, 4, 5] as const;
 					</div>
 				</section>
 
-				<section class="shell section feature feature--flip">
+				<section
+					class="shell section feature feature--flip"
+					data-palette-slot="sezione-formazione"
+					data-palette="walnut"
+				>
 					<div class="rule" data-reveal="line" />
 					<div class="feature__layout">
 						<a
@@ -199,7 +203,12 @@ const starSlots = [1, 2, 3, 4, 5] as const;
 					</div>
 				</section>
 
-				<section class="shell section" aria-labelledby="dicono-heading">
+				<section
+					class="shell section"
+					aria-labelledby="dicono-heading"
+					data-palette-slot="sezione-dicono"
+					data-palette="walnut"
+				>
 					<div class="rule" data-reveal="line" />
 					<div class="section__head" data-reveal>
 						{home.data.dicono_title && (
@@ -321,7 +330,12 @@ const starSlots = [1, 2, 3, 4, 5] as const;
 					)}
 				</section>
 
-				<section class="newsletter" aria-labelledby="newsletter-heading">
+				<section
+					class="newsletter"
+					aria-labelledby="newsletter-heading"
+					data-palette-slot="sezione-newsletter"
+					data-palette="walnut"
+				>
 					<div class="shell newsletter__inner">
 						{home.data.newsletter_title && (
 							<h2

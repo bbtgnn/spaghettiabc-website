@@ -2,7 +2,7 @@
 import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import FontPairingPicker from "../components/FontPairingPicker.astro";
+import DevPreviewDock from "../components/DevPreviewDock.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import "../styles/theme.css";
@@ -10,6 +10,7 @@ import "../styles/theme.css";
 const isDev = import.meta.env.DEV;
 if (isDev) {
 	await import("../styles/font-pairings-preview.css");
+	await import("../styles/color-palettes-preview.css");
 }
 
 interface Props {
@@ -20,6 +21,8 @@ interface Props {
 	canonical?: string | null;
 	/** Kept for call-site compatibility; header is always sticky in Atelier mode */
 	overlayHeader?: boolean;
+	/** DEV multi-slot palette: id for `<main data-palette-slot>` on non-home templates */
+	paletteSlot?: string | null;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
 }
@@ -30,6 +33,7 @@ const {
 	description,
 	image,
 	canonical,
+	paletteSlot = null,
 	content,
 } = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
@@ -132,6 +136,45 @@ const pageCtx = createPublicPageContext({
 				</script>
 			)
 		}
+		{
+			isDev && (
+				<script is:inline>
+					(() => {
+						const PREFIX = "spaghettiabc-palette-";
+						const VALID = ["walnut", "pomodoro", "pascali", "bottiglia"];
+						const COLORS = {
+							walnut: { accent: "#8a5322", title: "#6b3f18" },
+							pomodoro: { accent: "#c43c2c", title: "#8f2418" },
+							pascali: { accent: "#2f5f8a", title: "#1e3f5c" },
+							bottiglia: { accent: "#2f6b4f", title: "#1e4a36" },
+						};
+						const rules = [];
+						try {
+							for (let i = 0; i < localStorage.length; i++) {
+								const key = localStorage.key(i);
+								if (!key || !key.startsWith(PREFIX)) continue;
+								const slotId = key.slice(PREFIX.length);
+								if (!/^[a-z0-9-]+$/.test(slotId)) continue;
+								const palette = localStorage.getItem(key);
+								if (!palette || !VALID.includes(palette)) continue;
+								const colors = COLORS[palette];
+								if (!colors) continue;
+								rules.push(
+									`[data-palette-slot="${slotId}"]{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff}`,
+								);
+							}
+						} catch {
+							/* no-op */
+						}
+						if (!rules.length) return;
+						const style = document.createElement("style");
+						style.id = "palette-fouc";
+						style.textContent = rules.join("");
+						document.head.appendChild(style);
+					})();
+				</script>
+			)
+		}
 	</head>
 	<body>
 		<EmDashBodyStart page={pageCtx} />
@@ -145,13 +188,18 @@ const pageCtx = createPublicPageContext({
 			currentPath={currentPath}
 		/>
 
-		<main class="site-main" id="main-content">
+		<main
+			class="site-main"
+			id="main-content"
+			data-palette-slot={paletteSlot || undefined}
+			data-palette={paletteSlot ? "walnut" : undefined}
+		>
 			<slot />
 		</main>
 
 		<EmDashBodyEnd page={pageCtx} />
 
-		{isDev && <FontPairingPicker />}
+		{isDev && <DevPreviewDock />}
 
 		<script is:inline>
 			(() => {

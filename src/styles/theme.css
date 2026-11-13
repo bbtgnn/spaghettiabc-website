@@ -310,7 +310,8 @@ hr {
 	.field-label,
 	.newsletter-form__status,
 	.hero__caption > span,
-	.font-pairing-picker__title,
+	.dev-preview-dock__title,
+	.dev-preview-dock__section-title,
 	.font-pairing-picker__ui-label
 ) {
 	text-transform: uppercase;
@@ -325,7 +326,8 @@ html[data-font-ui-case="serif"]
 		.field-label,
 		.newsletter-form__status,
 		.hero__caption > span,
-		.font-pairing-picker__title,
+		.dev-preview-dock__title,
+		.dev-preview-dock__section-title,
 		.font-pairing-picker__ui-label
 	) {
 	text-transform: lowercase;
@@ -340,7 +342,8 @@ html[data-font-ui-case="serif"]
 		.field-label,
 		.newsletter-form__status,
 		.hero__caption > span,
-		.font-pairing-picker__title,
+		.dev-preview-dock__title,
+		.dev-preview-dock__section-title,
 		.font-pairing-picker__ui-label
 	)::first-letter {
 	text-transform: uppercase;
