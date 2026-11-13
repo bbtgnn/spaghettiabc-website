@@ -410,6 +410,26 @@ html[data-font-ui-case="serif"]
 	box-shadow: inset 0 0 0 1px var(--accent);
 }
 
+/* Solid white surface — readable on dark heroes; soft primary wash on hover. */
+.btn-surface {
+	background: #fff;
+	color: var(--ink);
+	box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 8%, transparent);
+	transition:
+		color 320ms var(--ease-out-quart),
+		box-shadow 320ms var(--ease-out-quart);
+}
+
+.btn-surface::before {
+	background: color-mix(in oklab, var(--accent) 14%, transparent);
+}
+
+.btn-surface:hover,
+.btn-surface:focus-visible {
+	color: var(--ink);
+	box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
 .btn:disabled {
 	opacity: 0.45;
 	pointer-events: none;

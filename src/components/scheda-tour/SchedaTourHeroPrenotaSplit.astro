@@ -116,7 +116,7 @@ const extraImages = galleryImages.slice(1);
 				<div class="sth-prenota__scrim" aria-hidden="true"></div>
 
 				<nav class="sth-prenota__back" aria-label="Breadcrumb">
-					<a class="btn btn-outline btn--arrow btn--sm" href="/tours">
+					<a class="btn btn-surface btn--arrow btn--sm" href="/tours">
 						<ArrowLeft class="btn__icon" size={14} stroke-width={1.75} aria-hidden="true" />
 						<span class="btn__label">Catalogo tour</span>
 					</a>
@@ -427,18 +427,6 @@ const extraImages = galleryImages.slice(1);
 		z-index: 3;
 		display: flex;
 		flex-wrap: wrap;
-	}
-
-	.sth-prenota__back :global(.btn-outline) {
-		color: #fff;
-		border-color: color-mix(in oklab, #fff 55%, transparent);
-		background: color-mix(in oklab, var(--ink) 28%, transparent);
-	}
-
-	.sth-prenota__back :global(.btn-outline:hover),
-	.sth-prenota__back :global(.btn-outline:focus-visible) {
-		border-color: #fff;
-		background: color-mix(in oklab, var(--ink) 42%, transparent);
 	}
 
 	.sth-prenota__title {
