@@ -34,7 +34,7 @@ const brandParts = [...siteTitle].map((char) => {
 });
 ---
 
-<header class="site-header" data-palette-slot="chrome" data-palette="walnut">
+<header class="site-header">
 	<div class="site-header__inner">
 		<a class="site-brand" href="/" aria-label={`${siteTitle}, home`}>
 			{
@@ -289,18 +289,18 @@ const brandParts = [...siteTitle].map((char) => {
 	}
 
 	.menu-item a:hover {
-		color: var(--accent);
+		color: var(--title);
 	}
 
 	.menu-item a:focus-visible {
-		color: var(--accent);
-		outline: 2px solid var(--accent);
+		color: var(--title);
+		outline: 2px solid var(--title);
 		outline-offset: 3px;
 	}
 
 	.mobile-menu__index {
 		font-size: 0.6875rem;
-		color: var(--accent);
+		color: var(--title);
 	}
 
 	@media (min-width: 768px) {

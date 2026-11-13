@@ -32,7 +32,6 @@ const seo = getSeoMeta(page, {
 	description={seo.description}
 	canonical={seo.canonical}
 	content={{ collection: "pages", id: page.data.id, slug }}
-	paletteSlot="page-cms"
 >
 	<article>
 		<h1 {...page.edit.title}>{page.data.title}</h1>

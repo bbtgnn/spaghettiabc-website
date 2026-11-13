@@ -1,27 +1,30 @@
-/* DEV-only color palette preview (#12). Imported from Base.astro when DEV.
-   Prod baseline (walnut accent/title) lives in theme.css :root.
-   Slots use [data-palette] on header / sections / main — not html[data-palette]. */
+/* DEV-only color preview (#12). Imported from Base.astro when DEV.
+   Primary default = pomodoro. Ink default = cool (#101010). Prod tokens stay in theme.css. */
 
-[data-palette="walnut"] {
-	--accent: #8a5322;
-	--title: #6b3f18;
-	--accent-ink: #ffffff;
-}
-
-[data-palette="pomodoro"] {
+html[data-palette="pomodoro"] {
 	--accent: #c43c2c;
 	--title: #8f2418;
 	--accent-ink: #ffffff;
 }
 
-[data-palette="pascali"] {
-	--accent: #2f5f8a;
-	--title: #1e3f5c;
+html[data-palette="pascali"] {
+	--accent: #0a6de4;
+	--title: #0855b0;
 	--accent-ink: #ffffff;
 }
 
-[data-palette="bottiglia"] {
+html[data-palette="bottiglia"] {
 	--accent: #2f6b4f;
 	--title: #1e4a36;
 	--accent-ink: #ffffff;
+}
+
+html[data-ink="cool"] {
+	--ink: #101010;
+	--muted: #5a5a56;
+}
+
+html[data-ink="warm"] {
+	--ink: #4a433c;
+	--muted: #6e6860;
 }

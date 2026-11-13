@@ -1,7 +1,7 @@
 ---
 /**
  * DEV-only preview dock (#9 + #12). Single bottom-right control area for
- * font pairings and multi-slot color palettes. Stripped from production builds.
+ * font pairings and global primary color. Stripped from production builds.
  */
 import SlidersHorizontal from "@lucide/astro/icons/sliders-horizontal";
 import X from "@lucide/astro/icons/x";
@@ -29,7 +29,7 @@ import FontPairingPicker from "./FontPairingPicker.astro";
 		</section>
 
 		<section class="dev-preview-dock__section" aria-labelledby="dev-preview-colors">
-			<h2 class="dev-preview-dock__section-title" id="dev-preview-colors">Palette colori</h2>
+			<h2 class="dev-preview-dock__section-title" id="dev-preview-colors">Colori</h2>
 			<ColorPalettePicker />
 		</section>
 	</div>

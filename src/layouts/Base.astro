@@ -21,8 +21,6 @@ interface Props {
 	canonical?: string | null;
 	/** Kept for call-site compatibility; header is always sticky in Atelier mode */
 	overlayHeader?: boolean;
-	/** DEV multi-slot palette: id for `<main data-palette-slot>` on non-home templates */
-	paletteSlot?: string | null;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
 }
@@ -33,7 +31,6 @@ const {
 	description,
 	image,
 	canonical,
-	paletteSlot = null,
 	content,
 } = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
@@ -72,7 +69,12 @@ const pageCtx = createPublicPageContext({
 ---
 
 <!doctype html>
-<html lang="it" data-font-ui-case="sans">
+<html
+	lang="it"
+	data-font-ui-case="sans"
+	data-palette={isDev ? "pomodoro" : undefined}
+	data-ink={isDev ? "cool" : undefined}
+>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -140,36 +142,40 @@ const pageCtx = createPublicPageContext({
 			isDev && (
 				<script is:inline>
 					(() => {
-						const PREFIX = "spaghettiabc-palette-";
-						const VALID = ["walnut", "pomodoro", "pascali", "bottiglia"];
+						const KEY_PALETTE = "spaghettiabc-color-palette";
+						const KEY_INK = "spaghettiabc-ink";
+						const VALID_PALETTE = ["pomodoro", "pascali", "bottiglia"];
+						const VALID_INK = ["cool", "warm"];
 						const COLORS = {
-							walnut: { accent: "#8a5322", title: "#6b3f18" },
 							pomodoro: { accent: "#c43c2c", title: "#8f2418" },
-							pascali: { accent: "#2f5f8a", title: "#1e3f5c" },
+							pascali: { accent: "#0A6DE4", title: "#0855B0" },
 							bottiglia: { accent: "#2f6b4f", title: "#1e4a36" },
 						};
-						const rules = [];
+						const INKS = {
+							cool: { ink: "#101010", muted: "#5a5a56" },
+							warm: { ink: "#4a433c", muted: "#6e6860" },
+						};
+						let palette = "pomodoro";
+						let ink = "cool";
 						try {
-							for (let i = 0; i < localStorage.length; i++) {
-								const key = localStorage.key(i);
-								if (!key || !key.startsWith(PREFIX)) continue;
-								const slotId = key.slice(PREFIX.length);
-								if (!/^[a-z0-9-]+$/.test(slotId)) continue;
-								const palette = localStorage.getItem(key);
-								if (!palette || !VALID.includes(palette)) continue;
-								const colors = COLORS[palette];
-								if (!colors) continue;
-								rules.push(
-									`[data-palette-slot="${slotId}"]{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff}`,
-								);
+							const storedPalette = localStorage.getItem(KEY_PALETTE);
+							if (storedPalette && VALID_PALETTE.includes(storedPalette)) {
+								palette = storedPalette;
 							}
+							const storedInk = localStorage.getItem(KEY_INK);
+							if (storedInk && VALID_INK.includes(storedInk)) ink = storedInk;
 						} catch {
 							/* no-op */
 						}
-						if (!rules.length) return;
+						const colors = COLORS[palette];
+						const inkColors = INKS[ink];
+						if (!colors || !inkColors) return;
+						const root = document.documentElement;
+						root.setAttribute("data-palette", palette);
+						root.setAttribute("data-ink", ink);
 						const style = document.createElement("style");
 						style.id = "palette-fouc";
-						style.textContent = rules.join("");
+						style.textContent = `html{--accent:${colors.accent};--title:${colors.title};--accent-ink:#ffffff;--ink:${inkColors.ink};--muted:${inkColors.muted}}`;
 						document.head.appendChild(style);
 					})();
 				</script>
@@ -188,12 +194,7 @@ const pageCtx = createPublicPageContext({
 			currentPath={currentPath}
 		/>
 
-		<main
-			class="site-main"
-			id="main-content"
-			data-palette-slot={paletteSlot || undefined}
-			data-palette={paletteSlot ? "walnut" : undefined}
-		>
+		<main class="site-main" id="main-content">
 			<slot />
 		</main>
 
