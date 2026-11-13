@@ -2,7 +2,7 @@
 
 **Date:** 2026-11-13  
 **Audience:** next agent/session implementing the playground-only PR  
-**Do not implement color palettes here** — that is a separate PR (#12).
+**Do not implement color palettes here** — that is [#25](https://github.com/bbtgnn/spaghettiabc-website/pull/25) (#12).
 
 ## Why this handoff exists
 
@@ -15,10 +15,10 @@ PRs [#17](https://github.com/bbtgnn/spaghettiabc-website/pull/17) and [#20](http
 
 Maintainers are **splitting** that work:
 
-1. **Color palette DEV only** — new PR from current `main` (parallel session). Controls live in a **shared `DevPreviewDock` with the font switch** (not the old bottom-left twin panel from #17).
-2. **Sezione Tour playground only** — **this** handoff / later PR for [#14](https://github.com/bbtgnn/spaghettiabc-website/issues/14).
+1. **Color palette DEV only** — [#25](https://github.com/bbtgnn/spaghettiabc-website/pull/25) (`feat/color-palette-preview-only` → `main`). Controls live in a **shared `DevPreviewDock` with the font switch** (not the old bottom-left twin panel from #17).
+2. **Sezione Tour playground only** — **this** handoff ([#26](https://github.com/bbtgnn/spaghettiabc-website/pull/26) docs) / later code PR for [#14](https://github.com/bbtgnn/spaghettiabc-website/issues/14).
 
-**Do not** merge or reopen #17/#20 as the base. Extract/rebuild playground work cleanly from latest `main` (plus whatever color PR has landed by then, if any).
+**Do not** merge or reopen #17/#20 as the base. Extract/rebuild playground work cleanly from latest `main` (plus [#25](https://github.com/bbtgnn/spaghettiabc-website/pull/25) once merged, if still open rebase onto that tip).
 
 ---
 
@@ -53,7 +53,7 @@ Production homepage Sezione Tour and Catalogo Tour stay **unchanged** until a va
 2. Create a **fresh** branch, e.g. `feat/sezione-tour-playground` (force-recreate / new name if the old remote branch still points at the stacked #20 tip — do not continue that history blindly).
 3. Port playground files from tip of `origin/feat/sezione-tour-playground` (SHA `50b5fb1` as of 2026-11-13 fetch) by **file copy / selective checkout**, not by merging #17/#20.
 4. Touch `Base.astro` only for playground needs (`hideHeader`). Leave color dock work to the color PR; if both land, rebase and resolve that one seam carefully.
-5. After the new playground PR is open: **close or supersede** old [#17](https://github.com/bbtgnn/spaghettiabc-website/pull/17) / [#20](https://github.com/bbtgnn/spaghettiabc-website/pull/20) with a comment pointing at the split PRs (color-only + this playground PR). Do not ask reviewers to land the mixed stack.
+5. After the new playground PR is open: **close or supersede** old [#17](https://github.com/bbtgnn/spaghettiabc-website/pull/17) / [#20](https://github.com/bbtgnn/spaghettiabc-website/pull/20) with a comment pointing at [#25](https://github.com/bbtgnn/spaghettiabc-website/pull/25) (color) + the new playground PR. Do not ask reviewers to land the mixed stack.
 
 **Cherry-pick warning:** `3509150` mixes palette + playground. Prefer reading the playground file tree at `origin/feat/sezione-tour-playground` over cherry-picking that commit. Safe-to-read playground-only commits on top of the mixed base: `6690b62` (frame stack), `50b5fb1` (hub + `/a|/b|/c`).
 
@@ -196,13 +196,13 @@ From grill + [decision wiki on PR branches](https://github.com/bbtgnn/spaghettia
 
 | Risk | Notes |
 | --- | --- |
-| **Shared `Base.astro`** | Playground needs `hideHeader`. Color PR also edits `Base` (picker/dock, possibly `paletteSlot`). Rebase order matters; conflict likely but small. |
-| **Color dock redesign** | Parallel color PR moves palettes into a shared **`DevPreviewDock` with fonts** (supersedes #17 bottom-left `ColorPalettePicker` panel). Playground should not reintroduce that picker or depend on #17’s panel layout. #17’s color decision text may still describe the old twin-panel placement until the color-only PR updates it. |
+| **Shared `Base.astro`** | Playground needs `hideHeader`. [#25](https://github.com/bbtgnn/spaghettiabc-website/pull/25) also edits `Base` (`DevPreviewDock`, FOUC palette script, `paletteSlot`). Prefer merge #25 first, then rebase playground; conflict likely but small. |
+| **Color dock redesign** | [#25](https://github.com/bbtgnn/spaghettiabc-website/pull/25) puts palettes in a shared **`DevPreviewDock` with fonts** (supersedes #17 bottom-left `ColorPalettePicker` panel). Playground should not reintroduce that picker or depend on #17’s panel layout. |
 | **`/_dev` + palettes** | Color wiki already marks `/_dev` playgrounds out of scope for dedicated palette slots — keep it that way unless product asks otherwise. |
 | **Old remote branches** | `origin/feat/color-palette-preview` / `origin/feat/sezione-tour-playground` remain the **reference** file tree; do not merge them into the new PR. |
 | **CMS empty states** | Variant page already handles missing homepage entry; ensure local DB has `featured_tours` + reviews for a fair review. |
 | **#17 extras** | Do not drag Dicono migration / `emdash-env.d.ts` / `.gitignore backups/` into the playground PR. |
-| **Closing #17/#20** | Coordinate with whoever owns the color-only PR so reviewers are not left with three competing stacks. |
+| **Closing #17/#20** | Point reviewers at [#25](https://github.com/bbtgnn/spaghettiabc-website/pull/25) + the new playground PR so they are not left with three competing stacks. |
 
 ---
 
@@ -212,6 +212,8 @@ From grill + [decision wiki on PR branches](https://github.com/bbtgnn/spaghettia
 | --- | --- |
 | Issue #14 | https://github.com/bbtgnn/spaghettiabc-website/issues/14 |
 | Issue #13 (pattern) | https://github.com/bbtgnn/spaghettiabc-website/issues/13 |
+| PR #25 (color-only; preferred base after merge) | https://github.com/bbtgnn/spaghettiabc-website/pull/25 — `feat/color-palette-preview-only` |
+| PR #26 (this handoff docs) | https://github.com/bbtgnn/spaghettiabc-website/pull/26 — `docs/sezione-tour-playground-handoff` |
 | PR #17 (mixed; do not merge as-is) | https://github.com/bbtgnn/spaghettiabc-website/pull/17 — `feat/color-palette-preview` @ `087c00b` |
 | PR #20 (playground UX on #17) | https://github.com/bbtgnn/spaghettiabc-website/pull/20 — tip `50b5fb1` |
 | Mixed commit (palette + playground) | `3509150` — read for playground files only; do not cherry-pick whole |
