@@ -1,0 +1,588 @@
+---
+/**
+ * Scheda Tour layout: tall hero, then body | booking column (specs + Calendly).
+ * Mobile: hero → book → body. ≥768: centered | copycol (≤65ch) | book (≤400px) |.
+ */
+import { Image } from "emdash/ui";
+import ArrowLeft from "@lucide/astro/icons/arrow-left";
+import MapPin from "@lucide/astro/icons/map-pin";
+import Clock from "@lucide/astro/icons/clock";
+import Users from "@lucide/astro/icons/users";
+import Languages from "@lucide/astro/icons/languages";
+import CircleCheck from "@lucide/astro/icons/circle-check";
+import Tag from "@lucide/astro/icons/tag";
+import CalendlyEmbed from "../CalendlyEmbed.astro";
+
+const SPEC_ICONS: Record<
+	string,
+	typeof MapPin
+> = {
+	Luogo: MapPin,
+	Durata: Clock,
+	Gruppo: Users,
+	Lingua: Languages,
+	Incluso: CircleCheck,
+	Prezzo: Tag,
+};
+
+/** EmDash image field shape (same as featured_image / Variant A). */
+type TourImage = {
+	id: string;
+	src?: string;
+	alt?: string;
+	caption?: string;
+	width?: number;
+	height?: number;
+	filename?: string;
+	mimeType?: string;
+	blurhash?: string;
+	dominantColor?: string;
+	focalX?: number;
+	focalY?: number;
+	provider?: string;
+	previewUrl?: string;
+	meta?: Record<string, unknown>;
+};
+
+interface Props {
+	title: string;
+	destination?: string | null;
+	price?: string | null;
+	excerpt?: string | null;
+	galleryImages: TourImage[];
+	specs: Array<{
+		term: string;
+		value: string;
+		edit?: Record<string, unknown>;
+	}>;
+	/** Empty string = muted empty state (no embed). */
+	calendlyUrl: string;
+	edit: {
+		title?: Record<string, unknown>;
+		destination?: Record<string, unknown>;
+		price?: Record<string, unknown>;
+		excerpt?: Record<string, unknown>;
+		featured_image?: Record<string, unknown>;
+		calendly_url?: Record<string, unknown>;
+	};
+}
+
+const {
+	title,
+	excerpt,
+	galleryImages,
+	specs,
+	calendlyUrl,
+	edit,
+} = Astro.props;
+
+const hasPrenota = Boolean(calendlyUrl);
+const leadImage = galleryImages[0];
+const extraImages = galleryImages.slice(1);
+---
+
+<section class="sth-prenota" aria-label={title}>
+	<div class="sth-prenota__layout">
+		{/* Hero: image as background; title + subtitle centered */}
+		<div
+			class="sth-prenota__intro"
+			data-tour-gallery={leadImage ? true : undefined}
+		>
+			<div
+				class:list={[
+					"sth-prenota__stage",
+					!leadImage && "sth-prenota__stage--empty",
+				]}
+				{...(leadImage ? edit.featured_image : {})}
+			>
+				{
+					leadImage && (
+						<div class="sth-prenota__media" aria-hidden="true">
+							{galleryImages.map((image, index) => (
+								<div
+									class:list={[
+										"gallery-panel",
+										index !== 0 && "is-hidden",
+									]}
+									data-gallery-panel={index}
+								>
+									<Image image={image} />
+								</div>
+							))}
+						</div>
+					)
+				}
+				<div class="sth-prenota__scrim" aria-hidden="true"></div>
+
+				<nav class="sth-prenota__back" aria-label="Breadcrumb">
+					<a class="btn btn-surface btn--arrow btn--sm" href="/tours">
+						<ArrowLeft class="btn__icon" size={14} stroke-width={1.75} aria-hidden="true" />
+						<span class="btn__label">Catalogo tour</span>
+					</a>
+				</nav>
+
+				<div class="sth-prenota__copy">
+					<h1 class="sth-prenota__title" {...edit.title}>{title}</h1>
+					{
+						excerpt && (
+							<p class="type-body sth-prenota__excerpt" {...edit.excerpt}>
+								{excerpt}
+							</p>
+						)
+					}
+				</div>
+			</div>
+
+			{
+				extraImages.length > 0 && (
+					<div
+						class="sth-prenota__thumbs"
+						role="group"
+						aria-label="Choose an image"
+					>
+						{galleryImages.map((image, index) => (
+							<button
+								type="button"
+								class="gallery-thumb"
+								data-gallery-thumb={index}
+								aria-label={`Show view ${index + 1}`}
+								aria-pressed={index === 0 ? "true" : "false"}
+							>
+								<Image image={image} />
+							</button>
+						))}
+					</div>
+				)
+			}
+		</div>
+
+		{/* Under hero: body | book — centered as a pair on ≥768.
+		    Specs sit above Calendly in the book column.
+		    copycol is display:contents on mobile so order stays book→body. */}
+		<div class="sth-prenota__main">
+			<div class="sth-prenota__copycol">
+				<div class="sth-prenota__body">
+					<slot />
+				</div>
+			</div>
+
+			<aside
+				id={hasPrenota ? "prenota-calendly" : undefined}
+				class="sth-prenota__book"
+				aria-label="Prenota"
+				aria-live={hasPrenota ? undefined : "polite"}
+				{...(hasPrenota ? edit.calendly_url : {})}
+			>
+				{
+					specs.length > 0 && (
+						<div class="sth-prenota__data">
+							<dl class="mono sth-prenota__specs">
+								{specs.map(({ term, value, edit: specEdit }) => {
+									const Icon = SPEC_ICONS[term];
+									return (
+										<div class="sth-prenota__spec" {...specEdit}>
+											<dt>
+												{Icon && (
+													<Icon
+														class="sth-prenota__spec-icon"
+														size={14}
+														stroke-width={1.75}
+														aria-hidden="true"
+													/>
+												)}
+												<span>{term}</span>
+											</dt>
+											<dd>{value}</dd>
+										</div>
+									);
+								})}
+							</dl>
+						</div>
+					)
+				}
+				{
+					hasPrenota ? (
+						<CalendlyEmbed url={calendlyUrl} />
+					) : (
+						<p class="mono sth-prenota__empty">Prenotazione non disponibile</p>
+					)
+				}
+			</aside>
+		</div>
+	</div>
+</section>
+
+<style>
+	.sth-prenota {
+		padding-block: 0;
+	}
+
+	/*
+	 * Mobile (<768): hero → book (specs+calendly) → editorial/FAQ (flex order)
+	 * ≥768: hero full width; then centered | content | book |
+	 */
+	.sth-prenota__layout {
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+		border-top: 1px solid var(--line);
+		padding-top: 2rem;
+	}
+
+	.sth-prenota__intro {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.sth-prenota__main {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 2.5rem;
+		width: 100%;
+	}
+
+	/* Mobile: flatten so we can reorder book → body. */
+	.sth-prenota__copycol {
+		display: contents;
+	}
+
+	.sth-prenota__book {
+		order: 1;
+	}
+
+	.sth-prenota__body {
+		order: 2;
+	}
+
+	@media (min-width: 768px) {
+		.sth-prenota__main {
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: center;
+			align-items: flex-start;
+			gap: 2.5rem;
+		}
+
+		.sth-prenota__copycol {
+			display: flex;
+			flex-direction: column;
+			gap: 2.5rem;
+			flex: 0 1 65ch;
+			width: 100%;
+			max-width: 65ch;
+			min-width: 0;
+			order: 1;
+		}
+
+		.sth-prenota__body {
+			order: initial;
+		}
+
+		.sth-prenota__book {
+			order: 2;
+			flex: 0 0 auto;
+		}
+	}
+
+	.sth-prenota__stage {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		isolation: isolate;
+		width: 100%;
+		/* Taller than the old 4:3 / 22rem lead image */
+		min-height: clamp(28rem, 62vh, 40rem);
+		border-radius: 0.75rem;
+		background: var(--surface-strong);
+	}
+
+	.sth-prenota__media {
+		position: absolute;
+		inset: 0;
+		z-index: 0;
+	}
+
+	.sth-prenota__media :global(img),
+	.sth-prenota__media .gallery-panel {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.sth-prenota__media .gallery-panel {
+		position: absolute;
+		inset: 0;
+	}
+
+	.sth-prenota__scrim {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background:
+			linear-gradient(
+				180deg,
+				color-mix(in oklab, var(--ink) 45%, transparent) 0%,
+				color-mix(in oklab, var(--ink) 28%, transparent) 42%,
+				color-mix(in oklab, var(--ink) 55%, transparent) 100%
+			);
+		pointer-events: none;
+	}
+
+	.sth-prenota__stage--empty .sth-prenota__scrim {
+		background: color-mix(in oklab, var(--ink) 18%, var(--surface));
+	}
+
+	.sth-prenota__copy {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		width: min(100%, 36rem);
+		padding: 4.5rem 1.5rem 3rem;
+		text-align: center;
+	}
+
+	.sth-prenota__data {
+		width: 100%;
+		min-width: 0;
+		padding: 1rem 1rem 1rem 1.25rem;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		border: 1px solid var(--title);
+		box-sizing: border-box;
+		background: #fff;
+	}
+
+	.sth-prenota__book {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		width: 100%;
+		max-width: none;
+	}
+
+	.sth-prenota__body {
+		display: flex;
+		flex-direction: column;
+		gap: 2.5rem;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.sth-prenota__book :global(.calendly-embed) {
+		margin: 0;
+		width: 100%;
+		max-width: none;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		border: 1px solid var(--title);
+		box-sizing: border-box;
+		background: #fff;
+	}
+
+	.sth-prenota__book :global(.calendly-embed iframe) {
+		display: block;
+		width: 100%;
+		border: 0;
+		border-radius: 0.75rem;
+	}
+
+	@media (min-width: 768px) {
+		.sth-prenota__book {
+			width: 400px;
+			max-width: 400px;
+			min-width: 280px;
+			position: sticky;
+			top: 7rem;
+			align-self: flex-start;
+		}
+	}
+
+	/* Slotted content/FAQ: drop page-level 4rem / --measure; body gap matches copycol. */
+	.sth-prenota__body:empty {
+		display: none;
+	}
+
+	.sth-prenota__body :global(.scheda-tour__content),
+	.sth-prenota__body :global(.scheda-tour__faq) {
+		margin-top: 0;
+		max-width: none;
+	}
+
+	.sth-prenota__back {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+		z-index: 3;
+		display: flex;
+		flex-wrap: wrap;
+	}
+
+	.sth-prenota__title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-size: clamp(1.875rem, 4vw, 3rem);
+		line-height: 1.12;
+		letter-spacing: -0.02em;
+		font-weight: var(--font-display-weight);
+		color: #fff;
+		text-wrap: balance;
+	}
+
+	.sth-prenota__excerpt {
+		margin: 0;
+		width: 100%;
+		max-width: 32ch;
+		color: color-mix(in oklab, #fff 88%, transparent);
+	}
+
+	.sth-prenota__specs {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem 1.25rem;
+		width: 100%;
+		margin: 0;
+		font-size: 0.8125rem;
+	}
+
+	.sth-prenota__spec {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.2rem;
+		min-width: 0;
+	}
+
+	.sth-prenota__spec dt {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		color: var(--muted);
+	}
+
+	.sth-prenota__spec-icon {
+		flex-shrink: 0;
+		color: var(--muted);
+	}
+
+	.sth-prenota__spec dd {
+		margin: 0;
+		min-width: 0;
+		text-align: left;
+		color: var(--ink);
+	}
+
+	.sth-prenota__empty {
+		margin: 0;
+		padding: 1rem;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		border: 1px solid var(--title);
+		box-sizing: border-box;
+		background: #fff;
+		font-size: 0.6875rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--muted);
+	}
+
+	.sth-prenota__thumbs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		width: 100%;
+	}
+
+	.sth-prenota__thumbs .gallery-thumb {
+		flex: 1 1 calc((100% - 1.5rem) / 3);
+		max-width: calc((100% - 1.5rem) / 3);
+	}
+
+	.gallery-thumb {
+		overflow: hidden;
+		padding: 0;
+		border: 0;
+		background: var(--surface);
+		cursor: pointer;
+		box-shadow: inset 0 0 0 1px var(--line);
+		transition: box-shadow 260ms ease;
+	}
+
+	.gallery-thumb:hover {
+		box-shadow: inset 0 0 0 1px var(--line-strong);
+	}
+
+	.gallery-thumb[aria-pressed="true"] {
+		box-shadow: inset 0 0 0 2px var(--accent);
+	}
+
+	.gallery-thumb :global(img) {
+		aspect-ratio: 1;
+		width: 100%;
+		object-fit: cover;
+		display: block;
+	}
+
+	.gallery-panel.is-hidden {
+		display: none;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.gallery-panel:not(.is-hidden) {
+			animation: sth-panel-in 600ms var(--ease-out-expo) both;
+		}
+
+		@keyframes sth-panel-in {
+			from {
+				opacity: 0;
+				transform: scale(1.015);
+			}
+		}
+	}
+</style>
+
+<script is:inline>
+	(() => {
+		const galleries = document.querySelectorAll("[data-tour-gallery]");
+		galleries.forEach((gallery) => {
+			const panels = Array.from(
+				gallery.querySelectorAll("[data-gallery-panel]"),
+			);
+			const thumbs = Array.from(
+				gallery.querySelectorAll("[data-gallery-thumb]"),
+			);
+
+			thumbs.forEach((thumb) => {
+				if (!(thumb instanceof HTMLElement)) return;
+				if (thumb.dataset.galleryBound === "1") return;
+				thumb.dataset.galleryBound = "1";
+
+				thumb.addEventListener("click", () => {
+					const active = thumb.dataset.galleryThumb;
+					panels.forEach((panel) =>
+						panel.classList.toggle(
+							"is-hidden",
+							panel.dataset.galleryPanel !== active,
+						),
+					);
+					thumbs.forEach((button) => {
+						button.setAttribute(
+							"aria-pressed",
+							String(button === thumb),
+						);
+					});
+				});
+			});
+		});
+	})();
+</script>

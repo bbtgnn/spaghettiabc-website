@@ -1,0 +1,540 @@
+---
+interface Props {
+	url: string;
+	id?: string;
+}
+
+const { url, id } = Astro.props;
+
+/**
+ * Site tokens → Calendly embed colors (hex without #).
+ * Matches --ink / --accent in theme.css.
+ * https://calendly.com/help/how-to-customize-your-embed
+ */
+const CALENDLY_TEXT_COLOR = "101010";
+const CALENDLY_PRIMARY_COLOR = "8a5322";
+
+/**
+ * Calendly embed query flags — see
+ * https://calendly.com/help/how-to-customize-your-embed
+ * Event-type + landing/team params so either URL shape hides chrome details.
+ * Colors match site --ink / --accent.
+ */
+function withCalendlyEmbedParams(raw: string): string {
+	try {
+		const parsed = new URL(raw);
+		parsed.searchParams.set("hide_event_type_details", "1");
+		parsed.searchParams.set("hide_landing_page_details", "1");
+		parsed.searchParams.set("hide_gdpr_banner", "1");
+		parsed.searchParams.set("text_color", CALENDLY_TEXT_COLOR);
+		parsed.searchParams.set("primary_color", CALENDLY_PRIMARY_COLOR);
+		parsed.searchParams.set("button_text", "Book tour");
+		return parsed.toString();
+	} catch {
+		return raw;
+	}
+}
+
+const embedUrl = withCalendlyEmbedParams(url);
+---
+
+<!--
+  Host for Calendly.initInlineWidget.
+  Height is owned by us (resize:false): freeze at BASE until event_type_viewed,
+  ignore short/zero page_height blips, then anime.js WAAPI to the real height.
+-->
+<div
+	id={id}
+	class="calendly-embed"
+	data-calendly-embed
+	data-url={embedUrl}
+	style="min-width:320px;height:700px;"
+>
+	<div
+		class="calendly-embed__spinner"
+		data-calendly-spinner
+		role="status"
+	>
+		<span class="calendly-embed__spinner-ring" aria-hidden="true"></span>
+		<span class="calendly-embed__spinner-label">Caricamento prenotazione…</span>
+	</div>
+</div>
+
+<style>
+	.calendly-embed {
+		position: relative;
+		width: 100%;
+		min-width: 320px;
+		height: 700px;
+		overflow: hidden;
+		background: #fff;
+	}
+
+	.calendly-embed :global(iframe) {
+		width: 100%;
+		height: 100%;
+		min-width: 320px;
+		border: 0;
+		overflow: hidden;
+		/* Avoid nested scroll while host height catches up. */
+		pointer-events: none;
+	}
+
+	.calendly-embed.is-ready :global(iframe) {
+		pointer-events: auto;
+	}
+
+	/* Prefer our spinner; Calendly injects its own bounce dots. */
+	.calendly-embed :global(.calendly-spinner) {
+		display: none !important;
+	}
+
+	.calendly-embed :global(.calendly-embed__spinner) {
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		display: grid;
+		place-content: center;
+		justify-items: center;
+		gap: 0.75rem;
+		margin: 0;
+		background: #fff;
+		pointer-events: none;
+	}
+
+	.calendly-embed :global(.calendly-embed__spinner[hidden]) {
+		display: none;
+	}
+
+	.calendly-embed :global(.calendly-embed__spinner-ring) {
+		box-sizing: border-box;
+		width: 1.375rem;
+		height: 1.375rem;
+		border: 1.5px solid color-mix(in oklab, var(--ink) 14%, transparent);
+		border-top-color: var(--accent);
+		border-radius: 50%;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.calendly-embed :global(.calendly-embed__spinner-ring) {
+			animation: calendly-embed-spin 0.75s linear infinite;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.calendly-embed :global(.calendly-embed__spinner-ring) {
+			border-color: color-mix(in oklab, var(--ink) 14%, transparent);
+			border-top-color: var(--title);
+		}
+	}
+
+	@keyframes calendly-embed-spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.calendly-embed :global(.calendly-embed__spinner-label) {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+</style>
+
+<script>
+	import { waapi } from "animejs";
+
+	const SCRIPT_SRC = "https://assets.calendly.com/assets/external/widget.js";
+	/** Stable shell while Calendly boots / shows its internal spinner. */
+	const BASE_HEIGHT_PX = 560;
+	/**
+	 * Ignore page_height below this until ready — spinner/empty frames are short
+	 * and caused the collapse-to-zero / too-short transitions.
+	 */
+	const MIN_CONTENT_HEIGHT_PX = 500;
+	/** Month calendar shell (event_type_viewed). */
+	const CALENDAR_HEIGHT_PX = 500;
+	/**
+	 * Time-slot list shell. Calendly has no named time-select event — we enter this
+	 * phase when page_height grows vs the first calendar report.
+	 */
+	const TIME_SELECT_HEIGHT_PX = 400;
+	/** Reported growth over the calendar baseline ⇒ time list opened. */
+	const TIME_SELECT_GROWTH_PX = 50;
+	/** Wait for Calendly height to settle before animating. */
+	const HEIGHT_DEBOUNCE_MS = 160;
+	/** Extra px so the iframe never undershoots and shows an inner scrollbar. */
+	const HEIGHT_BUFFER_PX = 8;
+
+	type CalendlyPhase = "boot" | "calendar" | "time_select" | "invitee";
+
+	const reduceMotion = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
+
+	type HeightAnim = {
+		cancel?: () => void;
+		pause?: () => void;
+		commitStyles?: () => void;
+		then?: (onFulfilled?: () => void) => Promise<unknown>;
+	};
+
+	type HostState = HTMLElement & {
+		__calendlyHeightAnim?: HeightAnim;
+		__calendlyReady?: boolean;
+		/** True after the first successful reveal — never show spinner again. */
+		__calendlyRevealed?: boolean;
+		__calendlyPendingHeight?: number | null;
+		__calendlyHeightTimer?: ReturnType<typeof setTimeout> | null;
+		__calendlyTargetHeight?: number | null;
+		__calendlyHeightGen?: number;
+		/** boot → calendar → time_select → invitee (form after time picked). */
+		__calendlyPhase?: CalendlyPhase;
+		/** First page_height while on the month calendar — baseline for growth detect. */
+		__calendlyCalendarReported?: number | null;
+	};
+
+	declare global {
+		interface Window {
+			Calendly?: {
+				initInlineWidget: (opts: {
+					url: string;
+					parentElement: HTMLElement;
+					resize?: boolean;
+				}) => void;
+			};
+			__spaghettiBootCalendly?: (
+				root?: ParentNode,
+				opts?: { force?: boolean },
+			) => void;
+			__spaghettiCalendlyMsgBound?: boolean;
+		}
+	}
+
+	function isCalendlyOrigin(origin: string) {
+		if (!origin) return false;
+		try {
+			const { protocol, hostname } = new URL(origin);
+			return (
+				protocol === "https:" &&
+				(hostname === "calendly.com" ||
+					hostname.endsWith(".calendly.com"))
+			);
+		} catch {
+			return false;
+		}
+	}
+
+	function isCalendlyEvent(
+		data: unknown,
+	): data is { event: string; payload?: { height?: string } } {
+		return (
+			!!data &&
+			typeof data === "object" &&
+			"event" in data &&
+			typeof (data as { event: unknown }).event === "string" &&
+			(data as { event: string }).event.startsWith("calendly.")
+		);
+	}
+
+	function createSpinner(host: HTMLElement) {
+		const el = document.createElement("div");
+		el.className = "calendly-embed__spinner";
+		el.dataset.calendlySpinner = "";
+		el.setAttribute("role", "status");
+		el.innerHTML =
+			'<span class="calendly-embed__spinner-ring" aria-hidden="true"></span>' +
+			'<span class="calendly-embed__spinner-label">Caricamento prenotazione…</span>';
+		host.appendChild(el);
+		return el;
+	}
+
+	function showSpinner(host: HTMLElement) {
+		let spinner = host.querySelector("[data-calendly-spinner]");
+		if (!(spinner instanceof HTMLElement)) {
+			spinner = createSpinner(host);
+		} else if (!spinner.isConnected) {
+			host.appendChild(spinner);
+		}
+		spinner.hidden = false;
+		spinner.setAttribute("aria-hidden", "false");
+	}
+
+	function hideSpinner(host: HTMLElement) {
+		const spinner = host.querySelector("[data-calendly-spinner]");
+		if (!(spinner instanceof HTMLElement)) return;
+		spinner.hidden = true;
+		spinner.setAttribute("aria-hidden", "true");
+	}
+
+	function lockIframeScroll(host: HTMLElement) {
+		host.querySelectorAll("iframe").forEach((iframe) => {
+			iframe.setAttribute("scrolling", "no");
+			iframe.style.overflow = "hidden";
+		});
+	}
+
+	function revealReady(host: HostState) {
+		host.__calendlyRevealed = true;
+		host.classList.add("is-ready");
+		hideSpinner(host);
+		lockIframeScroll(host);
+	}
+
+	function parseHeightPx(raw: string | undefined) {
+		if (!raw) return null;
+		const n = Number.parseFloat(raw);
+		return Number.isFinite(n) && n > 0 ? n : null;
+	}
+
+	function clearHeightDebounce(host: HostState) {
+		if (host.__calendlyHeightTimer) {
+			clearTimeout(host.__calendlyHeightTimer);
+			host.__calendlyHeightTimer = null;
+		}
+	}
+
+	function applyHostHeight(host: HostState, heightPx: number) {
+		const target = Math.ceil(heightPx + HEIGHT_BUFFER_PX);
+		const from = host.getBoundingClientRect().height || BASE_HEIGHT_PX;
+
+		// Capture current height before cancel — WAAPI cancel can revert styles.
+		const prev = host.__calendlyHeightAnim;
+		prev?.commitStyles?.();
+		prev?.pause?.();
+		prev?.cancel?.();
+
+		host.__calendlyTargetHeight = heightPx;
+		const gen = (host.__calendlyHeightGen ?? 0) + 1;
+		host.__calendlyHeightGen = gen;
+		const firstReveal = !host.__calendlyRevealed;
+
+		const finish = () => {
+			if (host.__calendlyHeightGen !== gen) return;
+			host.style.height = `${target}px`;
+			revealReady(host);
+		};
+
+		if (reduceMotion || Math.abs(from - target) < 1) {
+			finish();
+			return;
+		}
+
+		// Spinner only on the initial boot reveal — not on in-iframe step changes.
+		if (firstReveal) {
+			showSpinner(host);
+			host.classList.remove("is-ready");
+		}
+
+		host.style.height = `${from}px`;
+		const anim = waapi.animate(host, {
+			height: target,
+			duration: 450,
+			ease: "inOutQuad",
+			onComplete: finish,
+		}) as HeightAnim;
+		host.__calendlyHeightAnim = anim;
+		anim.then?.(() => finish());
+	}
+
+	function resolveAppliedHeight(host: HostState, reportedPx: number) {
+		if (host.__calendlyPhase === "calendar") return CALENDAR_HEIGHT_PX;
+		if (host.__calendlyPhase === "time_select") return TIME_SELECT_HEIGHT_PX;
+		return reportedPx;
+	}
+
+	function isForcedShellHeight(host: HostState, target: number) {
+		return (
+			(host.__calendlyPhase === "calendar" &&
+				target === CALENDAR_HEIGHT_PX) ||
+			(host.__calendlyPhase === "time_select" &&
+				target === TIME_SELECT_HEIGHT_PX)
+		);
+	}
+
+	/** Debounce rapid page_height bursts; animate once to the latest value. */
+	function scheduleHostHeight(host: HostState, heightPx: number) {
+		const applied = resolveAppliedHeight(host, heightPx);
+		host.__calendlyPendingHeight = applied;
+		clearHeightDebounce(host);
+		host.__calendlyHeightTimer = setTimeout(() => {
+			host.__calendlyHeightTimer = null;
+			const target = host.__calendlyPendingHeight;
+			host.__calendlyPendingHeight = null;
+			if (target == null) return;
+			if (
+				!isForcedShellHeight(host, target) &&
+				target < MIN_CONTENT_HEIGHT_PX
+			) {
+				return;
+			}
+			if (host.__calendlyTargetHeight === target) {
+				revealReady(host);
+				return;
+			}
+			applyHostHeight(host, target);
+		}, HEIGHT_DEBOUNCE_MS);
+	}
+
+	function markReady(host: HostState) {
+		host.__calendlyReady = true;
+		host.__calendlyPhase = "calendar";
+		host.__calendlyCalendarReported = null;
+		scheduleHostHeight(host, CALENDAR_HEIGHT_PX);
+	}
+
+	function markInvitee(host: HostState) {
+		host.__calendlyPhase = "invitee";
+	}
+
+	function handlePageHeight(host: HostState, heightPx: number) {
+		if (
+			host.__calendlyPhase === "calendar" ||
+			host.__calendlyPhase === "time_select"
+		) {
+			if (!host.__calendlyReady) {
+				host.style.height = `${BASE_HEIGHT_PX}px`;
+				return;
+			}
+
+			if (host.__calendlyPhase === "calendar") {
+				if (host.__calendlyCalendarReported == null) {
+					host.__calendlyCalendarReported = heightPx;
+				} else if (
+					heightPx >=
+					host.__calendlyCalendarReported + TIME_SELECT_GROWTH_PX
+				) {
+					host.__calendlyPhase = "time_select";
+					scheduleHostHeight(host, TIME_SELECT_HEIGHT_PX);
+					return;
+				}
+				scheduleHostHeight(host, CALENDAR_HEIGHT_PX);
+				return;
+			}
+
+			// time_select: shrink back to calendar if Calendly reports near baseline.
+			const baseline = host.__calendlyCalendarReported;
+			if (
+				baseline != null &&
+				heightPx <= baseline + TIME_SELECT_GROWTH_PX / 2
+			) {
+				host.__calendlyPhase = "calendar";
+				scheduleHostHeight(host, CALENDAR_HEIGHT_PX);
+				return;
+			}
+			scheduleHostHeight(host, TIME_SELECT_HEIGHT_PX);
+			return;
+		}
+
+		// Never collapse — skip zero/tiny frames from Calendly boot.
+		if (heightPx < MIN_CONTENT_HEIGHT_PX) return;
+
+		if (!host.__calendlyReady) {
+			// Hold the shell at BASE until event_type_viewed; remember target.
+			host.__calendlyPendingHeight = heightPx;
+			host.style.height = `${BASE_HEIGHT_PX}px`;
+			return;
+		}
+
+		scheduleHostHeight(host, heightPx);
+	}
+
+	function bootEmbeds(root: ParentNode = document, opts: { force?: boolean } = {}) {
+		if (!window.Calendly?.initInlineWidget) return;
+
+		root.querySelectorAll("[data-calendly-embed]").forEach((node) => {
+			if (!(node instanceof HTMLElement)) return;
+			const host = node as HostState;
+			const embedUrl = host.dataset.url;
+			if (!embedUrl) return;
+
+			if (!opts.force && host.dataset.calendlyBooted === "1") return;
+
+			const spinner = host.querySelector("[data-calendly-spinner]");
+			host.replaceChildren();
+			if (spinner instanceof HTMLElement) {
+				host.appendChild(spinner);
+			}
+			showSpinner(host);
+			clearHeightDebounce(host);
+			host.classList.remove("is-ready");
+			host.__calendlyReady = false;
+			host.__calendlyRevealed = false;
+			host.__calendlyPhase = "boot";
+			host.__calendlyCalendarReported = null;
+			host.__calendlyPendingHeight = null;
+			host.__calendlyTargetHeight = null;
+			host.__calendlyHeightGen = (host.__calendlyHeightGen ?? 0) + 1;
+			host.style.height = `${BASE_HEIGHT_PX}px`;
+
+			// resize:false — we own height; avoid Calendly’s instant snaps.
+			window.Calendly.initInlineWidget({
+				url: embedUrl,
+				parentElement: host,
+				resize: false,
+			});
+			lockIframeScroll(host);
+			host.dataset.calendlyBooted = "1";
+		});
+	}
+
+	if (!window.__spaghettiCalendlyMsgBound) {
+		window.__spaghettiCalendlyMsgBound = true;
+		window.addEventListener("message", (e) => {
+			if (!isCalendlyOrigin(e.origin)) return;
+			if (!isCalendlyEvent(e.data)) return;
+
+			const eventName = e.data.event;
+
+			if (eventName === "calendly.event_type_viewed") {
+				document
+					.querySelectorAll("[data-calendly-embed]")
+					.forEach((node) => {
+						if (node instanceof HTMLElement) markReady(node as HostState);
+					});
+				return;
+			}
+
+			if (eventName === "calendly.date_and_time_selected") {
+				document
+					.querySelectorAll("[data-calendly-embed]")
+					.forEach((node) => {
+						if (node instanceof HTMLElement) markInvitee(node as HostState);
+					});
+				return;
+			}
+
+			if (eventName === "calendly.page_height") {
+				const heightPx = parseHeightPx(e.data.payload?.height);
+				if (!heightPx) return;
+				document
+					.querySelectorAll("[data-calendly-embed]")
+					.forEach((node) => {
+						if (node instanceof HTMLElement) {
+							handlePageHeight(node as HostState, heightPx);
+						}
+					});
+			}
+		});
+	}
+
+	window.__spaghettiBootCalendly = bootEmbeds;
+
+	const existing = document.querySelector(`script[src="${SCRIPT_SRC}"]`);
+	if (existing) {
+		if (window.Calendly) bootEmbeds();
+		else existing.addEventListener("load", () => bootEmbeds());
+	} else {
+		const script = document.createElement("script");
+		script.src = SCRIPT_SRC;
+		script.async = true;
+		script.addEventListener("load", () => bootEmbeds());
+		document.head.appendChild(script);
+	}
+</script>

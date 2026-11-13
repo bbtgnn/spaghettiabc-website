@@ -127,6 +127,7 @@ export interface Tour {
   language?: string;
   included?: string;
   faq?: { "question": string; "answer": string }[];
+  calendly_url?: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;

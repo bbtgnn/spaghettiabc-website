@@ -68,6 +68,11 @@
 					"type": "string"
 				},
 				{
+					"slug": "calendly_url",
+					"label": "URL Calendly",
+					"type": "url"
+				},
+				{
 					"slug": "gallery",
 					"label": "Gallery",
 					"type": "repeater",
@@ -579,13 +584,14 @@
 				"status": "published",
 				"data": {
 					"title": "Polignano food tour",
-					"excerpt": "Esplora i banchi e i vicoli a strapiombo sul mare ed assaggia le migliori specialità artigianali di Polignano.",
+					"excerpt": "Discover Apulian cuisine with all your senses",
 					"destination": "Polignano a Mare",
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/polignano-sensory-food-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1697310904924-ec1c03c8ba9b?w=1600&h=1067&fit=crop",
@@ -600,11 +606,59 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Un'esperienza intima per piccoli gruppi guidata da esperti locali: dal centro storico alle terrazze sul mare, con assaggi della cucina polignanese.",
+									"text": "A gastronomic stroll through the heart of Polignano to uncover the typical products of Puglia and its artisan shops, guided by Flavia Giordano, cookbook author, taster, and food educator.",
 									"_key": "pol-c1"
 								}
 							],
 							"_key": "pol-c0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "A sensory experience dedicated to those who want to delve into the culture of Apulian food, its agricultural excellences (PDO, DOC, Slow Food presidia), and gastronomic traditions.",
+									"_key": "pol-c3"
+								}
+							],
+							"_key": "pol-c2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "From coffee to “caffe speciale”, passing through caciocavallo and mozzarella, traditional breads, and the finest EVO oils from the best local olive mills, artisanal cold cuts, focaccias, preserves, and wines from native grape varieties – the sensory food tour is a roaming masterclass on Apulian cuisine.",
+									"_key": "pol-c5"
+								}
+							],
+							"_key": "pol-c4"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Flavia Giordano – who for several years managed the first Italian cooking school in Malmö, Sweden – will also share golden rules and tips with guests on how to shop and choose quality products, as well as recipes and cooking techniques.",
+									"_key": "pol-c7"
+								}
+							],
+							"_key": "pol-c6"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "As a taster of oil, cheese, and wines, the sensory food tour will be a way to savor Apulian cuisine with all your senses.",
+									"_key": "pol-c9"
+								}
+							],
+							"_key": "pol-c8"
 						}
 					],
 					"faq": [
@@ -638,8 +692,9 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Bari_-_Lungomare_Araldo_di_Crollalanza.jpg",
@@ -692,8 +747,9 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1634561527613-172d7489214b?w=1600&h=1067&fit=crop",
@@ -746,8 +802,9 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Puglia_Altamura1_tango7174.jpg",
@@ -800,8 +857,9 @@
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
-					"included": "5 tappe degustazione + bevande",
+					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1682347641333-b9080bfe7af3?w=1600&h=1067&fit=crop",
@@ -856,6 +914,7 @@
 					"language": "Italiano / Inglese",
 					"included": "Menù degustazione + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1672636401322-b909b15b7c57?w=1600&h=1067&fit=crop",
@@ -910,6 +969,7 @@
 					"language": "Italiano / Inglese",
 					"included": "Attività sensoriale + degustazioni",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1600&h=1067&fit=crop",
@@ -964,6 +1024,7 @@
 					"language": "Italiano / Inglese",
 					"included": "Percorso e degustazioni personalizzati",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",

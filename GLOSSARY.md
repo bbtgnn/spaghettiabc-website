@@ -21,8 +21,12 @@ La pagina `/tours` che elenca tutte le entry Tour (teaser verso le Schede Tour).
 _Avoid_: lista tour; product listing; non usare «catalogo» per indicare una collection CMS
 
 **Scheda Tour**:
-La pagina dettaglio di un Tour a `/tours/{slug}`: layout a split (gallery + info sticky), senza hero overlay; CTA «Add to cart» solo visuale (non collegata al carrello).
-_Avoid_: product page, pagina prodotto, PDP, tour detail (come nome di dominio)
+La pagina dettaglio di un Tour a `/tours/{slug}`: hero a immagine piena, poi corpo editoriale | colonna prenotazione (specs + Calendly) quando c’è un URL Calendly.
+_Avoid_: product page, pagina prodotto, PDP, tour detail (come nome di dominio); Add to cart; Atelier gallery|info (scartato)
+
+**Prenotazione**:
+Richiesta su Calendly dalla colonna prenotazione della Scheda Tour (campo URL per Tour). Il pagamento resta fuori sito (SumUp), dopo la richiesta.
+_Avoid_: acquisto, Add to cart, carrello, checkout, booking (come nome di dominio); sheet prenotazione (scartato)
 
 **Sezione Tour**:
 Blocco della homepage che elenca Tour in evidenza e rimanda al Catalogo Tour.
