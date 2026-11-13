@@ -157,11 +157,23 @@ const extraImages = galleryImages.slice(1);
 			}
 		</div>
 
-		{/* Under hero: content | calendly — centered as a pair on ≥768.
-		    copycol is display:contents on mobile so order stays data→book→body;
-		    on ≥768 it becomes one left column so Calendly height can't push body. */}
+		{/* Under hero: body | book — centered as a pair on ≥768.
+		    Specs sit above Calendly in the book column.
+		    copycol is display:contents on mobile so order stays book→body. */}
 		<div class="sth-prenota__main">
 			<div class="sth-prenota__copycol">
+				<div class="sth-prenota__body">
+					<slot />
+				</div>
+			</div>
+
+			<aside
+				id={hasPrenota ? "prenota-calendly" : undefined}
+				class="sth-prenota__book"
+				aria-label="Prenota"
+				aria-live={hasPrenota ? undefined : "polite"}
+				{...(hasPrenota ? edit.calendly_url : {})}
+			>
 				{
 					specs.length > 0 && (
 						<div class="sth-prenota__data">
@@ -189,28 +201,14 @@ const extraImages = galleryImages.slice(1);
 						</div>
 					)
 				}
-
-				<div class="sth-prenota__body">
-					<slot />
-				</div>
-			</div>
-
-			{
-				hasPrenota ? (
-					<aside
-						id="prenota-calendly"
-						class="sth-prenota__book"
-						aria-label="Prenota"
-						{...edit.calendly_url}
-					>
+				{
+					hasPrenota ? (
 						<CalendlyEmbed url={calendlyUrl} />
-					</aside>
-				) : (
-					<aside class="sth-prenota__book sth-prenota__book--empty" aria-live="polite">
+					) : (
 						<p class="mono sth-prenota__empty">Prenotazione non disponibile</p>
-					</aside>
-				)
-			}
+					)
+				}
+			</aside>
 		</div>
 	</div>
 </section>
@@ -221,8 +219,8 @@ const extraImages = galleryImages.slice(1);
 	}
 
 	/*
-	 * Mobile (<768): hero → data → iframe → editorial/FAQ (flex order)
-	 * ≥768: hero full width; then centered | content | calendly |
+	 * Mobile (<768): hero → book (specs+calendly) → editorial/FAQ (flex order)
+	 * ≥768: hero full width; then centered | content | book |
 	 */
 	.sth-prenota__layout {
 		display: flex;
@@ -248,21 +246,17 @@ const extraImages = galleryImages.slice(1);
 		width: 100%;
 	}
 
-	/* Mobile: flatten so we can reorder data → book → body. */
+	/* Mobile: flatten so we can reorder book → body. */
 	.sth-prenota__copycol {
 		display: contents;
 	}
 
-	.sth-prenota__data {
+	.sth-prenota__book {
 		order: 1;
 	}
 
-	.sth-prenota__book {
-		order: 2;
-	}
-
 	.sth-prenota__body {
-		order: 3;
+		order: 2;
 	}
 
 	@media (min-width: 768px) {
@@ -285,7 +279,6 @@ const extraImages = galleryImages.slice(1);
 			order: 1;
 		}
 
-		.sth-prenota__data,
 		.sth-prenota__body {
 			order: initial;
 		}
@@ -363,9 +356,18 @@ const extraImages = galleryImages.slice(1);
 	.sth-prenota__data {
 		width: 100%;
 		min-width: 0;
+		padding: 1rem 1rem 1rem 1.25rem;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		border: 1px solid var(--title);
+		box-sizing: border-box;
+		background: #fff;
 	}
 
 	.sth-prenota__book {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
 		width: 100%;
 		max-width: none;
 	}
@@ -404,10 +406,6 @@ const extraImages = galleryImages.slice(1);
 			position: sticky;
 			top: 7rem;
 			align-self: flex-start;
-		}
-
-		.sth-prenota__book :global(.calendly-embed) {
-			max-width: 400px;
 		}
 	}
 
@@ -462,18 +460,20 @@ const extraImages = galleryImages.slice(1);
 	}
 
 	.sth-prenota__specs {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1rem 1.25rem;
 		width: 100%;
 		margin: 0;
-		border-top: 1px solid var(--line);
 		font-size: 0.8125rem;
 	}
 
 	.sth-prenota__spec {
 		display: flex;
-		justify-content: space-between;
-		gap: 1.5rem;
-		border-bottom: 1px solid var(--line);
-		padding-block: 0.75rem;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.2rem;
+		min-width: 0;
 	}
 
 	.sth-prenota__spec dt {
@@ -490,18 +490,19 @@ const extraImages = galleryImages.slice(1);
 
 	.sth-prenota__spec dd {
 		margin: 0;
-		text-align: right;
+		min-width: 0;
+		text-align: left;
 		color: var(--ink);
-	}
-
-	.sth-prenota__book--empty {
-		display: flex;
-		align-items: flex-start;
-		padding-top: 0.25rem;
 	}
 
 	.sth-prenota__empty {
 		margin: 0;
+		padding: 1rem;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		border: 1px solid var(--title);
+		box-sizing: border-box;
+		background: #fff;
 		font-size: 0.6875rem;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
