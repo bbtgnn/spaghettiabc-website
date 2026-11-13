@@ -694,6 +694,7 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Bari_-_Lungomare_Araldo_di_Crollalanza.jpg",
@@ -748,6 +749,7 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1634561527613-172d7489214b?w=1600&h=1067&fit=crop",
@@ -802,6 +804,7 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Puglia_Altamura1_tango7174.jpg",
@@ -856,6 +859,7 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1682347641333-b9080bfe7af3?w=1600&h=1067&fit=crop",
@@ -910,6 +914,7 @@
 					"language": "Italiano / Inglese",
 					"included": "Menù degustazione + bevande",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1672636401322-b909b15b7c57?w=1600&h=1067&fit=crop",
@@ -964,6 +969,7 @@
 					"language": "Italiano / Inglese",
 					"included": "Attività sensoriale + degustazioni",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1600&h=1067&fit=crop",
@@ -1018,6 +1024,7 @@
 					"language": "Italiano / Inglese",
 					"included": "Percorso e degustazioni personalizzati",
 					"price": "60 € / persona",
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
