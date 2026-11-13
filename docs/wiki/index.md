@@ -20,7 +20,6 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts` (2026-10-23)
 - [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — Libro/Formazione pattern; Collaborazioni logos claim **superseded 2026-11-06** (2026-10-23 / 2026-11-05 / 2026-11-06)
 - [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps now seeded on homepage `partner_logos` (2026-10-28 / 2026-11-05 / 2026-11-06; loopback SSRF noted 2026-10-23)
-- [Sezione Tour playground handoff](./ops/sezione-tour-playground-handoff.md) — extract #14 DEV playground from #17/#20 into a clean PR off `main` (2026-11-13)
 
 ## Domain language
 
