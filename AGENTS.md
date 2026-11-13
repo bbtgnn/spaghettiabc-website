@@ -45,7 +45,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - **Catalogo Tour** (`/tours`) = shell intro + shared `.tour-grid` + `TourTeaser`.
 - **Scheda Tour** (`/tours/[slug]`) = tall hero + body | booking column (separate bordered specs + Calendly cards); no related tours; effective Calendly URL = tour `calendly_url` (trim) else `site_globals`/`site` fallback else no embed. FAQ from `site_globals`/`site` (empty → hide Domande frequenti). Mobile (<768): intro→book→body (`copycol` is `display: contents` + flex `order`). ≥768: intro full width, then centered `| copycol (≤65ch) | book (≤400px) |`. Site shell max-width is 1280px (`--shell`).
 - `.tour-grid` lives in `src/styles/theme.css` — Catalogo Tour grid; do not redefine page-locally.
-- Homepage Sezione Tour uses `.tour-rail` (horizontal scroll + baseline) in `theme.css`, not `.tour-grid`.
+- Homepage Sezione Tour uses `SezioneTour.astro`: asymmetric highlight (first horizontal, second stacked) + compact `.tour-rail--compact` + flat `.review-rail`. Catalogo still uses `.tour-grid` / `TourTeaser`.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
 - **Sezione Dicono di me** is homepage-only (logos + Punteggio/Recensioni Google on `homepage`). No `/collaborazioni` landing. See `GLOSSARY.md`.
 

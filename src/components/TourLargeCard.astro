@@ -15,8 +15,8 @@ interface Props {
 		width?: number;
 		height?: number;
 	} | null;
-	/** Visual treatment for the playground large pair / compact rail */
-	layout?: "stack" | "row" | "dominant" | "secondary" | "compact";
+	/** Visual treatment for Sezione Tour highlight / compact rail */
+	layout?: "stack" | "row" | "compact";
 	index?: number;
 }
 
@@ -36,11 +36,11 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 const isCompact = layout === "compact";
 ---
 
-<article class:list={["pg-tour-large", `pg-tour-large--${layout}`]}>
-	<a class="pg-tour-large__link" href={href}>
+<article class:list={["tour-card", `tour-card--${layout}`]}>
+	<a class="tour-card__link" href={href}>
 		{
 			image && (
-				<div class="pg-tour-large__media">
+				<div class="tour-card__media">
 					<Image
 						image={image}
 						loading={index < 2 ? "eager" : "lazy"}
@@ -49,17 +49,17 @@ const isCompact = layout === "compact";
 				</div>
 			)
 		}
-		<div class="pg-tour-large__body">
-			<h3 class="type-h3 pg-tour-large__title">{title}</h3>
+		<div class="tour-card__body">
+			<h3 class="type-h3 tour-card__title">{title}</h3>
 			{
 				!isCompact && excerpt && (
-					<p class="type-body pg-tour-large__excerpt">{excerpt}</p>
+					<p class="type-body tour-card__excerpt">{excerpt}</p>
 				)
 			}
 			{!isCompact && (price || meta) && (
-				<div class="pg-tour-large__footer">
-					{price && <p class="mono pg-tour-large__price">{price}</p>}
-					{meta && <p class="label pg-tour-large__meta">{meta}</p>}
+				<div class="tour-card__footer">
+					{price && <p class="mono tour-card__price">{price}</p>}
+					{meta && <p class="label tour-card__meta">{meta}</p>}
 				</div>
 			)}
 		</div>

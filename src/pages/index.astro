@@ -6,7 +6,7 @@ import ExternalLink from "@lucide/astro/icons/external-link";
 import Star from "@lucide/astro/icons/star";
 import Base from "../layouts/Base.astro";
 import PartnerLogoMarquee from "../components/PartnerLogoMarquee.astro";
-import TourTeaser from "../components/TourTeaser.astro";
+import SezioneTour from "../components/SezioneTour.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
 const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
@@ -74,52 +74,21 @@ const starSlots = [1, 2, 3, 4, 5] as const;
 					)}
 				</section>
 
-				<section class="shell section">
-					<div class="rule" data-reveal="line" />
-					<div class="section__head" data-reveal>
-						<h2 class="type-h2" {...home.edit.tour_title}>
-							{home.data.tour_title}
-						</h2>
-						{home.data.tour_cta_label && (
-							<a class="btn btn-outline btn--arrow" href="/tours" {...home.edit.tour_cta_label}>
-								<span class="btn__label">Tutti i tour</span>
-								<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
-							</a>
-						)}
-					</div>
-					{home.data.tour_subtitle && (
-						<p class="type-lead section__lede" data-reveal {...home.edit.tour_subtitle}>
-							{home.data.tour_subtitle}
-						</p>
-					)}
-
-					{featuredTours.length === 0 ? (
-						<p class="type-body" data-reveal>Nessun tour in evidenza.</p>
-					) : (
-						<div class="tour-rail" data-reveal>
-							<div
-								class="tour-rail__track"
-								role="list"
-								aria-label={home.data.tour_title ?? "Tour in evidenza"}
-							>
-								{featuredTours.map((tour, index) => (
-									<div role="listitem">
-										<TourTeaser
-											href={`/tours/${tour.id}`}
-											title={tour.data.title}
-											excerpt={tour.data.excerpt}
-											destination={tour.data.destination}
-											duration={tour.data.duration}
-											price={tour.data.price}
-											image={tour.data.featured_image}
-											index={index}
-										/>
-									</div>
-								))}
-							</div>
-						</div>
-					)}
-				</section>
+				<SezioneTour
+					title={home.data.tour_title}
+					subtitle={home.data.tour_subtitle}
+					ctaLabel={home.data.tour_cta_label}
+					tours={featuredTours}
+					reviews={googleReviews}
+					googleScore={googleScore}
+					googleReviewCount={googleReviewCount}
+					googleProfileUrl={googleProfileUrl}
+					edit={{
+						tour_title: home.edit.tour_title,
+						tour_subtitle: home.edit.tour_subtitle,
+						tour_cta_label: home.edit.tour_cta_label,
+					}}
+				/>
 
 				<section class="shell section feature">
 					<div class="rule" data-reveal="line" />

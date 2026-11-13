@@ -21,9 +21,7 @@ interface Props {
 	googleScore?: number;
 	googleReviewCount?: number;
 	googleProfileUrl?: string | null;
-	/** Slightly quieter chrome when nestled inside variant B */
-	integrated?: boolean;
-	/** No card chrome — sits on the section canvas (variant D) */
+	/** No card chrome — sits on the section canvas */
 	flat?: boolean;
 }
 
@@ -32,7 +30,6 @@ const {
 	googleScore = 0,
 	googleReviewCount = 0,
 	googleProfileUrl = null,
-	integrated = false,
 	flat = false,
 } = Astro.props;
 const starSlots = [1, 2, 3, 4, 5] as const;
@@ -42,25 +39,16 @@ const show = hasScore || reviews.length > 0;
 
 {
 	show && (
-		<div
-			class:list={[
-				"pg-review-rail",
-				integrated && "pg-review-rail--integrated",
-				flat && "pg-review-rail--flat",
-			]}
-		>
-			{integrated && (
-				<p class="label pg-review-rail__label">Recensioni</p>
-			)}
-			<div class="pg-review-rail__row">
+		<div class:list={["review-rail", flat && "review-rail--flat"]}>
+			<div class="review-rail__row">
 				{hasScore && (
-					<aside class="pg-google-score">
+					<aside class="review-rail__score">
 						{googleScore > 0 && (
-							<p class="pg-google-score__value">{googleScore.toFixed(1)}</p>
+							<p class="review-rail__score-value">{googleScore.toFixed(1)}</p>
 						)}
 						{googleScore > 0 && (
 							<div
-								class="star-row pg-google-score__stars"
+								class="star-row review-rail__score-stars"
 								aria-label={`Valutazione media: ${googleScore.toFixed(1)} su 5`}
 							>
 								{starSlots.map((n) => (
@@ -74,13 +62,13 @@ const show = hasScore || reviews.length > 0;
 							</div>
 						)}
 						{googleReviewCount > 0 && (
-							<p class="mono pg-google-score__count">
+							<p class="mono review-rail__score-count">
 								{googleReviewCount} recensioni su Google
 							</p>
 						)}
 						{googleProfileUrl && (
 							<a
-								class="pg-google-score__link"
+								class="review-rail__score-link"
 								href={googleProfileUrl}
 								target="_blank"
 								rel="noopener noreferrer"
@@ -93,7 +81,7 @@ const show = hasScore || reviews.length > 0;
 
 				{reviews.length > 0 && (
 					<div
-						class="pg-review-rail__track"
+						class="review-rail__track"
 						role="list"
 						aria-label="Recensioni Google"
 					>
@@ -108,13 +96,16 @@ const show = hasScore || reviews.length > 0;
 									}
 								: {};
 							return (
-								<div class="pg-review-rail__item" role="listitem">
+								<div class="review-rail__item" role="listitem">
 									<CardTag
-										class:list={["pg-review-card", flat && "pg-review-card--flat"]}
+										class:list={[
+											"review-rail__card",
+											flat && "review-rail__card--flat",
+										]}
 										{...cardProps}
 									>
 										<div
-											class="star-row pg-review-card__stars"
+											class="star-row review-rail__card-stars"
 											aria-label={`Valutazione: ${rating} su 5`}
 										>
 											{starSlots.map((n) => (
@@ -126,16 +117,16 @@ const show = hasScore || reviews.length > 0;
 												/>
 											))}
 										</div>
-										<blockquote class="pg-review-card__quote">
+										<blockquote class="review-rail__quote">
 											<p>{item.quote}</p>
 										</blockquote>
-										<div class="pg-review-card__author">
+										<div class="review-rail__author">
 											{item.avatar && (
-												<span class="pg-review-card__avatar">
+												<span class="review-rail__avatar">
 													<Image image={item.avatar} />
 												</span>
 											)}
-											<span class="pg-review-card__name">{item.author}</span>
+											<span class="review-rail__name">{item.author}</span>
 										</div>
 									</CardTag>
 								</div>

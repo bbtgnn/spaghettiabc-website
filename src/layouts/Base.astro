@@ -21,8 +21,6 @@ interface Props {
 	canonical?: string | null;
 	/** Kept for call-site compatibility; header is always sticky in Atelier mode */
 	overlayHeader?: boolean;
-	/** Hide SiteHeader (e.g. `/_dev` playgrounds with their own chrome) */
-	hideHeader?: boolean;
 	/** Pass content reference for plugin page contributions on content pages */
 	content?: { collection: string; id: string; slug?: string | null };
 }
@@ -33,7 +31,6 @@ const {
 	description,
 	image,
 	canonical,
-	hideHeader = false,
 	content,
 } = Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
@@ -190,16 +187,12 @@ const pageCtx = createPublicPageContext({
 
 		<a class="sr-only" href="#main-content">Vai al contenuto</a>
 
-		{
-			!hideHeader && (
-				<SiteHeader
-					siteTitle={siteTitle}
-					siteLogo={siteLogo}
-					items={menu?.items}
-					currentPath={currentPath}
-				/>
-			)
-		}
+		<SiteHeader
+			siteTitle={siteTitle}
+			siteLogo={siteLogo}
+			items={menu?.items}
+			currentPath={currentPath}
+		/>
 
 		<main class="site-main" id="main-content">
 			<slot />
@@ -232,7 +225,9 @@ const pageCtx = createPublicPageContext({
 
 			/* Horizontal rails (overflow-x) otherwise trap trackpad vertical scroll. */
 			(() => {
-				const tracks = document.querySelectorAll(".tour-rail__track");
+				const tracks = document.querySelectorAll(
+					".tour-rail__track, .review-rail__track",
+				);
 				for (const track of tracks) {
 					track.addEventListener(
 						"wheel",

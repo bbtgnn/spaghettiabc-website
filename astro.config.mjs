@@ -4,7 +4,6 @@ import { defineConfig } from "astro/config";
 import { formHeadingsPlugin } from "@spaghettiabc/form-headings";
 import emdash, { local } from "emdash/astro";
 import { sqlite } from "emdash/db";
-import { devPlaygrounds } from "./src/dev/integration.ts";
 
 export default defineConfig({
 	output: "server",
@@ -25,7 +24,6 @@ export default defineConfig({
 			}),
 			plugins: [formHeadingsPlugin()],
 		}),
-		devPlaygrounds(),
 	],
 	devToolbar: { enabled: false },
 });
