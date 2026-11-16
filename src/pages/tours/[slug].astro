@@ -26,7 +26,13 @@ if (!tour) {
 	return Astro.rewrite("/404");
 }
 
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+const { entry: siteGlobals, cacheHint: siteGlobalsCacheHint } =
+	await getEmDashEntry("site_globals", "site");
+
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+	Astro.cache.set(siteGlobalsCacheHint);
+}
 const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
 
 const seo = getSeoMeta(tour, {
@@ -92,7 +98,7 @@ if (tour.data.price) {
 	});
 }
 
-const faqItems = (tour.data.faq ?? []).filter(
+const faqItems = (siteGlobals?.data.faq ?? []).filter(
 	(row): row is { question: string; answer: string } =>
 		Boolean(row?.question && row?.answer),
 );
@@ -150,7 +156,7 @@ const heroProps = {
 					<section
 						class="scheda-tour__faq"
 						aria-labelledby="tour-faq-heading"
-						{...tour.edit.faq}
+						{...(siteGlobals?.edit.faq ?? {})}
 					>
 						<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
 							Domande frequenti

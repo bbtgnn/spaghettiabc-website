@@ -43,7 +43,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
 - A **Tour** is a guided food experience in one Puglia town — not multi-stop Italy travel. See `GLOSSARY.md` for Catalogo Tour / Scheda Tour / Sezione Tour / Tour.
 - **Catalogo Tour** (`/tours`) = shell intro + shared `.tour-grid` + `TourTeaser`.
-- **Scheda Tour** (`/tours/[slug]`) = tall hero + body | booking column (separate bordered specs + Calendly cards); no related tours; empty `calendly_url` → no embed. Mobile (<768): intro→book→body (`copycol` is `display: contents` + flex `order`). ≥768: intro full width, then centered `| copycol (≤65ch) | book (≤400px) |`. Site shell max-width is 1280px (`--shell`).
+- **Scheda Tour** (`/tours/[slug]`) = tall hero + body | booking column (separate bordered specs + Calendly cards); no related tours; empty `calendly_url` → no embed. FAQ from `site_globals`/`site` (empty → hide Domande frequenti). Mobile (<768): intro→book→body (`copycol` is `display: contents` + flex `order`). ≥768: intro full width, then centered `| copycol (≤65ch) | book (≤400px) |`. Site shell max-width is 1280px (`--shell`).
 - `.tour-grid` lives in `src/styles/theme.css` — Catalogo Tour grid; do not redefine page-locally.
 - Homepage Sezione Tour uses `.tour-rail` (horizontal scroll + baseline) in `theme.css`, not `.tour-grid`.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
