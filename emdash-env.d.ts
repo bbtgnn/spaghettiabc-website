@@ -111,6 +111,20 @@ export interface Post {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface SiteGlobals {
+  id: string;
+  slug: string | null;
+  status: string;
+  calendly_url?: string;
+  faq?: { "question": string; "answer": string }[];
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 export interface Tour {
   id: string;
   slug: string | null;
@@ -126,7 +140,6 @@ export interface Tour {
   group_size?: string;
   language?: string;
   included?: string;
-  faq?: { "question": string; "answer": string }[];
   calendly_url?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -179,6 +192,7 @@ declare module "emdash" {
     homepage: Homepage;
     pages: Page;
     posts: Post;
+    site_globals: SiteGlobals;
     tours: Tour;
     training: Training;
     wpcf7_contact_form: Wpcf7ContactForm;
