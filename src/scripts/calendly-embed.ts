@@ -106,11 +106,15 @@ function createSpinner(host: HTMLElement) {
 }
 
 function showSpinner(host: HTMLElement) {
-	let spinner = host.querySelector("[data-calendly-spinner]");
-	if (!(spinner instanceof HTMLElement)) {
+	const existing = host.querySelector("[data-calendly-spinner]");
+	let spinner: HTMLElement;
+	if (existing instanceof HTMLElement) {
+		spinner = existing;
+		if (!spinner.isConnected) {
+			host.appendChild(spinner);
+		}
+	} else {
 		spinner = createSpinner(host);
-	} else if (!spinner.isConnected) {
-		host.appendChild(spinner);
 	}
 	spinner.hidden = false;
 	spinner.setAttribute("aria-hidden", "false");
@@ -355,7 +359,8 @@ function withLiveCalendlyColors(raw: string) {
  * - Force reboot (DEV palette/ink): wipe to spinner immediately.
  */
 function bootEmbeds(root: ParentNode = document, opts: { force?: boolean } = {}) {
-	if (!window.Calendly?.initInlineWidget) return;
+	const calendly = window.Calendly;
+	if (!calendly?.initInlineWidget) return;
 
 	root.querySelectorAll("[data-calendly-embed]").forEach((node) => {
 		if (!(node instanceof HTMLElement)) return;
@@ -391,7 +396,7 @@ function bootEmbeds(root: ParentNode = document, opts: { force?: boolean } = {})
 		host.style.height = `${BASE_HEIGHT_PX}px`;
 
 		// resize:false — we own height; avoid Calendly’s instant snaps.
-		window.Calendly.initInlineWidget({
+		calendly.initInlineWidget({
 			url: embedUrl,
 			parentElement: host,
 			resize: false,
