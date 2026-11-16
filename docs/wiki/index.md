@@ -14,8 +14,8 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Homepage form headings](./decisions/homepage-form-headings.md) — CMS editor section titles for Homepage only ([#5](https://github.com/bbtgnn/spaghettiabc-website/issues/5), 2026-10-28)
 - [Font pairing preview](./decisions/font-pairing-preview.md) — DEV matrix Body×Display + UI (Come testo / Tsukimi / Fira Sans); Archivo out, Cormorant in Display; serif UI larger + normal tracking (2026-11-05); supersedes 2026-11-04 four-option select ([#9](https://github.com/bbtgnn/spaghettiabc-website/issues/9))
 - [Color palette preview](./decisions/color-palette-preview.md) — DEV global primary + ink (cool/warm); pomodoro default; Pascali `#0A6DE4` ([#12](https://github.com/bbtgnn/spaghettiabc-website/issues/12), revised 2026-11-13)
-- [Scheda Tour Calendly / Prenotazione](./decisions/scheda-tour-calendly-prenotazione.md) — embed in info column (#15)
-- [Impostazioni sito FAQ](./decisions/site-globals-faq.md) — `site_globals`/`site`: FAQ globale (#23) (2026-11-16)
+- [Scheda Tour Calendly / Prenotazione](./decisions/scheda-tour-calendly-prenotazione.md) — embed in info column (#15); global fallback on `site_globals` grilled 2026-11-16 (#22)
+- [Impostazioni sito FAQ](./decisions/site-globals-faq.md) — `site_globals`/`site`: FAQ globale (#23) + Calendly predefinito note (#22) (2026-11-16)
 
 ## Operations
 
@@ -24,6 +24,7 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps now seeded on homepage `partner_logos` (2026-10-28 / 2026-11-05 / 2026-11-06; loopback SSRF noted 2026-10-23)
 - [Issue #15 status](./ops/issue-15-status.md) — Scheda Tour Calendly delivery notes (2026-11-10 / 2026-11-11)
 - [Issue #23 status](./ops/issue-23-status.md) — Impostazioni sito FAQ globale (2026-11-16)
+- [Issue #22 status](./ops/issue-22-status.md) — global Calendly fallback; stacked after #23 (2026-11-16)
 
 ## Domain language
 
