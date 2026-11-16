@@ -19,6 +19,7 @@
 - **2026-11-16** — Implementation landed on `feat/global-calendly-fallback` @ `5b5ab73` ([Implement #23+#22](078d1de9-ff1a-4274-97f3-b9ad42f41864)): `site_globals`/`site` with FAQ + `calendly_url`; helper `resolveTourCalendlyUrl`; tour FAQ removed; Polignano override kept.
 - **2026-11-16** — PR opened: [#27](https://github.com/bbtgnn/spaghettiabc-website/pull/27) (`5b5ab73` + docs note `4689b16`).
 - **2026-11-16** — Chiara approved **split** into stacked PRs: `#23` on `feat/site-globals-faq` → `main`, then `#22` on `feat/calendly-global-fallback` (base `feat/site-globals-faq`). Combined PR #27 closed in favor of the stack. Backup: `refs/backup/pre-split-combined` → `7cf0cbc`.
+- **2026-11-16** — Stack open: [#28](https://github.com/bbtgnn/spaghettiabc-website/pull/28) (#23 FAQ) then [#29](https://github.com/bbtgnn/spaghettiabc-website/pull/29) (#22 Calendly) ([Split PR](c2e3408e-7b94-4b63-8fdd-d182b6cb20c5)).
 
 ## Grilled decisions (2026-11-16)
 
