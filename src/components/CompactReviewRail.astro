@@ -13,7 +13,6 @@ interface Review {
 		width?: number;
 		height?: number;
 	} | null;
-	review_url?: string | null;
 }
 
 interface Props {
@@ -29,8 +28,9 @@ const {
 	googleReviewCount = 0,
 	googleProfileUrl = null,
 } = Astro.props;
+
 const starSlots = [1, 2, 3, 4, 5] as const;
-const hasScore = googleScore > 0 || Boolean(googleProfileUrl);
+const hasScore = googleScore > 0 || googleReviewCount > 0 || Boolean(googleProfileUrl);
 const show = hasScore || reviews.length > 0;
 ---
 
@@ -41,27 +41,15 @@ const show = hasScore || reviews.length > 0;
 				{hasScore && (
 					<aside class="review-rail__score">
 						{googleScore > 0 && (
-							<p class="review-rail__score-value">{googleScore.toFixed(1)}</p>
-						)}
-						{googleScore > 0 && (
-							<div
-								class="star-row review-rail__score-stars"
+							<p
+								class="review-rail__score-value"
 								aria-label={`Valutazione media: ${googleScore.toFixed(1)} su 5`}
 							>
-								{starSlots.map((n) => (
-									<Star
-										class={`star-row__icon${n <= Math.round(googleScore) ? " is-filled" : ""}`}
-										size={12}
-										stroke-width={1.5}
-										aria-hidden="true"
-									/>
-								))}
-							</div>
+								{googleScore.toFixed(1)}
+							</p>
 						)}
 						{googleReviewCount > 0 && (
-							<p class="mono review-rail__score-count">
-								{googleReviewCount} recensioni su Google
-							</p>
+							<p class="review-rail__score-count">{googleReviewCount} reviews</p>
 						)}
 						{googleProfileUrl && (
 							<a
@@ -84,17 +72,9 @@ const show = hasScore || reviews.length > 0;
 					>
 						{reviews.map((item) => {
 							const rating = Math.min(5, Math.max(0, Number(item.rating) || 5));
-							const CardTag = item.review_url ? "a" : "div";
-							const cardProps = item.review_url
-								? {
-										href: item.review_url,
-										target: "_blank",
-										rel: "noopener noreferrer",
-									}
-								: {};
 							return (
 								<div class="review-rail__item" role="listitem">
-									<CardTag class="review-rail__card" {...cardProps}>
+									<div class="review-rail__card">
 										<div
 											class="star-row review-rail__card-stars"
 											aria-label={`Valutazione: ${rating} su 5`}
@@ -119,7 +99,7 @@ const show = hasScore || reviews.length > 0;
 											)}
 											<span class="review-rail__name">{item.author}</span>
 										</div>
-									</CardTag>
+									</div>
 								</div>
 							);
 						})}

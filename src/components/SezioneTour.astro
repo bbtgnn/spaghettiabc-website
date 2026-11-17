@@ -8,9 +8,6 @@ interface TourEntry {
 	data: {
 		title: string;
 		excerpt?: string | null;
-		destination?: string | null;
-		duration?: string | null;
-		price?: string | null;
 		featured_image?: {
 			id: string;
 			src?: string;
@@ -32,7 +29,6 @@ interface Review {
 		width?: number;
 		height?: number;
 	} | null;
-	review_url?: string | null;
 }
 
 interface Props {
@@ -110,9 +106,6 @@ const railTours = tours.slice(2);
 								href={`/tours/${tour.id}`}
 								title={tour.data.title}
 								excerpt={tour.data.excerpt}
-								destination={tour.data.destination}
-								duration={tour.data.duration}
-								price={tour.data.price}
 								image={tour.data.featured_image}
 								index={index}
 							/>

@@ -1,13 +1,11 @@
 ---
+import ChevronRight from "@lucide/astro/icons/chevron-right";
 import { Image } from "emdash/ui";
 
 interface Props {
 	href: string;
 	title: string;
 	excerpt?: string | null;
-	destination?: string | null;
-	duration?: string | null;
-	price?: string | null;
 	image?: {
 		id: string;
 		src?: string;
@@ -24,15 +22,10 @@ const {
 	href,
 	title,
 	excerpt,
-	destination,
-	duration,
-	price,
 	image,
 	compact = false,
 	index = 0,
 } = Astro.props;
-
-const meta = [destination, duration].filter(Boolean).join(" · ");
 ---
 
 <article class:list={["tour-card", compact && "tour-card--compact"]}>
@@ -45,6 +38,17 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 						loading={index < 2 ? "eager" : "lazy"}
 						priority={index < 2}
 					/>
+					{!compact && (
+						<span class="btn btn-primary btn--arrow tour-card__cta">
+							<span class="btn__label">Scopri</span>
+							<ChevronRight
+								class="btn__icon"
+								size={16}
+								stroke-width={1.75}
+								aria-hidden="true"
+							/>
+						</span>
+					)}
 				</div>
 			)
 		}
@@ -55,12 +59,6 @@ const meta = [destination, duration].filter(Boolean).join(" · ");
 					<p class="type-body tour-card__excerpt">{excerpt}</p>
 				)
 			}
-			{!compact && (price || meta) && (
-				<div class="tour-card__footer">
-					{price && <p class="mono tour-card__price">{price}</p>}
-					{meta && <p class="label tour-card__meta">{meta}</p>}
-				</div>
-			)}
 		</div>
 	</a>
 </article>
