@@ -33,6 +33,18 @@ On 2026-11-10 Chiara confirmed via grilling:
 
 On 2026-11-11 Chiara chose **Calendly embed directly in `.scheda-tour__info`** (sticky info column). Sheet vs `?prenota=inline` compare is **superseded**; query switch removed. Empty `calendly_url` still means no prenotazione UI.
 
+## Decision update (2026-11-16) — global fallback (#22)
+
+Grill session 2026-11-16 (Chiara): Q1–Q11 accepted as recommended. Issue: [#22](https://github.com/bbtgnn/spaghettiabc-website/issues/22). Depends on `site_globals` from [#23](https://github.com/bbtgnn/spaghettiabc-website/issues/23).
+
+1. **Effective URL** — Tour `calendly_url` if non-empty after trim; else `site_globals` / `site` `calendly_url`; else no embed / «Prenotazione non disponibile».
+2. **No per-tour opt-out** in #22 — with a global URL set, an empty Tour field means Prenotazione is on (inherits). Disabling booking on one Tour while global exists is out of scope until a real case appears.
+3. **Field** — same slug `calendly_url` on `site_globals`; admin label «URL Calendly predefinito».
+4. **Visual edit** on Scheda Tour always targets the Tour field (override). Global default is edited only in Impostazioni sito.
+5. **Resolution** via a small shared helper; missing `site` entry → treat global as empty (fail soft).
+6. **Seed** — tailored-tour URL on `site`; Polignano keeps override; other Tours leave `calendly_url` empty.
+7. **#15 point 3 superseded** for empty Tour URL: empty no longer means “no Prenotazione” when a global fallback is set.
+
 ## Decision update (2026-11-16) — progressive enhancement (#24)
 
 On 2026-11-16 Chiara accepted the grill for [bbtgnn/spaghettiabc-website#24](https://github.com/bbtgnn/spaghettiabc-website/issues/24) (Calendly embed: dedicated module + progressive enhancement):
