@@ -742,7 +742,8 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	overflow: hidden;
 }
 
-@media (min-width: 768px) {
+/* Two-up earlier than default tablet */
+@media (min-width: 560px) {
 	.tour-highlight {
 		--tour-highlight-h: 25rem;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
