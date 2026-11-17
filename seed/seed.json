@@ -16,7 +16,14 @@
 			"label": "Tours",
 			"labelSingular": "Tour",
 			"urlPattern": "/tours/{slug}",
-			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"scheduling",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -92,7 +99,20 @@
 					"label": "Content",
 					"type": "portableText",
 					"searchable": true
-				},
+				}
+			]
+		},
+		{
+			"slug": "site_globals",
+			"label": "Impostazioni sito",
+			"labelSingular": "Impostazioni sito",
+			"routable": false,
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview"
+			],
+			"fields": [
 				{
 					"slug": "faq",
 					"label": "FAQ",
@@ -121,7 +141,12 @@
 			"label": "Homepage",
 			"labelSingular": "Homepage",
 			"routable": false,
-			"supports": ["drafts", "revisions", "preview", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"seo"
+			],
 			"titleField": "hero_title",
 			"fields": [
 				{
@@ -363,7 +388,13 @@
 			"label": "Libro",
 			"labelSingular": "Libro",
 			"routable": false,
-			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -401,7 +432,13 @@
 			"label": "Formazione",
 			"labelSingular": "Formazione",
 			"routable": false,
-			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
 			"titleField": "title",
 			"fields": [
 				{
@@ -440,7 +477,14 @@
 			"label": "Posts",
 			"labelSingular": "Post",
 			"urlPattern": "/posts/{slug}",
-			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"scheduling",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -472,7 +516,13 @@
 			"label": "Pages",
 			"labelSingular": "Page",
 			"urlPattern": "/{slug}",
-			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"search",
+				"seo"
+			],
 			"fields": [
 				{
 					"slug": "title",
@@ -496,7 +546,9 @@
 			"label": "Categories",
 			"labelSingular": "Category",
 			"hierarchical": true,
-			"collections": ["posts"],
+			"collections": [
+				"posts"
+			],
 			"terms": [
 				{
 					"slug": "general",
@@ -513,7 +565,9 @@
 			"label": "Tags",
 			"labelSingular": "Tag",
 			"hierarchical": false,
-			"collections": ["posts"],
+			"collections": [
+				"posts"
+			],
 			"terms": [
 				{
 					"slug": "starter",
@@ -660,24 +714,6 @@
 							],
 							"_key": "pol-c8"
 						}
-					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
 					]
 				}
 			},
@@ -694,7 +730,6 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Bari_-_Lungomare_Araldo_di_Crollalanza.jpg",
@@ -716,24 +751,7 @@
 							"_key": "ba-c0"
 						}
 					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
-					]
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
 				}
 			},
 			{
@@ -749,7 +767,6 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1634561527613-172d7489214b?w=1600&h=1067&fit=crop",
@@ -771,24 +788,7 @@
 							"_key": "os-c0"
 						}
 					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
-					]
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
 				}
 			},
 			{
@@ -804,7 +804,6 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Puglia_Altamura1_tango7174.jpg",
@@ -826,24 +825,7 @@
 							"_key": "al-c0"
 						}
 					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
-					]
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
 				}
 			},
 			{
@@ -859,7 +841,6 @@
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1682347641333-b9080bfe7af3?w=1600&h=1067&fit=crop",
@@ -881,24 +862,7 @@
 							"_key": "mo-c0"
 						}
 					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
-					]
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
 				}
 			},
 			{
@@ -914,7 +878,6 @@
 					"language": "Italiano / Inglese",
 					"included": "Menù degustazione + bevande",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1672636401322-b909b15b7c57?w=1600&h=1067&fit=crop",
@@ -936,24 +899,7 @@
 							"_key": "nd-c0"
 						}
 					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
-					]
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
 				}
 			},
 			{
@@ -969,7 +915,6 @@
 					"language": "Italiano / Inglese",
 					"included": "Attività sensoriale + degustazioni",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1600&h=1067&fit=crop",
@@ -991,24 +936,7 @@
 							"_key": "mi-c0"
 						}
 					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
-					]
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
 				}
 			},
 			{
@@ -1024,7 +952,6 @@
 					"language": "Italiano / Inglese",
 					"included": "Percorso e degustazioni personalizzati",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
@@ -1046,24 +973,7 @@
 							"_key": "cu-c0"
 						}
 					],
-					"faq": [
-						{
-							"question": "Cosa succede in caso di pioggia?",
-							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
-						},
-						{
-							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
-							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
-						},
-						{
-							"question": "Come funziona il pagamento?",
-							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
-						},
-						{
-							"question": "Qual è la politica di cancellazione?",
-							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
-						}
-					]
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
 				}
 			}
 		],
@@ -1410,8 +1320,40 @@
 					]
 				},
 				"taxonomies": {
-					"category": ["general"],
-					"tag": ["starter", "example"]
+					"category": [
+						"general"
+					],
+					"tag": [
+						"starter",
+						"example"
+					]
+				}
+			}
+		],
+		"site_globals": [
+			{
+				"id": "site",
+				"slug": "site",
+				"status": "published",
+				"data": {
+					"faq": [
+						{
+							"question": "Cosa succede in caso di pioggia?",
+							"answer": "I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare."
+						},
+						{
+							"question": "Posso partecipare se ho intolleranze o sono vegetariano?",
+							"answer": "Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari."
+						},
+						{
+							"question": "Come funziona il pagamento?",
+							"answer": "Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti."
+						},
+						{
+							"question": "Qual è la politica di cancellazione?",
+							"answer": "Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour."
+						}
+					]
 				}
 			}
 		]
