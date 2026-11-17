@@ -25,11 +25,11 @@ La pagina dettaglio di un Tour a `/tours/{slug}`: hero a immagine piena, poi cor
 _Avoid_: product page, pagina prodotto, PDP, tour detail (come nome di dominio); Add to cart; Atelier gallery|info (scartato)
 
 **Impostazioni sito**:
-Entry unica di impostazioni globali del sito (FAQ condivisa e simili). Non è una pagina pubblica.
+Entry unica di impostazioni globali del sito (FAQ condivisa, URL Calendly predefinito, e simili). Non è una pagina pubblica.
 _Avoid_: site settings EmDash (titolo/tagline), impostazioni Astro, config
 
 **Prenotazione**:
-Richiesta su Calendly dalla colonna prenotazione della Scheda Tour (campo URL per Tour). Il pagamento resta fuori sito (SumUp), dopo la richiesta.
+Richiesta su Calendly dalla colonna prenotazione della Scheda Tour. L’URL effettivo è l’override del Tour se non vuoto, altrimenti il fallback in Impostazioni sito; entrambi vuoti → niente embed. Il pagamento resta fuori sito (SumUp), dopo la richiesta.
 _Avoid_: acquisto, Add to cart, carrello, checkout, booking (come nome di dominio); sheet prenotazione (scartato)
 
 **Sezione Tour**:

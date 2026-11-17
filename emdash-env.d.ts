@@ -115,6 +115,7 @@ export interface SiteGlobals {
   id: string;
   slug: string | null;
   status: string;
+  calendly_url?: string;
   faq?: { "question": string; "answer": string }[];
   createdAt: Date;
   updatedAt: Date;

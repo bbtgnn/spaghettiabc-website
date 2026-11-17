@@ -114,6 +114,11 @@
 			],
 			"fields": [
 				{
+					"slug": "calendly_url",
+					"label": "URL Calendly predefinito",
+					"type": "url"
+				},
+				{
 					"slug": "faq",
 					"label": "FAQ",
 					"type": "repeater",
@@ -750,8 +755,7 @@
 							],
 							"_key": "ba-c0"
 						}
-					],
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
+					]
 				}
 			},
 			{
@@ -787,8 +791,7 @@
 							],
 							"_key": "os-c0"
 						}
-					],
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
+					]
 				}
 			},
 			{
@@ -824,8 +827,7 @@
 							],
 							"_key": "al-c0"
 						}
-					],
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
+					]
 				}
 			},
 			{
@@ -861,8 +863,7 @@
 							],
 							"_key": "mo-c0"
 						}
-					],
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
+					]
 				}
 			},
 			{
@@ -898,8 +899,7 @@
 							],
 							"_key": "nd-c0"
 						}
-					],
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
+					]
 				}
 			},
 			{
@@ -935,8 +935,7 @@
 							],
 							"_key": "mi-c0"
 						}
-					],
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
+					]
 				}
 			},
 			{
@@ -972,8 +971,7 @@
 							],
 							"_key": "cu-c0"
 						}
-					],
-					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour"
+					]
 				}
 			}
 		],
@@ -1336,6 +1334,7 @@
 				"slug": "site",
 				"status": "published",
 				"data": {
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
 					"faq": [
 						{
 							"question": "Cosa succede in caso di pioggia?",
