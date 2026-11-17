@@ -21,8 +21,6 @@ interface Props {
 	googleScore?: number;
 	googleReviewCount?: number;
 	googleProfileUrl?: string | null;
-	/** No card chrome — sits on the section canvas */
-	flat?: boolean;
 }
 
 const {
@@ -30,7 +28,6 @@ const {
 	googleScore = 0,
 	googleReviewCount = 0,
 	googleProfileUrl = null,
-	flat = false,
 } = Astro.props;
 const starSlots = [1, 2, 3, 4, 5] as const;
 const hasScore = googleScore > 0 || Boolean(googleProfileUrl);
@@ -39,7 +36,7 @@ const show = hasScore || reviews.length > 0;
 
 {
 	show && (
-		<div class:list={["review-rail", flat && "review-rail--flat"]}>
+		<div class="review-rail">
 			<div class="review-rail__row">
 				{hasScore && (
 					<aside class="review-rail__score">
@@ -97,13 +94,7 @@ const show = hasScore || reviews.length > 0;
 								: {};
 							return (
 								<div class="review-rail__item" role="listitem">
-									<CardTag
-										class:list={[
-											"review-rail__card",
-											flat && "review-rail__card--flat",
-										]}
-										{...cardProps}
-									>
+									<CardTag class="review-rail__card" {...cardProps}>
 										<div
 											class="star-row review-rail__card-stars"
 											aria-label={`Valutazione: ${rating} su 5`}

@@ -63,8 +63,7 @@ const {
 	edit,
 } = Astro.props;
 
-const primary = tours[0];
-const secondary = tours[1];
+const highlightTours = tours.slice(0, 2);
 const railTours = tours.slice(2);
 ---
 
@@ -104,32 +103,20 @@ const railTours = tours.slice(2);
 			</p>
 		) : (
 			<>
-				{primary && (
+				{highlightTours.length > 0 && (
 					<div class="tour-highlight" data-reveal>
-						<TourLargeCard
-							href={`/tours/${primary.id}`}
-							title={primary.data.title}
-							excerpt={primary.data.excerpt}
-							destination={primary.data.destination}
-							duration={primary.data.duration}
-							price={primary.data.price}
-							image={primary.data.featured_image}
-							layout="row"
-							index={0}
-						/>
-						{secondary && (
+						{highlightTours.map((tour, index) => (
 							<TourLargeCard
-								href={`/tours/${secondary.id}`}
-								title={secondary.data.title}
-								excerpt={secondary.data.excerpt}
-								destination={secondary.data.destination}
-								duration={secondary.data.duration}
-								price={secondary.data.price}
-								image={secondary.data.featured_image}
-								layout="stack"
-								index={1}
+								href={`/tours/${tour.id}`}
+								title={tour.data.title}
+								excerpt={tour.data.excerpt}
+								destination={tour.data.destination}
+								duration={tour.data.duration}
+								price={tour.data.price}
+								image={tour.data.featured_image}
+								index={index}
 							/>
-						)}
+						))}
 					</div>
 				)}
 
@@ -146,7 +133,7 @@ const railTours = tours.slice(2);
 										href={`/tours/${tour.id}`}
 										title={tour.data.title}
 										image={tour.data.featured_image}
-										layout="compact"
+										compact
 										index={index}
 									/>
 								</div>
@@ -161,7 +148,6 @@ const railTours = tours.slice(2);
 						googleScore={googleScore}
 						googleReviewCount={googleReviewCount}
 						googleProfileUrl={googleProfileUrl}
-						flat
 					/>
 				</div>
 			</>

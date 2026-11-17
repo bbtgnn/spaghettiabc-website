@@ -15,8 +15,8 @@ interface Props {
 		width?: number;
 		height?: number;
 	} | null;
-	/** Visual treatment for Sezione Tour highlight / compact rail */
-	layout?: "stack" | "row" | "compact";
+	/** Compact thumb + title for the secondary rail */
+	compact?: boolean;
 	index?: number;
 }
 
@@ -28,15 +28,14 @@ const {
 	duration,
 	price,
 	image,
-	layout = "stack",
+	compact = false,
 	index = 0,
 } = Astro.props;
 
 const meta = [destination, duration].filter(Boolean).join(" · ");
-const isCompact = layout === "compact";
 ---
 
-<article class:list={["tour-card", `tour-card--${layout}`]}>
+<article class:list={["tour-card", compact && "tour-card--compact"]}>
 	<a class="tour-card__link" href={href}>
 		{
 			image && (
@@ -52,11 +51,11 @@ const isCompact = layout === "compact";
 		<div class="tour-card__body">
 			<h3 class="type-h3 tour-card__title">{title}</h3>
 			{
-				!isCompact && excerpt && (
+				!compact && excerpt && (
 					<p class="type-body tour-card__excerpt">{excerpt}</p>
 				)
 			}
-			{!isCompact && (price || meta) && (
+			{!compact && (price || meta) && (
 				<div class="tour-card__footer">
 					{price && <p class="mono tour-card__price">{price}</p>}
 					{meta && <p class="label tour-card__meta">{meta}</p>}

@@ -16,7 +16,7 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 - [Color palette preview](./decisions/color-palette-preview.md) — DEV global primary + ink (cool/warm); pomodoro default; Pascali `#0A6DE4` ([#12](https://github.com/bbtgnn/spaghettiabc-website/issues/12), revised 2026-11-13)
 - [Scheda Tour Calendly / Prenotazione](./decisions/scheda-tour-calendly-prenotazione.md) — embed in info column (#15); PE module + SSR iframe (#24); global fallback on `site_globals` (#22) (2026-11-10 / 2026-11-11 / 2026-11-16)
 - [Impostazioni sito FAQ](./decisions/site-globals-faq.md) — `site_globals`/`site`: FAQ globale (#23) + Calendly predefinito note (#22) (2026-11-16)
-- [Sezione Tour layout](./decisions/sezione-tour-dev-playground.md) — `#14`: Variante D shipped on homepage; DEV playground removed (2026-11-13)
+- [Sezione Tour layout](./decisions/sezione-tour-layout.md) — `#14`: equal stacked highlight pair + compact rail + review strip (2026-11-13 / 2026-11-17)
 
 ## Operations
 
