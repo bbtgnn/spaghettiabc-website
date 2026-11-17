@@ -3,6 +3,7 @@
 ## Sources
 
 - Issue: [bbtgnn/spaghettiabc-website#15](https://github.com/bbtgnn/spaghettiabc-website/issues/15)
+- Follow-up: [bbtgnn/spaghettiabc-website#24](https://github.com/bbtgnn/spaghettiabc-website/issues/24) — dedicated module + progressive enhancement (2026-11-16)
 - Grill session 2026-11-10 (Chiara): Q1–Q15 accepted as recommended
 - Domain: [`GLOSSARY.md`](../../../GLOSSARY.md) — **Prenotazione**, **Scheda Tour** (updated same day)
 - Related schema history: [Homepage + Tours schema](./homepage-tours-schema.md)
@@ -43,3 +44,17 @@ Grill session 2026-11-16 (Chiara): Q1–Q11 accepted as recommended. Issue: [#22
 5. **Resolution** via a small shared helper; missing `site` entry → treat global as empty (fail soft).
 6. **Seed** — tailored-tour URL on `site`; Polignano keeps override; other Tours leave `calendly_url` empty.
 7. **#15 point 3 superseded** for empty Tour URL: empty no longer means “no Prenotazione” when a global fallback is set.
+
+## Decision update (2026-11-16) — progressive enhancement (#24)
+
+On 2026-11-16 Chiara accepted the grill for [bbtgnn/spaghettiabc-website#24](https://github.com/bbtgnn/spaghettiabc-website/issues/24) (Calendly embed: dedicated module + progressive enhancement):
+
+1. **No React/Svelte island** for the embed — keep public Scheda Tour free of framework islands.
+2. Extract client logic to `src/scripts/calendly-embed.ts`.
+3. From `CalendlyEmbed.astro` use a processed Astro script import: `<script>import "../scripts/calendly-embed.ts";</script>` (no `is:inline` on the module).
+4. **Progressive enhancement:** SSR a real `<iframe src={embedUrl}>` usable without JS (~700px fixed height; inner scroll OK).
+5. **With JS:** keep the SSR iframe visible until enhance is ready, then replace with `Calendly.initInlineWidget` plus existing height / phase / animejs behaviour (`resize:false`, phases, spinner rules, live color tokens).
+6. Accept possible **double Calendly load** (SSR iframe, then widget).
+7. Keep `window.__spaghettiBootCalendly` + MutationObserver for `data-palette` / `data-ink` force reboot (DEV).
+8. FAQ accordion script on Scheda Tour: **do not** extract or move in this issue.
+9. **Out of scope:** global fallback URL (#22), seed/CMS field changes, adding Svelte/Preact.
