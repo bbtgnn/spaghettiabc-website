@@ -687,27 +687,43 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 }
 
 .tour-card__media {
+	--tour-card-media-pad: 0.65rem;
+	--tour-card-media-radius: 0.55rem;
 	position: relative;
-	overflow: hidden;
-	background: var(--surface);
+	padding: var(--tour-card-media-pad);
+	background: transparent;
+	min-height: 0;
 }
 
-.tour-card__media img {
-	width: 100%;
+/* Tight clip frame: pad sits outside; scale/cover crop happen inside */
+.tour-card__frame {
+	overflow: hidden;
+	border-radius: var(--tour-card-media-radius);
 	aspect-ratio: 4 / 3;
+	min-height: 0;
+	height: 100%;
+}
+
+.tour-card__media .tour-card__photo {
+	width: 100%;
+	max-width: none;
+	max-height: none;
+	height: 100%;
+	aspect-ratio: auto;
 	object-fit: cover;
+	object-position: center;
 	display: block;
 	transition: transform 1100ms var(--ease-out-expo);
 }
 
-.tour-card__link:hover .tour-card__media img {
+.tour-card__link:hover .tour-card__media .tour-card__photo {
 	transform: scale(1.04);
 }
 
 .tour-card__cta {
 	position: absolute;
-	top: 0.75rem;
-	right: 0.75rem;
+	top: calc(var(--tour-card-media-pad) + 0.5rem);
+	right: calc(var(--tour-card-media-pad) + 0.5rem);
 	z-index: 1;
 	pointer-events: none;
 }
@@ -760,18 +776,20 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	.tour-highlight .tour-card__media {
 		flex: 1 1 auto;
 		min-height: 0;
+		display: flex;
+		flex-direction: column;
 	}
 
-	.tour-highlight .tour-card__media img {
+	.tour-highlight .tour-card__frame {
 		aspect-ratio: auto;
+		flex: 1 1 auto;
+		min-height: 0;
 		width: 100%;
-		height: 100%;
-		object-fit: cover;
 	}
 
 	.tour-highlight .tour-card__body {
 		flex: 0 0 auto;
-		padding: 0.85rem 1rem 1rem;
+		padding: 0.35rem 1rem 1rem;
 		gap: 0.4rem;
 	}
 
@@ -786,22 +804,27 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 }
 
 .tour-card--compact .tour-card__media {
-	flex: 0 0 4.5rem;
-	width: 4.5rem;
-	height: 4.5rem;
-	align-self: stretch;
+	--tour-card-media-pad: 0.45rem;
+	--tour-card-media-radius: 0.45rem;
+	flex: 0 0 4.25rem;
+	width: 4.25rem;
+	height: 4.25rem;
+	align-self: center;
+	display: flex;
+	flex-direction: column;
 }
 
-.tour-card--compact .tour-card__media img {
-	aspect-ratio: 1 / 1;
-	height: 100%;
+.tour-card--compact .tour-card__frame {
+	aspect-ratio: auto;
+	flex: 1 1 auto;
+	min-height: 0;
 	width: 100%;
 }
 
 .tour-card--compact .tour-card__body {
 	justify-content: center;
 	gap: 0;
-	padding: 0.75rem 0.9rem 0.75rem 0.65rem;
+	padding: 0.65rem 0.85rem 0.65rem 0.35rem;
 }
 
 .tour-card--compact .tour-card__title {
@@ -815,9 +838,9 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 
 @media (min-width: 768px) {
 	.tour-card--compact .tour-card__media {
-		flex-basis: 5rem;
-		width: 5rem;
-		height: 5rem;
+		flex-basis: 4.65rem;
+		width: 4.65rem;
+		height: 4.65rem;
 	}
 
 	.tour-card--compact .tour-card__title {
@@ -837,10 +860,11 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	--tour-rail-item: min(78%, 15.5rem);
 	--tour-rail-fade: 1.25rem;
 	margin-top: 1.5rem;
-	/* Stay inside `.shell` content width — no gutter bleed like the legacy rail */
-	margin-inline: 0;
-	max-width: 100%;
+	/* Pull fade outside the content box so cards stay flush with highlight */
+	margin-inline: calc(var(--tour-rail-fade) * -1);
+	max-width: none;
 	min-width: 0;
+	width: auto;
 }
 
 .tour-rail__track {
@@ -860,18 +884,19 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 }
 
 .tour-rail--compact .tour-rail__track {
-	/* Flush with highlight cards / shell content — fade only, no extra inset */
-	scroll-padding-inline: 0;
-	padding-inline: 0;
+	scroll-padding-inline: var(--tour-rail-fade);
+	padding-inline: var(--tour-rail-fade);
 	mask-image: linear-gradient(
 		to right,
-		#000 0,
+		transparent,
+		#000 var(--tour-rail-fade),
 		#000 calc(100% - var(--tour-rail-fade)),
 		transparent
 	);
 	-webkit-mask-image: linear-gradient(
 		to right,
-		#000 0,
+		transparent,
+		#000 var(--tour-rail-fade),
 		#000 calc(100% - var(--tour-rail-fade)),
 		transparent
 	);
@@ -982,17 +1007,22 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	overflow-y: hidden;
 	overscroll-behavior-x: contain;
 	scroll-snap-type: x mandatory;
+	scroll-padding-inline: var(--review-rail-fade);
+	padding-inline: var(--review-rail-fade);
+	margin-inline: calc(var(--review-rail-fade) * -1);
 	-webkit-overflow-scrolling: touch;
 	scrollbar-width: none;
 	mask-image: linear-gradient(
 		to right,
-		#000 0,
+		transparent,
+		#000 var(--review-rail-fade),
 		#000 calc(100% - var(--review-rail-fade)),
 		transparent
 	);
 	-webkit-mask-image: linear-gradient(
 		to right,
-		#000 0,
+		transparent,
+		#000 var(--review-rail-fade),
 		#000 calc(100% - var(--review-rail-fade)),
 		transparent
 	);

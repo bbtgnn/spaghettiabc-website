@@ -15,6 +15,6 @@ Production homepage Sezione Tour (DEV `/_dev` playground removed 2026-11-13):
 - Compact review strip with Punteggio Google + edge fade masks
 - Components: `SezioneTour.astro`, `TourLargeCard.astro`, `CompactReviewRail.astro`; styles in `theme.css`
 
-Recensioni Google in this strip are a homepage UI surface; domain ownership of Recensione Google / Punteggio Google stays with **Sezione Dicono di me**.
+Punteggio + Recensioni Google render in this strip (2026-11-18); CMS fields stay on `homepage`. **Sezione Dicono di me** keeps logos only.
 
 Data = live homepage `featured_tours` + Google fields; no CMS “primo piano” field. Catalogo Tour redesign stays out of scope for #14.

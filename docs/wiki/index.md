@@ -6,7 +6,7 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 
 - [Libro CMS model](./decisions/libro-cms-model.md) — collection `book`, Sezione Libro duplicata in homepage, URL `/puglia-the-book` (2026-10-23)
 - [Formazione CMS model](./decisions/formazione-cms-model.md) — collection `training`, Sezione Formazione duplicata, URL `/training` (2026-10-23)
-- [Sezione Dicono di me](./decisions/dicono-di-me-section.md) — homepage-only logos + Punteggio/Recensioni Google; Collaborazioni landing removed (2026-11-06)
+- [Sezione Dicono di me](./decisions/dicono-di-me-section.md) — homepage logos; Google proof UI moved to Sezione Tour (2026-11-06 / 2026-11-18)
 - [Collaborazioni CMS model](./decisions/collaborazioni-cms-model.md) — **superseded 2026-11-06** by Dicono di me; historical landing `collaborations` / `/collaborazioni` (2026-10-23 / 2026-11-05)
 - [Homepage hero + Recensioni Google](./decisions/homepage-hero-google-reviews.md) — hero copy + `seed/media/homepage-hero.jpg`; `google_reviews` on homepage; Testimonianza removed (2026-11-05); logos moved 2026-11-06
 - [Newsletter homepage section](./decisions/newsletter-homepage-section.md) — UI-only iscrizione in home, no collection/provider (2026-10-23)
