@@ -15,6 +15,8 @@ interface Props {
 	} | null;
 	/** Compact thumb + title for the secondary rail */
 	compact?: boolean;
+	/** Scopri CTA on the media (homepage highlight). Off on Catalogo Tour. */
+	showCta?: boolean;
 	index?: number;
 }
 
@@ -24,6 +26,7 @@ const {
 	excerpt,
 	image,
 	compact = false,
+	showCta = true,
 	index = 0,
 } = Astro.props;
 ---
@@ -43,7 +46,7 @@ const {
 							class="tour-card__photo"
 						/>
 					</div>
-					{!compact && (
+					{!compact && showCta && (
 						<span class="btn btn-primary btn--arrow tour-card__cta">
 							<span class="btn__label">Scopri</span>
 							<ChevronRight

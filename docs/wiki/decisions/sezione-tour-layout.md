@@ -17,4 +17,8 @@ Production homepage Sezione Tour (DEV `/_dev` playground removed 2026-11-13):
 
 Punteggio + Recensioni Google render in this strip (2026-11-18); CMS fields stay on `homepage`. **Sezione Dicono di me** keeps logos only.
 
-Data = live homepage `featured_tours` + Google fields; no CMS “primo piano” field. Catalogo Tour redesign stays out of scope for #14.
+Data = live homepage `featured_tours` + Google fields; no CMS “primo piano” field.
+
+## Catalogo Tour (2026-11-18)
+
+`/tours` reuses `TourLargeCard` for the highlight pair (first two in `featured_tours` order) and for the remaining tours in `.tour-grid`.
