@@ -683,7 +683,7 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	text-decoration: none;
 	color: inherit;
 	background: color-mix(in oklab, var(--canvas) 40%, white);
-	border: 1px solid var(--line);
+	border: 1px solid transparent;
 	border-radius: 0.75rem;
 	overflow: hidden;
 	transition: border-color 280ms ease;
