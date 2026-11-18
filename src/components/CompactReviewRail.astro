@@ -1,0 +1,111 @@
+---
+import { Image } from "emdash/ui";
+import Star from "@lucide/astro/icons/star";
+
+interface Review {
+	author: string;
+	quote: string;
+	rating?: number | null;
+	avatar?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+	} | null;
+}
+
+interface Props {
+	reviews: Review[];
+	googleScore?: number;
+	googleReviewCount?: number;
+	googleProfileUrl?: string | null;
+}
+
+const {
+	reviews,
+	googleScore = 0,
+	googleReviewCount = 0,
+	googleProfileUrl = null,
+} = Astro.props;
+
+const starSlots = [1, 2, 3, 4, 5] as const;
+const hasScore = googleScore > 0 || googleReviewCount > 0 || Boolean(googleProfileUrl);
+const show = hasScore || reviews.length > 0;
+---
+
+{
+	show && (
+		<div class="review-rail">
+			<div class="review-rail__row">
+				{hasScore && (
+					<aside class="review-rail__score">
+						{googleScore > 0 && (
+							<p
+								class="review-rail__score-value"
+								aria-label={`Valutazione media: ${googleScore.toFixed(1)} su 5`}
+							>
+								{googleScore.toFixed(1)}
+							</p>
+						)}
+						{googleReviewCount > 0 && (
+							<p class="review-rail__score-count">{googleReviewCount} reviews</p>
+						)}
+						{googleProfileUrl && (
+							<a
+								class="review-rail__score-link"
+								href={googleProfileUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								Vedi su Google
+							</a>
+						)}
+					</aside>
+				)}
+
+				{reviews.length > 0 && (
+					<div
+						class="review-rail__track"
+						role="list"
+						aria-label="Recensioni Google"
+					>
+						{reviews.map((item) => {
+							const rating = Math.min(5, Math.max(0, Number(item.rating) || 5));
+							return (
+								<div class="review-rail__item" role="listitem">
+									<div class="review-rail__card">
+										<div
+											class="star-row review-rail__card-stars"
+											aria-label={`Valutazione: ${rating} su 5`}
+										>
+											{starSlots.map((n) => (
+												<Star
+													class={`star-row__icon${n <= rating ? " is-filled" : ""}`}
+													size={12}
+													stroke-width={1.5}
+													aria-hidden="true"
+												/>
+											))}
+										</div>
+										<blockquote class="review-rail__quote">
+											<p>{item.quote}</p>
+										</blockquote>
+										<div class="review-rail__author">
+											{item.avatar && (
+												<span class="review-rail__avatar">
+													<Image image={item.avatar} />
+												</span>
+											)}
+											<span class="review-rail__name">{item.author}</span>
+										</div>
+									</div>
+								</div>
+							);
+						})}
+					</div>
+				)}
+			</div>
+		</div>
+	)
+}

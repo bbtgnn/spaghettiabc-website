@@ -23,3 +23,7 @@
 - Live Google Business / Places API
 - Dedicated Collaborazioni (or Credibilità) landing
 - Migrating old gallery/progetti media into a new home
+
+## UI update (2026-11-18)
+
+Homepage **Dicono di me** keeps title/subtitle + logo strip only. Punteggio + Recensioni Google render in **Sezione Tour** (same `homepage` CMS fields). The old `.dicono-proof` block was removed.

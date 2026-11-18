@@ -45,7 +45,7 @@ Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non le
 _Avoid_: pagina formazione, catalogo corsi, reference alla Formazione
 
 **Sezione Dicono di me**:
-Blocco della homepage (titolo, sottotitolo, Loghi partner, Punteggio Google, Recensioni Google) che mostra prove sociali intorno a Flavia. Nessuna landing dedicata né CTA verso una pagina Collaborazioni.
+Blocco della homepage (titolo, sottotitolo, Loghi partner) che mostra collaborazioni intorno a Flavia. Nessuna landing dedicata né CTA verso una pagina Collaborazioni. Punteggio/Recensioni Google vivono nella Sezione Tour (stessi campi CMS sulla homepage).
 _Avoid_: Sezione Collaborazioni; Credibilità; Fiducia; trust section; testimonianze; Collaborazioni (come pagina/collection)
 
 **Logo partner**:
@@ -53,11 +53,11 @@ Marchio di un’azienda o organizzazione con cui Flavia ha collaborato, mostrato
 _Avoid_: sponsor, cliente (salvo copy)
 
 **Punteggio Google**:
-Valutazione aggregata del profilo Google di Flavia (voto, numero di recensioni, link al profilo), mostrata a sinistra dell’elenco Recensioni Google nella Sezione Dicono di me.
+Valutazione aggregata del profilo Google di Flavia (voto, numero di recensioni, link al profilo), mostrata nella Sezione Tour accanto allo strip Recensioni Google. Campi CMS restano sulla homepage.
 _Avoid_: rating globale, score widget
 
 **Recensione Google**:
-Citazione curata nello stile di una recensione Google (stelle, testo, autore, foto profilo, link alla recensione originale) gestita nel CMS sulla homepage; seed demo finché non arrivano le recensioni reali. Non è un’integrazione live con Google.
+Citazione curata nello stile di una recensione Google (stelle, testo, autore, foto profilo) gestita nel CMS sulla homepage e mostrata nello strip della Sezione Tour; seed demo finché non arrivano le recensioni reali. Non è un’integrazione live con Google.
 _Avoid_: Testimonianza, testimonial, review widget Google
 
 **Newsletter**:

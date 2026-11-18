@@ -1,0 +1,149 @@
+---
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import CompactReviewRail from "./CompactReviewRail.astro";
+import TourLargeCard from "./TourLargeCard.astro";
+
+interface TourEntry {
+	id: string;
+	data: {
+		title: string;
+		excerpt?: string | null;
+		featured_image?: {
+			id: string;
+			src?: string;
+			alt?: string;
+			width?: number;
+			height?: number;
+		} | null;
+	};
+}
+
+interface Review {
+	author: string;
+	quote: string;
+	rating?: number | null;
+	avatar?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+	} | null;
+}
+
+interface Props {
+	title?: string | null;
+	subtitle?: string | null;
+	ctaLabel?: string | null;
+	tours: TourEntry[];
+	reviews?: Review[];
+	googleScore?: number;
+	googleReviewCount?: number;
+	googleProfileUrl?: string | null;
+	edit?: {
+		tour_title?: Record<string, unknown>;
+		tour_subtitle?: Record<string, unknown>;
+		tour_cta_label?: Record<string, unknown>;
+	};
+}
+
+const {
+	title,
+	subtitle,
+	ctaLabel,
+	tours,
+	reviews = [],
+	googleScore = 0,
+	googleReviewCount = 0,
+	googleProfileUrl = null,
+	edit,
+} = Astro.props;
+
+const highlightTours = tours.slice(0, 2);
+const railTours = tours.slice(2);
+---
+
+<section class="shell section sezione-tour">
+	<div class="rule" data-reveal="line" />
+	<div class="sezione-tour__intro" data-reveal>
+		<div class="sezione-tour__copy">
+			{
+				title && (
+					<h2 class="type-h2" {...edit?.tour_title}>
+						{title}
+					</h2>
+				)
+			}
+			{
+				subtitle && (
+					<p class="type-lead sezione-tour__lede" {...edit?.tour_subtitle}>
+						{subtitle}
+					</p>
+				)
+			}
+		</div>
+		{
+			ctaLabel && (
+				<a class="btn btn-outline btn--arrow" href="/tours" {...edit?.tour_cta_label}>
+					<span class="btn__label">Tutti i tour</span>
+					<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+				</a>
+			)
+		}
+	</div>
+
+	{
+		tours.length === 0 ? (
+			<p class="type-body" data-reveal>
+				Nessun tour in evidenza.
+			</p>
+		) : (
+			<>
+				{highlightTours.length > 0 && (
+					<div class="tour-highlight" data-reveal>
+						{highlightTours.map((tour, index) => (
+							<TourLargeCard
+								href={`/tours/${tour.id}`}
+								title={tour.data.title}
+								excerpt={tour.data.excerpt}
+								image={tour.data.featured_image}
+								index={index}
+							/>
+						))}
+					</div>
+				)}
+
+				{railTours.length > 0 && (
+					<div class="tour-rail tour-rail--compact" data-reveal>
+						<div
+							class="tour-rail__track"
+							role="list"
+							aria-label="Altri tour in evidenza"
+						>
+							{railTours.map((tour, index) => (
+								<div role="listitem">
+									<TourLargeCard
+										href={`/tours/${tour.id}`}
+										title={tour.data.title}
+										image={tour.data.featured_image}
+										compact
+										index={index}
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
+				<div data-reveal>
+					<CompactReviewRail
+						reviews={reviews}
+						googleScore={googleScore}
+						googleReviewCount={googleReviewCount}
+						googleProfileUrl={googleProfileUrl}
+					/>
+				</div>
+			</>
+		)
+	}
+</section>

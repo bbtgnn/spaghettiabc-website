@@ -1,0 +1,72 @@
+---
+import ChevronRight from "@lucide/astro/icons/chevron-right";
+import { Image } from "emdash/ui";
+
+interface Props {
+	href: string;
+	title: string;
+	excerpt?: string | null;
+	image?: {
+		id: string;
+		src?: string;
+		alt?: string;
+		width?: number;
+		height?: number;
+	} | null;
+	/** Compact thumb + title for the secondary rail */
+	compact?: boolean;
+	/** Scopri CTA on the media (homepage highlight). Off on Catalogo Tour. */
+	showCta?: boolean;
+	index?: number;
+}
+
+const {
+	href,
+	title,
+	excerpt,
+	image,
+	compact = false,
+	showCta = true,
+	index = 0,
+} = Astro.props;
+---
+
+<article class:list={["tour-card", compact && "tour-card--compact"]}>
+	<a class="tour-card__link" href={href}>
+		{
+			image && (
+				<div class="tour-card__media">
+					<div class="tour-card__frame">
+						<Image
+							image={image}
+							width={compact ? 160 : 1200}
+							height={compact ? 160 : 900}
+							loading={index < 2 ? "eager" : "lazy"}
+							priority={index < 2}
+							class="tour-card__photo"
+						/>
+					</div>
+					{!compact && showCta && (
+						<span class="btn btn-primary btn--arrow tour-card__cta">
+							<span class="btn__label">Scopri</span>
+							<ChevronRight
+								class="btn__icon"
+								size={16}
+								stroke-width={1.75}
+								aria-hidden="true"
+							/>
+						</span>
+					)}
+				</div>
+			)
+		}
+		<div class="tour-card__body">
+			<h3 class="type-h3 tour-card__title">{title}</h3>
+			{
+				!compact && excerpt && (
+					<p class="type-body tour-card__excerpt">{excerpt}</p>
+				)
+			}
+		</div>
+	</a>
+</article>
