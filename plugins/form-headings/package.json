@@ -8,7 +8,7 @@
     "./admin": "./src/admin.tsx"
   },
   "peerDependencies": {
-    "emdash": "^1.3.0",
+    "emdash": "^1.6.0",
     "react": "^19.0.0"
   }
 }
