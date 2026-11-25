@@ -2,10 +2,12 @@ node_modules
 dist
 .astro
 .emdash/
+.wrangler/
 uploads
 data.db
 data.db-*
 tmp/
+*.emdash
 
 # Environment
 .env

@@ -3,17 +3,40 @@ This is an EmDash site -- a CMS built on Astro with a full admin UI.
 ## Commands
 
 ```bash
-bun dev              # Start the Astro dev server
-npx emdash types      # Regenerate TypeScript types from a running site
+bun dev                 # Start Astro with local D1 + R2 (via Wrangler)
+npm run deploy          # Build + wrangler deploy to spaghettiabc-staging
+npx emdash types        # Regenerate TypeScript types from a running site
+npm run migrate:status  # Inspect D1 migration target (needs wrangler auth)
 ```
 
-The admin UI is at `http://localhost:4321/_emdash/admin`.
+The admin UI is at `http://localhost:4321/_emdash/admin` (local) or `https://spaghettiabc-staging.<account>.workers.dev/_emdash/admin` (staging).
+
+## Cloudflare staging
+
+Stack: Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`.
+
+**First deploy (once):** `npx wrangler login` → `npm run deploy` (provisions D1/R2) → `npx wrangler secret put EMDASH_ENCRYPTION_KEY` → finish setup yourself at `/_emdash/admin` (first completer is admin) → enable Settings → Backups daily. Then set GitHub Actions secrets/vars for CI.
+
+**CI:** `.github/workflows/deploy.yml` on `main` / `workflow_dispatch`: build → `emdash migrate` → `wrangler deploy` → `migrate --check`. Needs secret `CLOUDFLARE_API_TOKEN` and vars `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `EMDASH_TARGET_FINGERPRINT` (from `emdash migrate --status` after provision).
+
+**Backups:** D1 Time Travel is always on (7d Free / 30d Paid). EmDash JSON under R2 `backups/` is inspection-only (not restorable). R2 media has no Time Travel — use `emdash site export` for occasional full snapshots; offsite R2 sync is optional for production later.
+
+**Pull staging content into local** (target must be an empty content area after local setup):
+
+```bash
+npx emdash login --url https://spaghettiabc-staging.<account>.workers.dev
+npx emdash site export --url https://spaghettiabc-staging.<account>.workers.dev --output staging.emdash
+npx emdash site import staging.emdash --url http://localhost:4321 --analyze
+npx emdash site import staging.emdash --url http://localhost:4321 --plan sha256:<digest> --confirm
+```
 
 ## Key Files
 
 | File                     | Purpose                                                                            |
 | ------------------------ | ---------------------------------------------------------------------------------- |
-| `astro.config.mjs`       | Astro config with `emdash()` integration, database, and storage                    |
+| `astro.config.mjs`       | Astro config with `emdash()` integration, D1 + R2                                  |
+| `wrangler.jsonc`         | Worker name, D1/R2 bindings, cron, Durable Objects                                 |
+| `src/worker.ts`          | Cloudflare Worker entry (fetch + scheduled)                                        |
 | `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                           |
 | `seed/seed.json`         | Schema definition + demo content (collections, fields, taxonomies, menus, widgets) |
 | `emdash-env.d.ts`        | Generated types for collections (auto-regenerated on dev server start)             |
