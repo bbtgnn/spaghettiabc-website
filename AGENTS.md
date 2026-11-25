@@ -11,25 +11,11 @@ npm run migrate:status  # Inspect D1 migration target (needs wrangler auth)
 
 The admin UI is at `http://localhost:4321/_emdash/admin` (local) or `https://spaghettiabc-staging.<account>.workers.dev/_emdash/admin` (staging).
 
-## Cloudflare staging
+## Cloudflare staging / repo deploy
 
-Stack: Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`.
+Stack: Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`, CI: `.github/workflows/deploy.yml`.
 
-**First deploy (once):** `npx wrangler login` → `npm run deploy` (provisions D1/R2) → `npx wrangler secret put EMDASH_ENCRYPTION_KEY` → finish setup yourself at `/_emdash/admin` (first completer is admin) → enable Settings → Backups daily. Then set GitHub Actions secrets/vars for CI.
-
-**CI:** `.github/workflows/deploy.yml` on `main` / `workflow_dispatch`: build → `emdash migrate` → `wrangler deploy` → `migrate --check`. Needs secret `CLOUDFLARE_API_TOKEN` and vars `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `EMDASH_TARGET_FINGERPRINT` (from `emdash migrate --status` after provision).
-
-**Backups:** D1 Time Travel is always on (7d Free / 30d Paid). EmDash JSON under R2 `backups/` is inspection-only (not restorable). R2 media has no Time Travel — use `emdash site export` for occasional full snapshots; offsite R2 sync is optional for production later.
-
-**Pull staging content into local** (target must be an empty content area after local setup):
-
-```bash
-npx emdash login --url https://spaghettiabc-staging.<account>.workers.dev
-npx emdash site export --url https://spaghettiabc-staging.<account>.workers.dev --output staging.emdash
-npx emdash site import staging.emdash --url http://localhost:4321 --analyze
-npx emdash site import staging.emdash --url http://localhost:4321 --plan sha256:<digest> --confirm
-```
-
+**Full guide (new Cloudflare account → first deploy → GitHub Actions):** see [`DEPLOY.md`](DEPLOY.md).
 ## Key Files
 
 | File                     | Purpose                                                                            |
