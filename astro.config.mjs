@@ -2,6 +2,7 @@ import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 import { formHeadingsPlugin } from "@spaghettiabc/form-headings";
+import { layoutConsigliatoPlugin } from "@spaghettiabc/layout-consigliato";
 import { d1, r2 } from "@emdash-cms/cloudflare";
 import emdash from "emdash/astro";
 
@@ -17,7 +18,7 @@ export default defineConfig({
 		emdash({
 			database: d1({ binding: "DB", session: "auto", coalesce: true }),
 			storage: r2({ binding: "MEDIA" }),
-			plugins: [formHeadingsPlugin()],
+			plugins: [formHeadingsPlugin(), layoutConsigliatoPlugin()],
 		}),
 	],
 	devToolbar: { enabled: false },
