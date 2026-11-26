@@ -19,6 +19,7 @@
     "deploy": "astro build && wrangler deploy",
     "typecheck": "astro check",
     "seed": "emdash seed seed/seed.json --on-conflict=update",
+    "wipe:local": "node scripts/wipe-local.mjs",
     "migrate:status": "emdash migrate --status --wrangler-config wrangler.jsonc",
     "migrate": "emdash migrate --wrangler-config wrangler.jsonc",
     "migrate:check": "emdash migrate --check --wrangler-config wrangler.jsonc"

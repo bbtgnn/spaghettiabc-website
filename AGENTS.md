@@ -4,6 +4,8 @@ This is an EmDash site -- a CMS built on Astro with a full admin UI.
 
 ```bash
 bun dev                 # Start Astro with local D1 + R2 (via Wrangler)
+npm run wipe:local      # Wipe local Wrangler D1/R2 (stop `dev` first); next boot re-seeds
+npm run seed            # Upsert seed into ./data.db (does not delete missing taxonomies)
 npm run deploy          # Build + wrangler deploy to spaghettiabc-staging
 npx emdash types        # Regenerate TypeScript types from a running site
 npm run migrate:status  # Inspect D1 migration target (needs wrangler auth)
