@@ -359,15 +359,6 @@
 			],
 			"fields": [
 				{
-					"slug": "edition",
-					"label": "Edizione",
-					"type": "select",
-					"required": true,
-					"validation": {
-						"options": ["international", "special"]
-					}
-				},
-				{
 					"slug": "title",
 					"label": "Title",
 					"type": "string",
@@ -1039,7 +1030,6 @@
 				"slug": "international",
 				"status": "published",
 				"data": {
-					"edition": "international",
 					"title": "Puglia",
 					"subtitle": "International Edition",
 					"excerpt": "A cooking journey through a land and its unique ingredients.",
@@ -1083,7 +1073,6 @@
 				"slug": "special",
 				"status": "published",
 				"data": {
-					"edition": "special",
 					"title": "Puglia",
 					"subtitle": "Edizione speciale",
 					"excerpt": "Storie di ingredienti, cucina e territorio.",

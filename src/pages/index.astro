@@ -25,20 +25,10 @@ const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 );
 
 const featuredTours = home?.references?.featured_tours?.entries ?? [];
-const editionRank = { international: 0, special: 1 } as const;
-const editionLabels = {
-	international: "Edizione Internazionale",
-	special: "Edizione Speciale",
-} as const;
 const books = [...bookEntries].sort((a, b) => {
-	const rankA =
-		editionRank[a.data.edition as keyof typeof editionRank] ??
-		Number.POSITIVE_INFINITY;
-	const rankB =
-		editionRank[b.data.edition as keyof typeof editionRank] ??
-		Number.POSITIVE_INFINITY;
-	if (rankA !== rankB) return rankA - rankB;
-	return (a.data.title ?? "").localeCompare(b.data.title ?? "", "it");
+	const titleCmp = (a.data.title ?? "").localeCompare(b.data.title ?? "", "it");
+	if (titleCmp !== 0) return titleCmp;
+	return (a.data.subtitle ?? "").localeCompare(b.data.subtitle ?? "", "it");
 });
 const partnerLogos = home?.data.partner_logos ?? [];
 const googleReviews = home?.data.google_reviews ?? [];
@@ -140,9 +130,7 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 								aria-label="Edizioni del libro"
 							>
 								{books.map((book) => {
-									const editionKey = book.data.edition as keyof typeof editionLabels;
-									const label =
-										editionLabels[editionKey] ?? book.data.subtitle ?? book.data.title;
+									const label = book.data.subtitle ?? book.data.title;
 									return (
 										<li class="sezione-libro__edition">
 											{book.data.cover && (
