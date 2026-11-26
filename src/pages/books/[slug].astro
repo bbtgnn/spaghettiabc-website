@@ -1,0 +1,282 @@
+---
+/**
+ * Scheda Edizione — cover as the hero object | edition copy, buy CTA, description.
+ * Mobile: cover → copy → description. ≥560: hero | cover | copy |, description below.
+ */
+import {
+	decodeSlug,
+	getEmDashEntry,
+	getSeoMeta,
+	getSiteSettings,
+} from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import ArrowLeft from "@lucide/astro/icons/arrow-left";
+import ArrowUpRight from "@lucide/astro/icons/arrow-up-right";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+
+const slug = decodeSlug(Astro.params.slug);
+
+if (!slug) {
+	return Astro.rewrite("/404");
+}
+
+const { entry: book, cacheHint } = await getEmDashEntry("libri", slug);
+
+if (!book) {
+	return Astro.rewrite("/404");
+}
+
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+/** "Puglia – Edizione internazionale" → work "Puglia", edition "Edizione internazionale". */
+const [work, ...editionParts] = book.data.title.split(" – ");
+const edition = editionParts.join(" – ");
+const buyUrl = book.data.buy_url?.trim();
+const buyLabel = book.data.buy_label?.trim() || "Acquista";
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const path = Astro.url.pathname.replace(/\/$/, "");
+const seo = getSeoMeta(book, {
+	siteTitle,
+	siteUrl: Astro.url.origin,
+	path,
+});
+---
+
+<Base
+	title={seo.title}
+	pageTitle={seo.ogTitle}
+	description={seo.description}
+	canonical={seo.canonical}
+	image={seo.ogImage}
+	content={{ collection: "libri", id: book.data.id, slug: book.id }}
+>
+	<article class="shell scheda-edizione">
+		<header class="scheda-edizione__hero">
+			{
+				book.data.cover && (
+					<figure class="scheda-edizione__cover-col">
+						<div class="scheda-edizione__cover" {...book.edit.cover}>
+							<Image image={book.data.cover} />
+						</div>
+					</figure>
+				)
+			}
+
+			<div class="scheda-edizione__copy">
+				<nav class="scheda-edizione__back" aria-label="Torna alla home">
+					<a class="text-link scheda-edizione__back-link" href="/#libro">
+						<ArrowLeft size={14} stroke-width={1.75} aria-hidden="true" />
+						Home
+					</a>
+				</nav>
+
+				<h1 class="scheda-edizione__title" {...book.edit.title}>
+					<span class="scheda-edizione__work">{work}</span>
+					{edition && <span class="scheda-edizione__edition">{edition}</span>}
+				</h1>
+
+				{
+					book.data.subtitle && (
+						<p class="type-lead scheda-edizione__subtitle" {...book.edit.subtitle}>
+							{book.data.subtitle}
+						</p>
+					)
+				}
+
+				{
+					buyUrl && (
+						<div class="scheda-edizione__actions">
+							<a
+								class="btn btn-primary btn--arrow"
+								href={buyUrl}
+								target="_blank"
+								rel="noopener"
+								{...book.edit.buy_url}
+							>
+								<span class="btn__label" {...book.edit.buy_label}>
+									{buyLabel}
+								</span>
+								<ArrowUpRight
+									class="btn__icon"
+									size={16}
+									stroke-width={1.75}
+									aria-hidden="true"
+								/>
+							</a>
+						</div>
+					)
+				}
+			</div>
+		</header>
+
+		{
+			book.data.content && (
+				<section class="scheda-edizione__body" aria-label="Descrizione">
+					<div class="rule" data-reveal="line" />
+					<div class="scheda-edizione__content" {...book.edit.content}>
+						<PortableText value={book.data.content} />
+					</div>
+				</section>
+			)
+		}
+	</article>
+</Base>
+
+<style>
+	.scheda-edizione {
+		padding-block: 2rem 5rem;
+	}
+
+	.scheda-edizione__back {
+		margin: 0;
+	}
+
+	.scheda-edizione__back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+	}
+
+	.scheda-edizione__hero {
+		display: grid;
+		gap: 3rem;
+	}
+
+	/* --- Cover: the hero object --- */
+
+	.scheda-edizione__cover-col {
+		margin: 0;
+		display: grid;
+		justify-items: center;
+		padding-block: 1rem;
+	}
+
+	.scheda-edizione__cover {
+		width: min(72%, 20rem);
+		transform: rotate(-3deg);
+		filter: drop-shadow(-0.35rem 0.5rem 0.6rem color-mix(in oklab, var(--ink) 18%, transparent));
+	}
+
+	.scheda-edizione__cover :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	/* --- Copy column --- */
+
+	.scheda-edizione__copy {
+		display: grid;
+		align-content: start;
+		gap: 1.5rem;
+		max-width: var(--measure);
+	}
+
+	.scheda-edizione__title {
+		display: grid;
+		gap: 0.6rem;
+		margin: 0;
+	}
+
+	.scheda-edizione__work {
+		font-family: var(--font-display);
+		font-size: clamp(3rem, 7vw, 5.5rem);
+		line-height: 0.9;
+		letter-spacing: -0.04em;
+		color: var(--title);
+	}
+
+	.scheda-edizione__edition {
+		font-family: var(--font-display);
+		font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+		line-height: 1.05;
+		letter-spacing: -0.025em;
+		color: var(--title);
+	}
+
+	.scheda-edizione__subtitle {
+		margin: 0;
+		max-width: 34rem;
+		color: var(--muted);
+	}
+
+	.scheda-edizione__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.scheda-edizione__actions .btn {
+		margin-top: 0.5rem;
+	}
+
+	/* --- Description below the hero --- */
+
+	.scheda-edizione__body {
+		margin: 2rem auto 0;
+		max-width: 65ch;
+	}
+
+	.scheda-edizione__content {
+		margin: 1.5rem 0 0;
+		font-size: 1.0625rem;
+		color: var(--ink);
+	}
+
+	.scheda-edizione__content :global(p) {
+		margin: 0 0 1.1em;
+		line-height: 1.7;
+	}
+
+	.scheda-edizione__content :global(p:last-child) {
+		margin-bottom: 0;
+	}
+
+	.scheda-edizione__content :global(h2),
+	.scheda-edizione__content :global(h3) {
+		margin: 1.6em 0 0.5em;
+		color: var(--title);
+	}
+
+	/* Hero: | cover | title, subtitle, button | — copy centered on the cover */
+	@media (min-width: 560px) {
+		.scheda-edizione {
+			--hero-gap: 2rem;
+		}
+
+		.scheda-edizione__hero {
+			grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+			gap: var(--hero-gap);
+			align-items: center;
+		}
+
+		.scheda-edizione__cover-col {
+			padding-block: 1.5rem;
+		}
+
+		/* < 100% so the -3deg tilt stays inside the shell gutter */
+		.scheda-edizione__cover {
+			width: min(88%, 26rem);
+		}
+
+	}
+
+	@media (min-width: 768px) {
+		.scheda-edizione {
+			--hero-gap: 4rem;
+			padding-block: 2.5rem 6rem;
+		}
+
+		.scheda-edizione__body {
+			margin-top: 2.5rem;
+		}
+	}
+
+	@media (min-width: 1100px) {
+		.scheda-edizione {
+			--hero-gap: 6rem;
+		}
+	}
+</style>

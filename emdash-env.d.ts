@@ -20,7 +20,6 @@ export interface Homepage {
   form_heading_book?: boolean;
   book_title?: string;
   book_subtitle?: string;
-  book_image?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
   book_cta_label?: string;
   form_heading_training?: boolean;
   training_title?: string;
@@ -79,7 +78,8 @@ export interface Libri {
   title: string;
   subtitle?: string;
   cover?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; caption?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
-  excerpt?: string;
+  buy_url?: string;
+  buy_label?: string;
   content?: PortableTextBlock[];
   createdAt: Date;
   updatedAt: Date;
@@ -122,6 +122,7 @@ export interface SiteGlobal {
 
 export interface HomepageReferences {
   featured_tours: ReferencePage<Tour>;
+  featured_books: ReferencePage<Libri>;
 }
 
 declare module "emdash" {
