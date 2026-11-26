@@ -5,12 +5,24 @@ Dominio del sito di Flavia: tour e contenuti editoriali presentati tramite EmDas
 ## Language
 
 **Libro**:
-Un contenuto di prima classe nel CMS (collection `book`): il titolo che Flavia vende. Sul sito esiste un solo Libro canonico (entry id / URL `/puglia-the-book`) con pagina dedicata.
-_Avoid_: blocco homepage, prodotto, merchandise, catalogo libri, `books`
+L’opera di Flavia sul cibo in Puglia (il titolo “Puglia”), presentata sul sito attraverso le sue Edizioni. Non è più una singola entry/URL canonica.
+_Avoid_: blocco homepage, prodotto, merchandise; non confondere con Edizione
+
+**Edizione**:
+Una variante pubblicata del Libro (internazionale e speciale), di prima classe nel CMS e presentata sul sito.
+_Avoid_: Libro (per indicare una singola variante); version; SKU; product variant
 
 **Sezione Libro**:
-Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non letti dal Libro). La CTA punta alla pagina del Libro canonico.
-_Avoid_: pagina libro, scheda libro, reference al Libro
+Blocco della homepage con titolo (e opz. sottotitolo) di sezione, più teaser delle Edizioni pubblicate (non copertina/CTA di sezione duplicati).
+_Avoid_: teaser chrome-only come Sezione Formazione; caricare il dettaglio completo delle Edizioni in homepage
+
+**Pagina Libri**:
+Hub pubblico a `/puglia-the-book` che fa da teaser verso le Edizioni (non il dettaglio completo di ciascuna).
+_Avoid_: Catalogo Tour (pattern diverso); Scheda Edizione; singleton come unica pagina dell’opera
+
+**Scheda Edizione**:
+Pagina dettaglio di una Edizione a `/puglia-the-book/{slug}`.
+_Avoid_: Pagina Libri; product page; pagina del Libro (come se l’opera avesse una sola URL)
 
 **Tour**:
 Esperienza cibo guidata di Flavia — di solito in un paese pugliese, a volte un formato speciale senza singolo paese (cena narrativa, MICE, su misura). Non è un itinerario di viaggio plurigiornaliero in Italia. Campo `destination` = nome del paese oppure etichetta di formato.

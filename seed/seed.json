@@ -103,16 +103,6 @@
 					"type": "string"
 				},
 				{
-					"slug": "book_image",
-					"label": "Immagine",
-					"type": "image"
-				},
-				{
-					"slug": "book_cta_label",
-					"label": "Testo CTA",
-					"type": "string"
-				},
-				{
 					"slug": "form_heading_training",
 					"label": "Formazione",
 					"type": "boolean",
@@ -368,6 +358,15 @@
 				"seo"
 			],
 			"fields": [
+				{
+					"slug": "edition",
+					"label": "Edizione",
+					"type": "select",
+					"required": true,
+					"validation": {
+						"options": ["international", "special"]
+					}
+				},
 				{
 					"slug": "title",
 					"label": "Title",
@@ -888,16 +887,8 @@
 						"$ref:tour-mice-sensory",
 						"$ref:tour-customized"
 					],
-					"book_title": "Il libro",
-					"book_subtitle": "Puglia raccontata attraverso luoghi, sapori e incontri",
-					"book_cta_label": "Scopri il libro",
-					"book_image": {
-						"$media": {
-							"file": "media/copertina-libro.jpg",
-							"alt": "Copertina del libro Puglia",
-							"filename": "copertina-libro.jpg"
-						}
-					},
+					"book_title": "Il Libro",
+					"book_subtitle": "La mia Puglia, attraverso gli ingredienti, le ricette e le storie di chi porta in tavola.",
 					"training_title": "Formazione",
 					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
 					"training_cta_label": "Scopri la formazione",
@@ -1044,18 +1035,19 @@
 		],
 		"libri": [
 			{
-				"id": "puglia-the-book",
-				"slug": "puglia-the-book",
+				"id": "international",
+				"slug": "international",
 				"status": "published",
 				"data": {
+					"edition": "international",
 					"title": "Puglia",
-					"subtitle": "The Book",
-					"excerpt": "Un racconto di viaggio tra oliveti, mare e borghi bianchi — placeholder da sostituire.",
+					"subtitle": "International Edition",
+					"excerpt": "A cooking journey through a land and its unique ingredients.",
 					"cover": {
 						"$media": {
-							"file": "media/copertina-libro.jpg",
-							"alt": "Copertina del libro Puglia",
-							"filename": "copertina-libro.jpg"
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/feat/42-books-section-editions/seed/media/copertina-libro-international.webp",
+							"alt": "Copertina del libro Puglia — edizione internazionale (viola)",
+							"filename": "copertina-libro-international.webp"
 						}
 					},
 					"content": [
@@ -1065,7 +1057,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Questa è la pagina del Libro canonico. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
+									"text": "Questa è la Scheda Edizione internazionale del Libro. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
 									"_key": "k1"
 								}
 							],
@@ -1082,6 +1074,38 @@
 								}
 							],
 							"_key": "k2"
+						}
+					]
+				}
+			},
+			{
+				"id": "special",
+				"slug": "special",
+				"status": "published",
+				"data": {
+					"edition": "special",
+					"title": "Puglia",
+					"subtitle": "Edizione speciale",
+					"excerpt": "Storie di ingredienti, cucina e territorio.",
+					"cover": {
+						"$media": {
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/feat/42-books-section-editions/seed/media/copertina-libro-special.webp",
+							"alt": "Copertina del libro Puglia — edizione speciale (bianca)",
+							"filename": "copertina-libro-special.webp"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questa è la Scheda Edizione speciale. Placeholder: sostituisci titolo, excerpt e contenuto dall’admin quando l’edizione è pronta.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
 						}
 					]
 				}

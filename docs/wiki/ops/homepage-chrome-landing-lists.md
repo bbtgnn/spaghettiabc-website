@@ -3,7 +3,7 @@
 ## Sources
 
 - [Collaborazioni CMS model](../decisions/collaborazioni-cms-model.md) (2026-10-23)
-- Contrast: [Libro](../decisions/libro-cms-model.md), [Formazione](../decisions/formazione-cms-model.md)
+- Contrast: [Libro](../decisions/libro-cms-model.md) (2026-10-23; partly superseded), [Books / Edizioni](../decisions/books-editions-cms-model.md) (2026-11-26), [Formazione](../decisions/formazione-cms-model.md)
 
 ## Pattern (decided 2026-10-23)
 
@@ -22,4 +22,8 @@ On 2026-11-05 Chiara moved quote-style reviews **onto the homepage** as `google_
 
 ## Supersession — Collaborazioni logos (2026-11-06)
 
-On 2026-11-06 the Collaborazioni landing was removed. Partner logos moved onto the homepage as `partner_logos` under **Sezione Dicono di me**. The 2026-10-23 “do not duplicate landing lists onto homepage” rule **no longer applies** to that section — there is no landing. Libro/Formazione still follow the chrome + landing-list pattern above. See [Sezione Dicono di me](../decisions/dicono-di-me-section.md).
+On 2026-11-06 the Collaborazioni landing was removed. Partner logos moved onto the homepage as `partner_logos` under **Sezione Dicono di me**. The 2026-10-23 “do not duplicate landing lists onto homepage” rule **no longer applies** to that section — there is no landing. As of that date, Libro/Formazione still followed the chrome + landing-list pattern above. See [Sezione Dicono di me](../decisions/dicono-di-me-section.md).
+
+## Supersession — Sezione Libro (2026-11-26)
+
+On 2026-11-26 Chiara locked [#42](https://github.com/bbtgnn/spaghettiabc-website/issues/42): **Sezione Libro** no longer uses the Formazione-style chrome duplication of landing content. It keeps homepage **title + optional subtitle** only and loads **all published Edizioni** (`libri`) as teasers (cover + title + link). **Formazione** still follows the 2026-10-23 chrome-duplicated pattern. See [Books / Edizioni CMS model](../decisions/books-editions-cms-model.md) and the supersession note on [Libro CMS model](../decisions/libro-cms-model.md).

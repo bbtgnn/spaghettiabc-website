@@ -1,5 +1,5 @@
 ---
-import { getEmDashEntry, getSiteSettings } from "emdash";
+import { getEmDashCollection, getEmDashEntry, getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Base from "../layouts/Base.astro";
@@ -10,8 +10,14 @@ import { resolveStarterSiteIdentity } from "../utils/site-identity";
 const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
 	references: { featured_tours: true },
 });
+const { entries: bookEntries, cacheHint: booksCacheHint } =
+	await getEmDashCollection("libri", {
+		status: "published",
+		limit: 20,
+	});
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
+	Astro.cache.set(booksCacheHint);
 }
 
 const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
@@ -19,6 +25,21 @@ const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 );
 
 const featuredTours = home?.references?.featured_tours?.entries ?? [];
+const editionRank = { international: 0, special: 1 } as const;
+const editionLabels = {
+	international: "Edizione Internazionale",
+	special: "Edizione Speciale",
+} as const;
+const books = [...bookEntries].sort((a, b) => {
+	const rankA =
+		editionRank[a.data.edition as keyof typeof editionRank] ??
+		Number.POSITIVE_INFINITY;
+	const rankB =
+		editionRank[b.data.edition as keyof typeof editionRank] ??
+		Number.POSITIVE_INFINITY;
+	if (rankA !== rankB) return rankA - rankB;
+	return (a.data.title ?? "").localeCompare(b.data.title ?? "", "it");
+});
 const partnerLogos = home?.data.partner_logos ?? [];
 const googleReviews = home?.data.google_reviews ?? [];
 const googleScore = Number(home?.data.google_score) || 0;
@@ -86,39 +107,72 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 					}}
 				/>
 
-				<section class="shell section feature">
+				<section class="shell section sezione-libro" aria-labelledby="book-heading">
 					<div class="rule" data-reveal="line" />
-					<div class="feature__layout">
-						{home.data.book_image && (
-							<a
-								href="/puglia-the-book"
-								class="feature__media"
-								data-reveal="mask"
-								aria-label={home.data.book_title ?? "Il libro"}
-							>
-								<div {...home.edit.book_image}>
-									<Image image={home.data.book_image} />
-								</div>
-							</a>
-						)}
-						<div class="feature__copy" data-reveal>
+					<div class="sezione-libro__layout">
+						<div class="sezione-libro__intro" data-reveal>
 							{home.data.book_title && (
-								<h2 class="type-h2" {...home.edit.book_title}>
+								<h2 class="type-h2" id="book-heading" {...home.edit.book_title}>
 									{home.data.book_title}
 								</h2>
 							)}
 							{home.data.book_subtitle && (
-								<p class="type-lead" {...home.edit.book_subtitle}>
+								<p class="type-lead sezione-libro__lede" {...home.edit.book_subtitle}>
 									{home.data.book_subtitle}
 								</p>
 							)}
-							{home.data.book_cta_label && (
-								<a class="btn btn-outline btn--arrow" href="/puglia-the-book" {...home.edit.book_cta_label}>
-									<span class="btn__label">{home.data.book_cta_label}</span>
-									<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
-								</a>
-							)}
+							<div class="sezione-libro__illust" aria-hidden="true">
+								<img
+									class="sezione-libro__illust-img"
+									src="/illustrations/libro-pomodori.png"
+									alt=""
+									width="640"
+									height="640"
+									loading="lazy"
+									decoding="async"
+								/>
+							</div>
 						</div>
+
+						{books.length > 0 && (
+							<ul
+								class="sezione-libro__editions"
+								aria-label="Edizioni del libro"
+							>
+								{books.map((book) => {
+									const editionKey = book.data.edition as keyof typeof editionLabels;
+									const label =
+										editionLabels[editionKey] ?? book.data.subtitle ?? book.data.title;
+									return (
+										<li class="sezione-libro__edition">
+											{book.data.cover && (
+												<a
+													class="sezione-libro__cover-link"
+													href={`/puglia-the-book/${book.id}`}
+													aria-label={label}
+												>
+													<div class="sezione-libro__cover" {...book.edit.cover}>
+														<Image image={book.data.cover} />
+													</div>
+												</a>
+											)}
+											<h3 class="sezione-libro__edition-title">{label}</h3>
+											{book.data.excerpt && (
+												<p class="sezione-libro__edition-lede" {...book.edit.excerpt}>
+													{book.data.excerpt}
+												</p>
+											)}
+											<a
+												class="btn btn-primary"
+												href={`/puglia-the-book/${book.id}`}
+											>
+												Scopri e acquista
+											</a>
+										</li>
+									);
+								})}
+							</ul>
+						)}
 					</div>
 				</section>
 
@@ -385,6 +439,193 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 
 	.feature__copy .type-lead {
 		text-wrap: balance;
+	}
+
+	.sezione-libro__layout {
+		display: grid;
+		gap: 2.5rem;
+		align-items: start;
+	}
+
+	@media (min-width: 900px) {
+		.sezione-libro__layout {
+			grid-template-columns: minmax(12rem, 0.9fr) minmax(0, 2.1fr);
+			gap: 3rem 2.5rem;
+			align-items: stretch;
+		}
+	}
+
+	.sezione-libro__intro {
+		display: grid;
+		gap: 1rem;
+		align-content: start;
+		justify-items: center;
+		text-align: center;
+	}
+
+	.sezione-libro__intro .type-h2 {
+		color: var(--title);
+	}
+
+	.sezione-libro__lede {
+		max-width: 22rem;
+		text-wrap: balance;
+		color: var(--muted);
+	}
+
+	.sezione-libro__illust {
+		display: none;
+	}
+
+	.sezione-libro__illust-img {
+		display: block;
+		width: 100%;
+		height: auto;
+		/* Drop black studio plate so the vine sits on the page canvas */
+		mix-blend-mode: screen;
+	}
+
+	/* Desktop side column: tomatoes bottom-left under the lede (not on mobile) */
+	@media (min-width: 900px) {
+		.sezione-libro__intro {
+			justify-items: start;
+			text-align: left;
+			align-content: stretch;
+			grid-template-rows: auto auto 1fr;
+			min-height: 100%;
+		}
+
+		.sezione-libro__illust {
+			display: block;
+			align-self: end;
+			justify-self: start;
+			width: min(100%, 13.5rem);
+			margin-top: 2rem;
+			margin-left: -0.75rem;
+			margin-bottom: -0.85rem;
+		}
+	}
+
+	/* Mobile: horizontal swipe with peek of the other edition */
+	.sezione-libro__editions {
+		--sezione-libro-peek: 1.2rem;
+		margin: 0;
+		padding: 0.75rem 0 1.25rem;
+		list-style: none;
+		display: flex;
+		align-items: stretch;
+		gap: 0;
+		overflow-x: auto;
+		overflow-y: hidden;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scroll-padding-inline: var(--sezione-libro-peek);
+		padding-inline: var(--sezione-libro-peek);
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		touch-action: pan-x;
+		min-width: 0;
+	}
+
+	.sezione-libro__editions::-webkit-scrollbar {
+		display: none;
+	}
+
+	.sezione-libro__edition {
+		flex: 0 0 calc(100% - var(--sezione-libro-peek) * 2);
+		width: calc(100% - var(--sezione-libro-peek) * 2);
+		scroll-snap-align: center;
+		scroll-snap-stop: always;
+		display: grid;
+		justify-items: center;
+		align-content: start;
+		gap: 1rem;
+		text-align: center;
+		box-sizing: border-box;
+	}
+
+	/* Desktop: both editions visible side by side */
+	@media (min-width: 768px) {
+		.sezione-libro__editions {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 2rem 2.5rem;
+			overflow: visible;
+			scroll-snap-type: none;
+			scroll-padding-inline: 0;
+			padding-inline: 0;
+			touch-action: auto;
+		}
+
+		.sezione-libro__edition {
+			flex: none;
+			width: auto;
+			scroll-snap-align: none;
+		}
+	}
+
+	.sezione-libro__cover-link {
+		display: block;
+		width: min(100%, 17.6rem);
+		margin-bottom: 0.35rem;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.sezione-libro__cover {
+		transform: rotate(-5deg);
+		filter: drop-shadow(0.55rem 0.75rem 1.1rem color-mix(in oklab, var(--ink) 22%, transparent));
+		transition:
+			transform 700ms var(--ease-out-expo),
+			filter 700ms var(--ease-out-quart);
+	}
+
+	/* Special (second / bianca): tilt the other way */
+	.sezione-libro__edition:nth-child(2) .sezione-libro__cover {
+		transform: rotate(5deg);
+	}
+
+	.sezione-libro__cover :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.sezione-libro__cover-link:hover .sezione-libro__cover,
+	.sezione-libro__cover-link:focus-visible .sezione-libro__cover {
+		transform: rotate(-2deg) translateY(-0.25rem);
+		filter: drop-shadow(0.65rem 0.95rem 1.35rem color-mix(in oklab, var(--ink) 28%, transparent));
+	}
+
+	.sezione-libro__edition:nth-child(2) .sezione-libro__cover-link:hover .sezione-libro__cover,
+	.sezione-libro__edition:nth-child(2)
+		.sezione-libro__cover-link:focus-visible
+		.sezione-libro__cover {
+		transform: rotate(2deg) translateY(-0.25rem);
+	}
+
+	.sezione-libro__edition-title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: var(--font-display-weight);
+		font-size: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
+		line-height: 1.2;
+		color: var(--title);
+		text-wrap: balance;
+	}
+
+	.sezione-libro__edition-lede {
+		margin: 0;
+		max-width: 18rem;
+		font-size: 0.98rem;
+		line-height: 1.45;
+		color: var(--muted);
+		text-wrap: balance;
+	}
+
+	.sezione-libro__edition .btn {
+		margin-top: 0.35rem;
 	}
 
 	.newsletter {
