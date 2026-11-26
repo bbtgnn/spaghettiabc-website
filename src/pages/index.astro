@@ -435,6 +435,7 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		align-items: start;
 		position: relative;
 		z-index: 1;
+		overflow: visible;
 	}
 
 	@media (min-width: 900px) {
@@ -513,26 +514,37 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		}
 	}
 
-	/* Mobile: horizontal swipe with peek of the other edition */
+	/*
+	 * Default: full-bleed horizontal rail (shell gutter breakout), books close.
+	 * Two-up grid only with the desktop intro|books layout (≥900), when the
+	 * editions column is actually wide enough — not at 560px mid widths.
+	 */
 	.sezione-libro__editions {
-		--sezione-libro-peek: 1.2rem;
+		--sezione-libro-peek: var(--gutter);
+		/* Grows with the viewport until the ≥900 two-up grid takes over */
+		--sezione-libro-card: clamp(12.5rem, 42vw, 20rem);
+		/* Room for cover rotate + drop-shadow (overflow-x makes y clip too) */
+		--sezione-libro-shadow-pad: 1.1rem;
 		margin: 0;
-		padding: 0.75rem 0 1.25rem;
+		margin-inline: calc(var(--gutter) * -1);
 		list-style: none;
 		display: flex;
-		align-items: stretch;
-		gap: 0;
+		align-items: start;
+		justify-content: safe center;
+		gap: 1.25rem;
 		overflow-x: auto;
-		overflow-y: hidden;
 		overscroll-behavior-x: contain;
 		scroll-snap-type: x mandatory;
 		scroll-padding-inline: var(--sezione-libro-peek);
+		padding-block: var(--sezione-libro-shadow-pad);
 		padding-inline: var(--sezione-libro-peek);
 		-webkit-overflow-scrolling: touch;
 		scrollbar-width: none;
 		-ms-overflow-style: none;
 		touch-action: pan-x;
 		min-width: 0;
+		width: auto;
+		max-width: none;
 	}
 
 	.sezione-libro__editions::-webkit-scrollbar {
@@ -540,10 +552,9 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 	}
 
 	.sezione-libro__edition {
-		flex: 0 0 calc(100% - var(--sezione-libro-peek) * 2);
-		width: calc(100% - var(--sezione-libro-peek) * 2);
-		scroll-snap-align: center;
-		scroll-snap-stop: always;
+		flex: 0 0 var(--sezione-libro-card);
+		width: var(--sezione-libro-card);
+		scroll-snap-align: start;
 		display: grid;
 		justify-items: center;
 		align-content: start;
@@ -552,16 +563,19 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		box-sizing: border-box;
 	}
 
-	/* Desktop: both editions visible side by side */
+	/* Two-up as before — restore growth with the window from 768 */
 	@media (min-width: 768px) {
 		.sezione-libro__editions {
 			display: grid;
 			grid-template-columns: repeat(2, minmax(0, 1fr));
+			align-items: start;
 			gap: 2rem 2.5rem;
+			margin-inline: 0;
 			overflow: visible;
 			scroll-snap-type: none;
 			scroll-padding-inline: 0;
 			padding-inline: 0;
+			padding-block: var(--sezione-libro-shadow-pad);
 			touch-action: auto;
 		}
 
@@ -574,15 +588,23 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 
 	.sezione-libro__cover-link {
 		display: block;
-		width: min(100%, 17.6rem);
+		width: 100%;
+		max-width: 22rem;
 		margin-bottom: 0.35rem;
 		text-decoration: none;
 		color: inherit;
 	}
 
+	@media (min-width: 900px) {
+		.sezione-libro__cover-link {
+			max-width: min(100%, 26rem);
+		}
+	}
+
 	.sezione-libro__cover {
 		transform: rotate(-5deg);
-		filter: drop-shadow(0.55rem 0.75rem 1.1rem color-mix(in oklab, var(--ink) 22%, transparent));
+		/* Tight shadow: left + down */
+		filter: drop-shadow(-0.3rem 0.4rem 0.45rem color-mix(in oklab, var(--ink) 16%, transparent));
 		transition:
 			transform 700ms var(--ease-out-expo),
 			filter 700ms var(--ease-out-quart);
@@ -602,7 +624,7 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 	.sezione-libro__cover-link:hover .sezione-libro__cover,
 	.sezione-libro__cover-link:focus-visible .sezione-libro__cover {
 		transform: rotate(-2deg) translateY(-0.25rem);
-		filter: drop-shadow(0.65rem 0.95rem 1.35rem color-mix(in oklab, var(--ink) 28%, transparent));
+		filter: drop-shadow(-0.35rem 0.5rem 0.55rem color-mix(in oklab, var(--ink) 20%, transparent));
 	}
 
 	.sezione-libro__edition:nth-child(2) .sezione-libro__cover-link:hover .sezione-libro__cover,
