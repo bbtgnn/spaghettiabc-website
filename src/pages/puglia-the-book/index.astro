@@ -1,0 +1,156 @@
+---
+/**
+ * Pagina Libri — hub teaser toward Schede Edizione.
+ */
+import { getEmDashCollection, getSiteSettings } from "emdash";
+import { Image } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+
+const { entries: bookEntries, cacheHint } = await getEmDashCollection("libri", {
+	status: "published",
+	limit: 20,
+});
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const editionRank = { international: 0, special: 1 } as const;
+const books = [...bookEntries].sort((a, b) => {
+	const rankA =
+		editionRank[a.data.edition as keyof typeof editionRank] ??
+		Number.POSITIVE_INFINITY;
+	const rankB =
+		editionRank[b.data.edition as keyof typeof editionRank] ??
+		Number.POSITIVE_INFINITY;
+	if (rankA !== rankB) return rankA - rankB;
+	return (a.data.title ?? "").localeCompare(b.data.title ?? "", "it");
+});
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const pageTitle = "Il libro";
+const pageDescription =
+	"Le edizioni di Puglia — racconti di cibo, luoghi e incontri.";
+---
+
+<Base title={`${pageTitle} · ${siteTitle}`} description={pageDescription}>
+	<section class="shell books-hub">
+		<header class="books-hub__intro">
+			<h1 class="type-hero">{pageTitle}</h1>
+			<p class="type-lead books-hub__lede">{pageDescription}</p>
+		</header>
+
+		{
+			books.length === 0 ? (
+				<p class="type-body books-hub__empty">
+					Nessuna edizione ancora.{" "}
+					<a class="link" href="/_emdash/admin/content/libri/new">
+						Creane una
+					</a>
+					.
+				</p>
+			) : (
+				<ul class="books-hub__grid">
+					{books.map((book) => (
+						<li class="books-hub__card">
+							<a class="books-hub__link" href={`/puglia-the-book/${book.id}`}>
+								{book.data.cover && (
+									<div class="books-hub__cover" {...book.edit.cover}>
+										<Image image={book.data.cover} />
+									</div>
+								)}
+								<div class="books-hub__copy">
+									<h2 class="type-h2 books-hub__title" {...book.edit.title}>
+										{book.data.title}
+									</h2>
+									{book.data.subtitle && (
+										<p class="books-hub__subtitle" {...book.edit.subtitle}>
+											{book.data.subtitle}
+										</p>
+									)}
+									{book.data.excerpt && (
+										<p class="type-lead books-hub__excerpt" {...book.edit.excerpt}>
+											{book.data.excerpt}
+										</p>
+									)}
+								</div>
+							</a>
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</section>
+</Base>
+
+<style>
+	.books-hub {
+		padding-block: 2.5rem 4rem;
+	}
+
+	.books-hub__intro {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	.books-hub__lede {
+		max-width: 48ch;
+		text-wrap: balance;
+	}
+
+	.books-hub__empty {
+		margin-top: 3rem;
+	}
+
+	.books-hub__grid {
+		margin: 3rem 0 0;
+		padding: 0;
+		list-style: none;
+		display: grid;
+		gap: 2.5rem;
+	}
+
+	@media (min-width: 768px) {
+		.books-hub__grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 3rem;
+		}
+	}
+
+	.books-hub__link {
+		display: grid;
+		gap: 1.25rem;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.books-hub__cover {
+		overflow: hidden;
+		max-width: 18rem;
+	}
+
+	.books-hub__cover :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+		transition: transform 1100ms var(--ease-out-expo, ease);
+	}
+
+	.books-hub__link:hover .books-hub__cover :global(img) {
+		transform: scale(1.03);
+	}
+
+	.books-hub__copy {
+		display: grid;
+		gap: 0.65rem;
+		max-width: 36rem;
+	}
+
+	.books-hub__subtitle {
+		color: var(--muted, var(--color-sea));
+	}
+
+	.books-hub__excerpt {
+		font-size: var(--font-ui-size, var(--text-base));
+		color: var(--muted, var(--color-ink-soft));
+		text-wrap: balance;
+	}
+</style>

@@ -59,6 +59,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - Homepage Sezione Tour uses `SezioneTour.astro`: equal vertical highlight pair (first two `featured_tours`) + compact `.tour-rail--compact` + `.review-rail`. Catalogo reuses `TourLargeCard` for highlight + grid.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
 - **Sezione Dicono di me** is homepage-only logos (`partner_logos`). Punteggio/Recensioni Google render in **Sezione Tour**. No `/collaborazioni` landing. See `GLOSSARY.md`.
+- **Libro / Edizioni**: collection `libri` with select `edition` (`international` | `special`). **Pagina Libri** `/puglia-the-book` is a hardcoded hub; **Scheda Edizione** is `/puglia-the-book/[slug]`. Homepage **Sezione Libro** keeps `book_title`/`book_subtitle` and loads published editions as cover+title teasers (no `book_image` / `book_cta_label`). See `GLOSSARY.md`.
 
 ## This Template
 
@@ -73,6 +74,8 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 | Home          | `/`                | Site title + tagline, links into Posts / About     |
 | Catalogo Tour | `/tours`           | Intro + highlight pair + `.tour-grid` cards |
 | Scheda Tour   | `/tours/[slug]`    | Hero + body | specs/Calendly; no related |
+| Pagina Libri  | `/puglia-the-book` | Hub intro + edition teasers                |
+| Scheda Edizione | `/puglia-the-book/[slug]` | Cover + title/subtitle/excerpt + content |
 | All posts     | `/posts`           | Post list                                          |
 | Post detail   | `/posts/[slug]`    | Post content                                       |
 | Page          | `/[slug]`          | Static page content (e.g. `/about`)                |
