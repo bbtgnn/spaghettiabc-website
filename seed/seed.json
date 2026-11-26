@@ -12,139 +12,11 @@
 	},
 	"collections": [
 		{
-			"slug": "tours",
-			"label": "Tours",
-			"labelSingular": "Tour",
-			"urlPattern": "/tours/{slug}",
-			"supports": [
-				"drafts",
-				"revisions",
-				"preview",
-				"scheduling",
-				"search",
-				"seo"
-			],
-			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "featured_image",
-					"label": "Featured Image",
-					"type": "image"
-				},
-				{
-					"slug": "excerpt",
-					"label": "Excerpt",
-					"type": "text",
-					"searchable": true
-				},
-				{
-					"slug": "destination",
-					"label": "Destination",
-					"type": "string",
-					"searchable": true
-				},
-				{
-					"slug": "duration",
-					"label": "Duration",
-					"type": "string"
-				},
-				{
-					"slug": "group_size",
-					"label": "Group size",
-					"type": "string"
-				},
-				{
-					"slug": "language",
-					"label": "Language",
-					"type": "string"
-				},
-				{
-					"slug": "included",
-					"label": "Included",
-					"type": "string"
-				},
-				{
-					"slug": "price",
-					"label": "Price",
-					"type": "string"
-				},
-				{
-					"slug": "calendly_url",
-					"label": "URL Calendly",
-					"type": "url"
-				},
-				{
-					"slug": "gallery",
-					"label": "Gallery",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "image",
-								"label": "Image",
-								"type": "image",
-								"required": true
-							}
-						]
-					}
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
-				}
-			]
-		},
-		{
-			"slug": "site_globals",
-			"label": "Impostazioni sito",
-			"labelSingular": "Impostazioni sito",
-			"routable": false,
-			"supports": [
-				"drafts",
-				"revisions",
-				"preview"
-			],
-			"fields": [
-				{
-					"slug": "calendly_url",
-					"label": "URL Calendly predefinito",
-					"type": "url"
-				},
-				{
-					"slug": "faq",
-					"label": "FAQ",
-					"type": "repeater",
-					"validation": {
-						"subFields": [
-							{
-								"slug": "question",
-								"label": "Question",
-								"type": "string",
-								"required": true
-							},
-							{
-								"slug": "answer",
-								"label": "Answer",
-								"type": "text",
-								"required": true
-							}
-						]
-					}
-				}
-			]
-		},
-		{
 			"slug": "homepage",
-			"label": "Homepage",
-			"labelSingular": "Homepage",
+			"label": "Home",
+			"labelSingular": "Home",
+			"icon": "house",
+			"sortOrder": 10,
 			"routable": false,
 			"supports": [
 				"drafts",
@@ -389,9 +261,104 @@
 			]
 		},
 		{
-			"slug": "book",
-			"label": "Libro",
+			"slug": "tours",
+			"label": "Tour",
+			"labelSingular": "Tour",
+			"icon": "map-trifold",
+			"sortOrder": 20,
+			"urlPattern": "/tours/{slug}",
+			"supports": [
+				"drafts",
+				"revisions",
+				"preview",
+				"scheduling",
+				"search",
+				"seo"
+			],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured Image",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "destination",
+					"label": "Destination",
+					"type": "string",
+					"searchable": true
+				},
+				{
+					"slug": "duration",
+					"label": "Duration",
+					"type": "string"
+				},
+				{
+					"slug": "group_size",
+					"label": "Group size",
+					"type": "string"
+				},
+				{
+					"slug": "language",
+					"label": "Language",
+					"type": "string"
+				},
+				{
+					"slug": "included",
+					"label": "Included",
+					"type": "string"
+				},
+				{
+					"slug": "price",
+					"label": "Price",
+					"type": "string"
+				},
+				{
+					"slug": "calendly_url",
+					"label": "URL Calendly",
+					"type": "url"
+				},
+				{
+					"slug": "gallery",
+					"label": "Gallery",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "image",
+								"label": "Image",
+								"type": "image",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"slug": "libri",
+			"label": "Libri",
 			"labelSingular": "Libro",
+			"icon": "books",
+			"sortOrder": 30,
 			"routable": false,
 			"supports": [
 				"drafts",
@@ -436,6 +403,8 @@
 			"slug": "training",
 			"label": "Formazione",
 			"labelSingular": "Formazione",
+			"icon": "graduation-cap",
+			"sortOrder": 40,
 			"routable": false,
 			"supports": [
 				"drafts",
@@ -478,113 +447,48 @@
 			]
 		},
 		{
-			"slug": "posts",
-			"label": "Posts",
-			"labelSingular": "Post",
-			"urlPattern": "/posts/{slug}",
+			"slug": "site_globals",
+			"label": "Impostazioni sito",
+			"labelSingular": "Impostazioni sito",
+			"icon": "gear",
+			"sortOrder": 50,
+			"routable": false,
 			"supports": [
 				"drafts",
 				"revisions",
-				"preview",
-				"scheduling",
-				"search",
-				"seo"
+				"preview"
 			],
 			"fields": [
 				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
+					"slug": "calendly_url",
+					"label": "URL Calendly predefinito",
+					"type": "url"
 				},
 				{
-					"slug": "featured_image",
-					"label": "Featured Image",
-					"type": "image"
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
-				},
-				{
-					"slug": "excerpt",
-					"label": "Excerpt",
-					"type": "text"
-				}
-			]
-		},
-		{
-			"slug": "pages",
-			"label": "Pages",
-			"labelSingular": "Page",
-			"urlPattern": "/{slug}",
-			"supports": [
-				"drafts",
-				"revisions",
-				"preview",
-				"search",
-				"seo"
-			],
-			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
+					"slug": "faq",
+					"label": "FAQ",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "question",
+								"label": "Question",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "answer",
+								"label": "Answer",
+								"type": "text",
+								"required": true
+							}
+						]
+					}
 				}
 			]
 		}
 	],
-	"taxonomies": [
-		{
-			"name": "category",
-			"label": "Categories",
-			"labelSingular": "Category",
-			"hierarchical": true,
-			"collections": [
-				"posts"
-			],
-			"terms": [
-				{
-					"slug": "general",
-					"label": "General"
-				},
-				{
-					"slug": "updates",
-					"label": "Updates"
-				}
-			]
-		},
-		{
-			"name": "tag",
-			"label": "Tags",
-			"labelSingular": "Tag",
-			"hierarchical": false,
-			"collections": [
-				"posts"
-			],
-			"terms": [
-				{
-					"slug": "starter",
-					"label": "Starter"
-				},
-				{
-					"slug": "example",
-					"label": "Example"
-				}
-			]
-		}
-	],
+	"taxonomies": [],
 	"menus": [
 		{
 			"name": "primary",
@@ -599,11 +503,6 @@
 					"type": "custom",
 					"label": "Tour",
 					"url": "/tours"
-				},
-				{
-					"type": "custom",
-					"label": "About",
-					"url": "/about"
 				}
 			]
 		}
@@ -618,19 +517,6 @@
 					"type": "component",
 					"componentId": "core:search",
 					"title": "Search"
-				},
-				{
-					"type": "component",
-					"componentId": "core:categories",
-					"title": "Categories"
-				},
-				{
-					"type": "component",
-					"componentId": "core:recent-posts",
-					"title": "Recent Posts",
-					"props": {
-						"count": 5
-					}
 				}
 			]
 		}
@@ -984,7 +870,7 @@
 					"hero_subtitle": "Culinary Experiences Curated by Flavia Giordano",
 					"hero_image": {
 						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/cover-newsletter-ingredient.jpg",
+							"file": "media/cover-newsletter-ingredient.jpg",
 							"alt": "Ingredienti e olio — hero homepage Spaghetti ABC",
 							"filename": "cover-newsletter-ingredient.jpg"
 						}
@@ -1007,7 +893,7 @@
 					"book_cta_label": "Scopri il libro",
 					"book_image": {
 						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro.jpg",
+							"file": "media/copertina-libro.jpg",
 							"alt": "Copertina del libro Puglia",
 							"filename": "copertina-libro.jpg"
 						}
@@ -1022,7 +908,7 @@
 							"name": "Ciccolella",
 							"logo": {
 								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_ciccolella.webp",
+									"file": "media/collaborazioni-logos/logo_ciccolella.webp",
 									"alt": "Logo Ciccolella",
 									"filename": "logo_ciccolella.webp"
 								}
@@ -1032,7 +918,7 @@
 							"name": "Evolio Expo",
 							"logo": {
 								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_evolio_expo.webp",
+									"file": "media/collaborazioni-logos/logo_evolio_expo.webp",
 									"alt": "Logo Evolio Expo",
 									"filename": "logo_evolio_expo.webp"
 								}
@@ -1042,7 +928,7 @@
 							"name": "FIOI",
 							"logo": {
 								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_fioi.webp",
+									"file": "media/collaborazioni-logos/logo_fioi.webp",
 									"alt": "Logo FIOI",
 									"filename": "logo_fioi.webp"
 								}
@@ -1052,7 +938,7 @@
 							"name": "Gambero Rosso",
 							"logo": {
 								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_gambero_rosso.webp",
+									"file": "media/collaborazioni-logos/logo_gambero_rosso.webp",
 									"alt": "Logo Gambero Rosso",
 									"filename": "logo_gambero_rosso.webp"
 								}
@@ -1062,7 +948,7 @@
 							"name": "Slow Food",
 							"logo": {
 								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_slow_food.webp",
+									"file": "media/collaborazioni-logos/logo_slow_food.webp",
 									"alt": "Logo Slow Food",
 									"filename": "logo_slow_food.webp"
 								}
@@ -1072,7 +958,7 @@
 							"name": "TEDx",
 							"logo": {
 								"$media": {
-									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_tedx.webp",
+									"file": "media/collaborazioni-logos/logo_tedx.webp",
 									"alt": "Logo TEDx",
 									"filename": "logo_tedx.webp"
 								}
@@ -1156,7 +1042,7 @@
 				}
 			}
 		],
-		"book": [
+		"libri": [
 			{
 				"id": "puglia-the-book",
 				"slug": "puglia-the-book",
@@ -1167,9 +1053,9 @@
 					"excerpt": "Un racconto di viaggio tra oliveti, mare e borghi bianchi — placeholder da sostituire.",
 					"cover": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1534445867742-43195f401b6c?w=1200&h=1600&fit=crop",
-							"alt": "Copertina placeholder del libro Puglia",
-							"filename": "puglia-the-book-cover.jpg"
+							"file": "media/copertina-libro.jpg",
+							"alt": "Copertina del libro Puglia",
+							"filename": "copertina-libro.jpg"
 						}
 					},
 					"content": [
@@ -1242,88 +1128,6 @@
 							],
 							"_key": "k2"
 						}
-					]
-				}
-			}
-		],
-		"pages": [
-			{
-				"id": "about",
-				"slug": "about",
-				"status": "published",
-				"data": {
-					"title": "About",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "This is the about page. Edit it in the admin panel or replace this template with your own design.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						}
-					]
-				}
-			}
-		],
-		"posts": [
-			{
-				"id": "post-1",
-				"slug": "welcome",
-				"status": "published",
-				"data": {
-					"title": "Welcome",
-					"excerpt": "Your first post. Replace this with your own content.",
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "This is a starter post. The templates in this project show the basic patterns for querying and rendering EmDash content. Replace them with your own design.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [
-								{
-									"_type": "span",
-									"text": "What to do next",
-									"_key": "k3"
-								}
-							],
-							"_key": "k2"
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Open the admin panel to add content, or edit the Astro pages in src/pages to change how content is displayed.",
-									"_key": "k5"
-								}
-							],
-							"_key": "k4"
-						}
-					]
-				},
-				"taxonomies": {
-					"category": [
-						"general"
-					],
-					"tag": [
-						"starter",
-						"example"
 					]
 				}
 			}

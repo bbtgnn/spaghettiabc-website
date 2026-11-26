@@ -4,7 +4,7 @@ import { Image, PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
-const { entry: book, cacheHint } = await getEmDashEntry("book", "puglia-the-book");
+const { entry: book, cacheHint } = await getEmDashEntry("libri", "puglia-the-book");
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 
 const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
@@ -30,7 +30,7 @@ const seo = book
 	description={seo.description}
 	canonical={seo.canonical}
 	image={seo.ogImage}
-	content={book ? { collection: "book", id: book.data.id, slug: book.id } : undefined}
+	content={book ? { collection: "libri", id: book.data.id, slug: book.id } : undefined}
 >
 	{
 		book ? (
@@ -69,7 +69,7 @@ const seo = book
 				<h1>Il libro</h1>
 				<p>
 					Il Libro non è ancora disponibile.{" "}
-					<a href="/_emdash/admin/content/book">Apri l’admin</a>.
+					<a href="/_emdash/admin/content/libri">Apri l’admin</a>.
 				</p>
 			</section>
 		)

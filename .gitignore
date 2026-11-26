@@ -3,6 +3,7 @@ dist
 .astro
 .emdash/
 .wrangler/
+.wrangler-seed-uploads/
 uploads
 data.db
 data.db-*
