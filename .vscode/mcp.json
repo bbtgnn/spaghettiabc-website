@@ -1,5 +1,13 @@
 {
 	"servers": {
+		"Astro docs": {
+			"type": "http",
+			"url": "https://mcp.docs.astro.build/mcp"
+		},
+		"cloudflare": {
+			"type": "http",
+			"url": "https://mcp.cloudflare.com/mcp"
+		},
 		"emdash-docs": {
 			"type": "http",
 			"url": "https://docs.emdashcms.com/mcp"
