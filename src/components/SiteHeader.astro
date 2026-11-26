@@ -1,4 +1,14 @@
 ---
+import { getTranslations } from "emdash";
+import { locales, type Locale } from "../i18n/ui";
+import {
+	contentPublicPath,
+	localePath,
+	resolveLocale,
+	swapLocalePrefix,
+	t,
+} from "../utils/i18n";
+
 interface MenuItem {
 	label: string;
 	url: string;
@@ -10,15 +20,76 @@ interface Props {
 	siteLogo?: { url?: string; alt?: string | null } | null;
 	items?: MenuItem[] | null;
 	currentPath: string;
+	locale?: string;
+	/** When set (Wave 2 pages), switcher prefers paired translation slug via getTranslations. */
+	content?: { collection: string; id: string; slug?: string | null };
 }
 
-const { siteTitle, siteLogo, items = [], currentPath } = Astro.props;
-const navItems = items ?? [];
+const {
+	siteTitle,
+	siteLogo,
+	items = [],
+	currentPath,
+	locale: localeProp,
+	content,
+} = Astro.props;
+const locale = resolveLocale(localeProp ?? Astro.currentLocale);
+const navItems = (items ?? []).map((item) => ({
+	...item,
+	url: localePath(locale, item.url),
+}));
+const homeHref = localePath(locale, "/");
 
 const isActive = (url: string) => {
-	if (url === "/") return currentPath === "/";
+	const home = localePath(locale, "/");
+	if (url === home || url === `${home}/`) {
+		return currentPath === home || currentPath === `${home}/`;
+	}
 	return currentPath === url || currentPath.startsWith(`${url}/`);
 };
+
+/**
+ * Wave 1 switcher:
+ * 1. Paired entry when Base passes `content` and getTranslations finds a locale row
+ * 2. Locale home when `content` is set but no pair exists (decision #8)
+ * 3. Otherwise prefix-swap current pathname (same segments; may 404 until Wave 2
+ *    bilingual seed / independent slugs)
+ */
+async function switchHref(target: Locale): Promise<string> {
+	if (target === locale) return currentPath;
+
+	if (content?.collection && content.id) {
+		try {
+			const { translations, error } = await getTranslations(
+				content.collection,
+				content.id,
+			);
+			if (!error) {
+				const match = translations.find((row) => row.locale === target);
+				if (match) {
+					return localePath(
+						target,
+						contentPublicPath(content.collection, match.slug),
+					);
+				}
+			}
+		} catch {
+			/* no translation group yet */
+		}
+		return localePath(target, "/");
+	}
+
+	return swapLocalePrefix(currentPath, target);
+}
+
+const langLinks = await Promise.all(
+	locales.map(async (code) => ({
+		code,
+		href: await switchHref(code),
+		label: t(locale, code === "en" ? "langEn" : "langIt"),
+		current: code === locale,
+	})),
+);
 
 const abcTransforms: Record<string, { r: string; x: string; y: string } | null> = {
 	A: null,
@@ -36,7 +107,11 @@ const brandParts = [...siteTitle].map((char) => {
 
 <header class="site-header">
 	<div class="site-header__inner">
-		<a class="site-brand" href="/" aria-label={`${siteTitle}, home`}>
+		<a
+			class="site-brand"
+			href={homeHref}
+			aria-label={`${siteTitle}, ${t(locale, "brandHome")}`}
+		>
 			{
 				siteLogo?.url ? (
 					<img src={siteLogo.url} alt={siteLogo.alt || siteTitle} />
@@ -57,37 +132,62 @@ const brandParts = [...siteTitle].map((char) => {
 			}
 		</a>
 
-		<nav class="site-nav" aria-label="Principale">
-			{
-				navItems.map((item) => (
-					<a
-						href={item.url}
-						target={item.target ?? undefined}
-						rel={
-							item.target === "_blank" ? "noopener noreferrer" : undefined
-						}
-						aria-current={isActive(item.url) ? "page" : undefined}
-					>
-						{item.label}
-					</a>
-				))
-			}
-		</nav>
+		<div class="site-header__end">
+			<nav class="site-nav" aria-label={t(locale, "navPrimary")}>
+				{
+					navItems.map((item) => (
+						<a
+							href={item.url}
+							target={item.target ?? undefined}
+							rel={
+								item.target === "_blank" ? "noopener noreferrer" : undefined
+							}
+							aria-current={isActive(item.url) ? "page" : undefined}
+						>
+							{item.label}
+						</a>
+					))
+				}
+			</nav>
 
-		<button
-			type="button"
-			class="site-header__menu-toggle"
-			aria-controls="mobile-menu"
-			aria-expanded="false"
-			aria-haspopup="dialog"
-			data-mobile-menu-open
-		>
-			<span class="sr-only">Apri menu</span>
-			<span class="site-header__burger" aria-hidden="true">
-				<span></span>
-				<span></span>
-			</span>
-		</button>
+			<nav class="site-lang" aria-label={t(locale, "langSwitcher")}>
+				{
+					langLinks.map((link, index) => (
+						<>
+							{index > 0 && (
+								<span class="site-lang__sep" aria-hidden="true">
+									|
+								</span>
+							)}
+							<a
+								href={link.href}
+								hreflang={link.code}
+								lang={link.code}
+								aria-current={link.current ? "true" : undefined}
+								class:list={[link.current && "is-current"]}
+							>
+								{link.label}
+							</a>
+						</>
+					))
+				}
+			</nav>
+
+			<button
+				type="button"
+				class="site-header__menu-toggle"
+				aria-controls="mobile-menu"
+				aria-expanded="false"
+				aria-haspopup="dialog"
+				data-mobile-menu-open
+			>
+				<span class="sr-only">{t(locale, "openMenu")}</span>
+				<span class="site-header__burger" aria-hidden="true">
+					<span></span>
+					<span></span>
+				</span>
+			</button>
+		</div>
 	</div>
 </header>
 
@@ -96,15 +196,15 @@ const brandParts = [...siteTitle].map((char) => {
 	class="mobile-menu"
 	role="dialog"
 	aria-modal="true"
-	aria-label="Menu del sito"
+	aria-label={t(locale, "siteMenu")}
 	data-mobile-menu
 	hidden
 >
 	<div class="mobile-menu__panel">
 		<div class="mobile-menu__bar">
-			<span class="mobile-menu__title">Menu</span>
+			<span class="mobile-menu__title">{t(locale, "menuTitle")}</span>
 			<button type="button" class="mobile-menu__close" data-mobile-menu-close>
-				<span class="sr-only">Chiudi menu</span>
+				<span class="sr-only">{t(locale, "closeMenu")}</span>
 				<svg
 					width="18"
 					height="18"
@@ -145,10 +245,96 @@ const brandParts = [...siteTitle].map((char) => {
 				))
 			}
 		</ul>
+
+		<nav class="mobile-menu__lang" aria-label={t(locale, "langSwitcher")}>
+			{
+				langLinks.map((link, index) => (
+					<>
+						{index > 0 && (
+							<span class="site-lang__sep" aria-hidden="true">
+								|
+							</span>
+						)}
+						<a
+							href={link.href}
+							hreflang={link.code}
+							lang={link.code}
+							aria-current={link.current ? "true" : undefined}
+							class:list={[link.current && "is-current"]}
+							data-mobile-menu-link
+						>
+							{link.label}
+						</a>
+					</>
+				))
+			}
+		</nav>
 	</div>
 </div>
 
 <style>
+	.site-header__end {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 1.25rem;
+		min-width: 0;
+	}
+
+	.site-lang {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		flex-shrink: 0;
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.6875rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.site-lang a {
+		text-decoration: none;
+		color: var(--muted);
+		transition: color 220ms ease;
+	}
+
+	.site-lang a:hover,
+	.site-lang a:focus-visible,
+	.site-lang a.is-current {
+		color: var(--title);
+	}
+
+	.site-lang a.is-current {
+		font-weight: 600;
+	}
+
+	.site-lang__sep {
+		color: color-mix(in oklab, var(--muted) 55%, transparent);
+		user-select: none;
+	}
+
+	.mobile-menu__lang {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		margin-top: auto;
+		padding-top: 1.5rem;
+		font-family: var(--font-mono, ui-monospace, monospace);
+		font-size: 0.75rem;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.mobile-menu__lang a {
+		text-decoration: none;
+		color: var(--muted);
+	}
+
+	.mobile-menu__lang a.is-current {
+		color: var(--title);
+		font-weight: 600;
+	}
+
 	.site-header__menu-toggle {
 		display: none;
 		align-items: center;
@@ -191,6 +377,10 @@ const brandParts = [...siteTitle].map((char) => {
 	@media (max-width: 767px) {
 		.site-header__menu-toggle {
 			display: inline-flex;
+		}
+
+		.site-header__inner :global(.site-nav) {
+			display: none;
 		}
 	}
 

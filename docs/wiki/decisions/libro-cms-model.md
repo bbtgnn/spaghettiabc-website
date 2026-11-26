@@ -25,6 +25,10 @@ As of `spaghettiabc-website@51eaca3` (2026-10-23): collection `book`, homepage S
 
 *(Supersedes earlier same-day note that book work was still uncommitted.)*
 
+## Collection name alignment (2026-11-26)
+
+On **2026-11-26** the grill for [#41](https://github.com/bbtgnn/spaghettiabc-website/issues/41) aligned the **technical** CMS collection name to **`libri`** (per seed), not `book`. The domain term **Libro** and Sezione Libro behavior above are unchanged. Details: [Full IT/EN i18n](./i18n-it-en.md).
+
 ## Explicitly out of scope (2026-10-23)
 
 - Real visual design of the book page

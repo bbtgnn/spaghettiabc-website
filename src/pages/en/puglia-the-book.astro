@@ -1,24 +1,36 @@
 ---
-import { getEmDashEntry, getSeoMeta, getSiteSettings } from "emdash";
+import { getSeoMeta, getSiteSettings } from "emdash";
 import { Image, PortableText } from "emdash/ui";
-import Base from "../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import Base from "../../layouts/Base.astro";
+import {
+	getEmDashEntryWithFallback,
+	localePath,
+	resolveLocale,
+	t,
+} from "../../utils/i18n";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 
-const { entry: book, cacheHint } = await getEmDashEntry("libri", "puglia-the-book");
+const locale = resolveLocale(Astro.currentLocale);
+const { entry: book, cacheHint } = await getEmDashEntryWithFallback(
+	"libri",
+	"puglia-the-book",
+	{ locale },
+);
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 
 const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const bookPath = localePath(locale, "/puglia-the-book");
 
 const seo = book
 	? getSeoMeta(book, {
 			siteTitle,
 			siteUrl: Astro.url.origin,
-			path: "/puglia-the-book",
+			path: bookPath,
 		})
 	: {
-			title: `Il libro · ${siteTitle}`,
-			ogTitle: "Il libro",
-			description: "Il libro di Puglia — contenuto non ancora disponibile.",
+			title: `${t(locale, "libroEmptyTitle")} · ${siteTitle}`,
+			ogTitle: t(locale, "libroEmptyTitle"),
+			description: t(locale, "libroEmptyBody"),
 			canonical: undefined,
 			ogImage: undefined,
 		};
@@ -66,10 +78,10 @@ const seo = book
 			</article>
 		) : (
 			<section class="book-page book-page--empty">
-				<h1>Il libro</h1>
+				<h1>{t(locale, "libroEmptyTitle")}</h1>
 				<p>
-					Il Libro non è ancora disponibile.{" "}
-					<a href="/_emdash/admin/content/libri">Apri l’admin</a>.
+					{t(locale, "libroEmptyBody")}{" "}
+					<a href="/_emdash/admin/content/libri">{t(locale, "openAdmin")}</a>.
 				</p>
 			</section>
 		)

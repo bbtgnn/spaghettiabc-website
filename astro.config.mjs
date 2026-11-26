@@ -9,6 +9,16 @@ import emdash from "emdash/astro";
 export default defineConfig({
 	output: "server",
 	adapter: cloudflare(),
+	i18n: {
+		defaultLocale: "en",
+		locales: ["en", "it"],
+		routing: {
+			prefixDefaultLocale: true,
+			redirectToDefaultLocale: true,
+		},
+		// No Astro URL fallback: IT paths must stay on /it/... Content
+		// fallback (requested → EN → IT) is getEmDashEntryWithFallback only.
+	},
 	image: {
 		layout: "constrained",
 		responsiveStyles: true,

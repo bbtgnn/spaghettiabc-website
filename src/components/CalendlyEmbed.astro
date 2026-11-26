@@ -1,10 +1,17 @@
 ---
+import { resolveLocale, t } from "../utils/i18n";
+
 interface Props {
 	url: string;
 	id?: string;
+	locale?: string;
 }
 
-const { url, id } = Astro.props;
+const { url, id, locale: localeProp } = Astro.props;
+const locale = resolveLocale(localeProp ?? Astro.currentLocale);
+const buttonText = t(locale, "calendlyButtonText");
+const iframeTitle = t(locale, "calendlyIframeTitle");
+const loadingLabel = t(locale, "calendlyLoading");
 
 /**
  * SSR fallback only — client boot overwrites from live `--accent` / `--ink`.
@@ -19,7 +26,7 @@ const CALENDLY_PRIMARY_COLOR = "c43c2c";
  * Event-type + landing/team params so either URL shape hides chrome details.
  * Colors are refreshed from CSS tokens on the client before initInlineWidget.
  */
-function withCalendlyEmbedParams(raw: string): string {
+function withCalendlyEmbedParams(raw: string, label: string): string {
 	try {
 		const parsed = new URL(raw);
 		parsed.searchParams.set("hide_event_type_details", "1");
@@ -27,14 +34,14 @@ function withCalendlyEmbedParams(raw: string): string {
 		parsed.searchParams.set("hide_gdpr_banner", "1");
 		parsed.searchParams.set("text_color", CALENDLY_TEXT_COLOR);
 		parsed.searchParams.set("primary_color", CALENDLY_PRIMARY_COLOR);
-		parsed.searchParams.set("button_text", "Book tour");
+		parsed.searchParams.set("button_text", label);
 		return parsed.toString();
 	} catch {
 		return raw;
 	}
 }
 
-const embedUrl = withCalendlyEmbedParams(url);
+const embedUrl = withCalendlyEmbedParams(url, buttonText);
 ---
 
 <!--
@@ -54,7 +61,7 @@ const embedUrl = withCalendlyEmbedParams(url);
 		class="calendly-embed__ssr"
 		data-calendly-ssr
 		src={embedUrl}
-		title="Prenotazione"
+		title={iframeTitle}
 		loading="lazy"
 		referrerpolicy="no-referrer-when-downgrade"
 	></iframe>
@@ -66,7 +73,7 @@ const embedUrl = withCalendlyEmbedParams(url);
 		aria-hidden="true"
 	>
 		<span class="calendly-embed__spinner-ring" aria-hidden="true"></span>
-		<span class="calendly-embed__spinner-label">Caricamento prenotazione…</span>
+		<span class="calendly-embed__spinner-label">{loadingLabel}</span>
 	</div>
 </div>
 

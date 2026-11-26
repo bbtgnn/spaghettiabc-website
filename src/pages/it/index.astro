@@ -1,0 +1,474 @@
+---
+import { getSiteSettings } from "emdash";
+import { Image } from "emdash/ui";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import Base from "../../layouts/Base.astro";
+import PartnerLogoMarquee from "../../components/PartnerLogoMarquee.astro";
+import SezioneTour from "../../components/SezioneTour.astro";
+import {
+	getEmDashEntryWithFallback,
+	localePath,
+	resolveLocale,
+	t,
+} from "../../utils/i18n";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+
+const locale = resolveLocale(Astro.currentLocale);
+const { entry: home, cacheHint } = await getEmDashEntryWithFallback(
+	"homepage",
+	"home",
+	{
+		locale,
+		references: { featured_tours: true },
+	},
+);
+if (Astro.cache?.enabled) {
+	Astro.cache.set(cacheHint);
+}
+
+const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
+	await getSiteSettings(),
+);
+
+const featuredTours = home?.references?.featured_tours?.entries ?? [];
+const partnerLogos = home?.data.partner_logos ?? [];
+const googleReviews = home?.data.google_reviews ?? [];
+const googleScore = Number(home?.data.google_score) || 0;
+const googleReviewCount = Number(home?.data.google_review_count) || 0;
+const googleProfileUrl = home?.data.google_profile_url;
+const pageTitle = home?.data.hero_title ?? siteTitle;
+const pageDescription = home?.data.hero_subtitle ?? siteTagline;
+
+const toursHref = localePath(locale, "/tours");
+const bookHref = localePath(locale, "/puglia-the-book");
+const trainingHref = localePath(locale, "/training");
+---
+
+<Base
+	title={pageTitle}
+	description={pageDescription}
+	content={home
+		? { collection: "homepage", id: home.data.id, slug: home.id }
+		: undefined}
+>
+	{
+		home ? (
+			<>
+				<section class="shell hero">
+					<div class="hero__copy hero-in">
+						<h1 class="type-hero" {...home.edit.hero_title}>
+							{home.data.hero_title}
+						</h1>
+						{home.data.hero_subtitle && (
+							<p class="type-lead hero__lede" {...home.edit.hero_subtitle}>
+								{home.data.hero_subtitle}
+							</p>
+						)}
+						<div class="hero__actions">
+							{home.data.tour_cta_label && (
+								<a class="btn btn-primary" href={toursHref} {...home.edit.tour_cta_label}>
+									{home.data.tour_cta_label}
+								</a>
+							)}
+							<a class="btn btn-outline" href={bookHref}>
+								{t(locale, "heroBookCta")}
+							</a>
+						</div>
+					</div>
+
+					{home.data.hero_image && (
+						<figure class="hero__figure hero-in" style="--reveal-delay:120ms">
+							<div class="hero__frame">
+								<div class="parallax" {...home.edit.hero_image}>
+									<Image image={home.data.hero_image} />
+								</div>
+							</div>
+							<figcaption class="mono hero__caption">
+								<span>{siteTitle}</span>
+								<span>Puglia · Italia</span>
+							</figcaption>
+						</figure>
+					)}
+				</section>
+
+				<SezioneTour
+					title={home.data.tour_title}
+					subtitle={home.data.tour_subtitle}
+					ctaLabel={home.data.tour_cta_label}
+					tours={featuredTours}
+					reviews={googleReviews}
+					googleScore={googleScore}
+					googleReviewCount={googleReviewCount}
+					googleProfileUrl={googleProfileUrl}
+					locale={locale}
+					edit={{
+						tour_title: home.edit.tour_title,
+						tour_subtitle: home.edit.tour_subtitle,
+						tour_cta_label: home.edit.tour_cta_label,
+					}}
+				/>
+
+				<section class="shell section feature">
+					<div class="rule" data-reveal="line" />
+					<div class="feature__layout">
+						{home.data.book_image && (
+							<a
+								href={bookHref}
+								class="feature__media"
+								data-reveal="mask"
+								aria-label={home.data.book_title ?? t(locale, "heroBookCta")}
+							>
+								<div {...home.edit.book_image}>
+									<Image image={home.data.book_image} />
+								</div>
+							</a>
+						)}
+						<div class="feature__copy" data-reveal>
+							{home.data.book_title && (
+								<h2 class="type-h2" {...home.edit.book_title}>
+									{home.data.book_title}
+								</h2>
+							)}
+							{home.data.book_subtitle && (
+								<p class="type-lead" {...home.edit.book_subtitle}>
+									{home.data.book_subtitle}
+								</p>
+							)}
+							{home.data.book_cta_label && (
+								<a class="btn btn-outline btn--arrow" href={bookHref} {...home.edit.book_cta_label}>
+									<span class="btn__label">{home.data.book_cta_label}</span>
+									<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+								</a>
+							)}
+						</div>
+					</div>
+				</section>
+
+				<section class="shell section feature feature--flip">
+					<div class="rule" data-reveal="line" />
+					<div class="feature__layout">
+						<a
+							href={trainingHref}
+							class="feature__media"
+							data-reveal="mask"
+							aria-label={home.data.training_title ?? t(locale, "trainingEmptyTitle")}
+						>
+							{home.data.training_image ? (
+								<div {...home.edit.training_image}>
+									<Image image={home.data.training_image} />
+								</div>
+							) : (
+								<div
+									class="feature__placeholder"
+									aria-hidden="true"
+									{...home.edit.training_image}
+								/>
+							)}
+						</a>
+						<div class="feature__copy" data-reveal>
+							{home.data.training_title && (
+								<h2 class="type-h2" {...home.edit.training_title}>
+									{home.data.training_title}
+								</h2>
+							)}
+							{home.data.training_subtitle && (
+								<p class="type-lead" {...home.edit.training_subtitle}>
+									{home.data.training_subtitle}
+								</p>
+							)}
+							{home.data.training_cta_label && (
+								<a class="btn btn-outline btn--arrow" href={trainingHref} {...home.edit.training_cta_label}>
+									<span class="btn__label">{home.data.training_cta_label}</span>
+									<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
+								</a>
+							)}
+						</div>
+					</div>
+				</section>
+
+				<section class="shell section" aria-labelledby="dicono-heading">
+					<div class="rule" data-reveal="line" />
+					<div class="section__head" data-reveal>
+						{home.data.dicono_title && (
+							<h2 class="type-h2" id="dicono-heading" {...home.edit.dicono_title}>
+								{home.data.dicono_title}
+							</h2>
+						)}
+					</div>
+					{home.data.dicono_subtitle && (
+						<p
+							class="type-lead section__lede"
+							data-reveal
+							{...home.edit.dicono_subtitle}
+						>
+							{home.data.dicono_subtitle}
+						</p>
+					)}
+
+					{partnerLogos.length > 0 && (
+						<div data-reveal {...home.edit.partner_logos}>
+							<PartnerLogoMarquee logos={partnerLogos} />
+						</div>
+					)}
+				</section>
+
+				<section class="newsletter" aria-labelledby="newsletter-heading">
+					<div class="shell newsletter__inner">
+						{home.data.newsletter_title && (
+							<h2
+								id="newsletter-heading"
+								class="type-h2"
+								data-reveal
+								{...home.edit.newsletter_title}
+							>
+								{home.data.newsletter_title}
+							</h2>
+						)}
+						{home.data.newsletter_subtitle && (
+							<p class="type-lead newsletter__lede" data-reveal {...home.edit.newsletter_subtitle}>
+								{home.data.newsletter_subtitle}
+							</p>
+						)}
+
+						<form class="newsletter-form" id="newsletter-form" novalidate data-reveal>
+							<label class="field-label" for="newsletter-email">Email</label>
+							<div class="newsletter-field">
+								<input
+									type="email"
+									id="newsletter-email"
+									name="email"
+									autocomplete="email"
+									placeholder={home.data.newsletter_email_placeholder ?? ""}
+									{...home.edit.newsletter_email_placeholder}
+								/>
+								<button
+									class="btn btn-primary"
+									type="submit"
+									{...home.edit.newsletter_button_label}
+								>
+									{home.data.newsletter_button_label}
+								</button>
+							</div>
+							<p
+								class="newsletter-form__status"
+								id="newsletter-status"
+								role="status"
+								aria-live="polite"
+								hidden
+							/>
+						</form>
+						<p class="label newsletter__note">
+							{t(locale, "newsletterNote")}
+						</p>
+					</div>
+				</section>
+			</>
+		) : (
+			<section class="shell section">
+				<p class="type-body">
+					{t(locale, "homeMissing")}{" "}
+					<a class="link" href="/_emdash/admin/content/homepage">{t(locale, "homeOpenAdmin")}</a>.
+				</p>
+			</section>
+		)
+	}
+</Base>
+
+<style>
+	.hero {
+		display: grid;
+		align-items: center;
+		gap: 2.5rem 3rem;
+		padding-block: 2rem 1rem;
+	}
+
+	@media (min-width: 900px) {
+		.hero {
+			grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+			padding-block: 3rem 2.5rem;
+		}
+	}
+
+	.hero__lede {
+		margin-top: 1.75rem;
+		max-width: 42ch;
+	}
+
+	.hero__actions {
+		margin-top: 2.25rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.hero__frame {
+		overflow: hidden;
+		background: var(--surface);
+	}
+
+	.hero__frame :global(img) {
+		width: 100%;
+		aspect-ratio: 4 / 3;
+		object-fit: cover;
+	}
+
+	@media (min-width: 900px) {
+		.hero__frame :global(img) {
+			aspect-ratio: 8 / 7;
+		}
+	}
+
+	.hero__caption {
+		margin-top: 0.75rem;
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		font-size: var(--font-ui-size-sm);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--muted);
+	}
+
+	/* Casing on each span: parent is flex, so ::first-letter would not apply there */
+	.hero__caption > span {
+		display: inline-block;
+	}
+
+	.section {
+		padding-block: 0 2.5rem;
+	}
+
+	.section__head {
+		margin-top: 2rem;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: end;
+		justify-content: space-between;
+		gap: 1rem 2rem;
+	}
+
+	.section__head .type-h2 {
+		max-width: 14ch;
+	}
+
+	.section__lede {
+		margin-top: 1.25rem;
+		max-width: 48ch;
+	}
+
+	.feature__layout {
+		margin-top: 2.5rem;
+		display: grid;
+		gap: 2.5rem;
+		align-items: center;
+	}
+
+	@media (min-width: 900px) {
+		.feature__layout {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+			gap: 3rem;
+		}
+
+		.feature--flip .feature__media {
+			order: 2;
+		}
+
+		.feature--flip .feature__copy {
+			order: 1;
+		}
+	}
+
+	.feature__media {
+		display: block;
+		overflow: hidden;
+		background: var(--surface);
+	}
+
+	.feature__media :global(img),
+	.feature__placeholder {
+		width: 100%;
+		aspect-ratio: 5 / 4;
+		object-fit: cover;
+		transition: transform 1100ms var(--ease-out-expo);
+	}
+
+	.feature__placeholder {
+		background: var(--surface-strong);
+	}
+
+	.feature__media:hover :global(img) {
+		transform: scale(1.04);
+	}
+
+	.feature__copy {
+		display: grid;
+		gap: 1.25rem;
+		align-content: start;
+	}
+
+	.feature__copy .type-lead {
+		text-wrap: balance;
+	}
+
+	.newsletter {
+		margin-top: 6rem;
+		padding-block: 5rem;
+		border-top: 1px solid var(--line);
+		text-align: center;
+	}
+
+	@media (min-width: 768px) {
+		.newsletter {
+			margin-top: 9rem;
+			padding-block: 7rem;
+		}
+	}
+
+	.newsletter__inner {
+		display: grid;
+		justify-items: center;
+		gap: 1.25rem;
+	}
+
+	.newsletter__lede {
+		max-width: 40ch;
+	}
+
+	.newsletter-form {
+		width: min(100%, 28rem);
+		display: grid;
+		gap: 0.65rem;
+		margin-top: 1rem;
+	}
+
+	.newsletter-form__status {
+		margin: 0;
+		font-family: var(--font-ui);
+		font-size: var(--font-ui-size);
+		letter-spacing: var(--font-ui-tracking);
+		color: var(--muted);
+	}
+
+	.newsletter__note {
+		margin-top: 0.5rem;
+	}
+</style>
+
+<script define:vars={{ newsletterInvalid: t(locale, "newsletterInvalid"), newsletterThanks: t(locale, "newsletterThanks") }}>
+	const form = document.getElementById("newsletter-form");
+	const status = document.getElementById("newsletter-status");
+	if (form && status) {
+		form.addEventListener("submit", (event) => {
+			event.preventDefault();
+			const email = new FormData(form).get("email");
+			if (!email || typeof email !== "string" || !email.includes("@")) {
+				status.hidden = false;
+				status.textContent = newsletterInvalid;
+				return;
+			}
+			status.hidden = false;
+			status.textContent = newsletterThanks;
+			const button = form.querySelector('button[type="submit"]');
+			if (button instanceof HTMLButtonElement) button.disabled = true;
+		});
+	}
+</script>

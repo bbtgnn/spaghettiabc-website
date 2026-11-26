@@ -4,8 +4,12 @@ Dominio del sito di Flavia: tour e contenuti editoriali presentati tramite EmDas
 
 ## Language
 
+**Locale**:
+Lingua del sito (`en` | `it`): routing (`/en/...`, `/it/...`), traduzioni CMS e copy dell’interfaccia. Distinta dal campo Tour `language` (lingua parlata dell’esperienza). Default pubblico: EN (`/` → `/en/`).
+_Avoid_: confondere con Tour `language`; `_en` field duplication (scartato per #41, 2026-11-26)
+
 **Libro**:
-Un contenuto di prima classe nel CMS (collection `book`): il titolo che Flavia vende. Sul sito esiste un solo Libro canonico (entry id / URL `/puglia-the-book`) con pagina dedicata.
+Un contenuto di prima classe nel CMS (collection `libri`): il titolo che Flavia vende. Sul sito esiste un solo Libro canonico (slug `puglia-the-book`; URL `/en/puglia-the-book` e `/it/puglia-the-book`) con pagina dedicata.
 _Avoid_: blocco homepage, prodotto, merchandise, catalogo libri, `books`
 
 **Sezione Libro**:
@@ -17,11 +21,11 @@ Esperienza cibo guidata di Flavia — di solito in un paese pugliese, a volte un
 _Avoid_: viaggio, pacchetto (salvo copy marketing), itinerario (come termine definitorio)
 
 **Catalogo Tour**:
-La pagina `/tours` che elenca tutte le entry Tour (teaser verso le Schede Tour).
+La pagina `/en/tours` (e `/it/tours`) che elenca tutte le entry Tour (teaser verso le Schede Tour).
 _Avoid_: lista tour; product listing; non usare «catalogo» per indicare una collection CMS
 
 **Scheda Tour**:
-La pagina dettaglio di un Tour a `/tours/{slug}`: hero a immagine piena, poi corpo editoriale | colonna prenotazione (specs + Calendly) quando c’è un URL Calendly.
+La pagina dettaglio di un Tour a `/en/tours/{slug}` o `/it/tours/{slug}` (slug indipendenti per locale): hero a immagine piena, poi corpo editoriale | colonna prenotazione (specs + Calendly) quando c’è un URL Calendly.
 _Avoid_: product page, pagina prodotto, PDP, tour detail (come nome di dominio); Add to cart; Atelier gallery|info (scartato)
 
 **Impostazioni sito**:

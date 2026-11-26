@@ -1,6 +1,7 @@
 ---
 import { Image } from "emdash/ui";
 import Star from "@lucide/astro/icons/star";
+import { resolveLocale, t } from "../utils/i18n";
 
 interface Review {
 	author: string;
@@ -20,6 +21,7 @@ interface Props {
 	googleScore?: number;
 	googleReviewCount?: number;
 	googleProfileUrl?: string | null;
+	locale?: string;
 }
 
 const {
@@ -27,8 +29,10 @@ const {
 	googleScore = 0,
 	googleReviewCount = 0,
 	googleProfileUrl = null,
+	locale: localeProp,
 } = Astro.props;
 
+const locale = resolveLocale(localeProp ?? Astro.currentLocale);
 const starSlots = [1, 2, 3, 4, 5] as const;
 const hasScore = googleScore > 0 || googleReviewCount > 0 || Boolean(googleProfileUrl);
 const show = hasScore || reviews.length > 0;
@@ -43,13 +47,17 @@ const show = hasScore || reviews.length > 0;
 						{googleScore > 0 && (
 							<p
 								class="review-rail__score-value"
-								aria-label={`Valutazione media: ${googleScore.toFixed(1)} su 5`}
+								aria-label={t(locale, "reviewAvgLabel", {
+									score: googleScore.toFixed(1),
+								})}
 							>
 								{googleScore.toFixed(1)}
 							</p>
 						)}
 						{googleReviewCount > 0 && (
-							<p class="review-rail__score-count">{googleReviewCount} reviews</p>
+							<p class="review-rail__score-count">
+								{t(locale, "reviewCount", { count: googleReviewCount })}
+							</p>
 						)}
 						{googleProfileUrl && (
 							<a
@@ -58,7 +66,7 @@ const show = hasScore || reviews.length > 0;
 								target="_blank"
 								rel="noopener noreferrer"
 							>
-								Vedi su Google
+								{t(locale, "reviewSeeOnGoogle")}
 							</a>
 						)}
 					</aside>
@@ -68,7 +76,7 @@ const show = hasScore || reviews.length > 0;
 					<div
 						class="review-rail__track"
 						role="list"
-						aria-label="Recensioni Google"
+						aria-label={t(locale, "reviewGoogleList")}
 					>
 						{reviews.map((item) => {
 							const rating = Math.min(5, Math.max(0, Number(item.rating) || 5));
@@ -77,7 +85,7 @@ const show = hasScore || reviews.length > 0;
 									<div class="review-rail__card">
 										<div
 											class="star-row review-rail__card-stars"
-											aria-label={`Valutazione: ${rating} su 5`}
+											aria-label={t(locale, "reviewRatingLabel", { rating })}
 										>
 											{starSlots.map((n) => (
 												<Star

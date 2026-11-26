@@ -52,9 +52,10 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
 - When Astro's cache is enabled, pass content-query hints to `Astro.cache.set(cacheHint)`. Use the `WithCacheHint` variants for site settings, menus, taxonomies, and widget areas rendered by cached routes.
 - Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
+- **i18n (#41):** default locale **EN**; public in-scope URLs use `/en/...` and `/it/` prefixes (`/` → `/en/`). Page files live under `src/pages/en/` and `src/pages/it/` (Astro `prefixDefaultLocale`). **Locale** (site language) ≠ Tour field `language` (spoken language). See [`docs/wiki/decisions/i18n-it-en.md`](docs/wiki/decisions/i18n-it-en.md) and `GLOSSARY.md`.
 - A **Tour** is a guided food experience in one Puglia town — not multi-stop Italy travel. See `GLOSSARY.md` for Catalogo Tour / Scheda Tour / Sezione Tour / Tour.
-- **Catalogo Tour** (`/tours`) = shell intro + highlight pair (`TourLargeCard`, first two in `featured_tours` order) + remaining tours as `TourLargeCard` in shared `.tour-grid`.
-- **Scheda Tour** (`/tours/[slug]`) = tall hero + body | booking column (separate bordered specs + Calendly cards); no related tours; effective Calendly URL = tour `calendly_url` (trim) else `site_globals`/`site` fallback else no embed. FAQ from `site_globals`/`site` (empty → hide Domande frequenti). Mobile (<768): intro→book→body (`copycol` is `display: contents` + flex `order`). ≥768: intro full width, then centered `| copycol (≤65ch) | book (≤400px) |`. Site shell max-width is 1280px (`--shell`).
+- **Catalogo Tour** (`/en/tours`, `/it/tours`) = shell intro + highlight pair (`TourLargeCard`, first two in `featured_tours` order) + remaining tours as `TourLargeCard` in shared `.tour-grid`.
+- **Scheda Tour** (`/en/tours/[slug]`, `/it/tours/[slug]`) = tall hero + body | booking column (separate bordered specs + Calendly cards); no related tours; effective Calendly URL = tour `calendly_url` (trim) else `site_globals`/`site` fallback else no embed. FAQ from `site_globals`/`site` (empty → hide Domande frequenti). Mobile (<768): intro→book→body (`copycol` is `display: contents` + flex `order`). ≥768: intro full width, then centered `| copycol (≤65ch) | book (≤400px) |`. Site shell max-width is 1280px (`--shell`).
 - `.tour-grid` lives in `src/styles/theme.css` — Catalogo Tour grid; do not redefine page-locally. `.tour-highlight` is shared with homepage Sezione Tour.
 - Homepage Sezione Tour uses `SezioneTour.astro`: equal vertical highlight pair (first two `featured_tours`) + compact `.tour-rail--compact` + `.review-rail`. Catalogo reuses `TourLargeCard` for highlight + grid.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
@@ -68,16 +69,18 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 
 ## Pages
 
-| Page          | Path               | What it shows                                      |
-| ------------- | ------------------ | -------------------------------------------------- |
-| Home          | `/`                | Site title + tagline, links into Posts / About     |
-| Catalogo Tour | `/tours`           | Intro + highlight pair + `.tour-grid` cards |
-| Scheda Tour   | `/tours/[slug]`    | Hero + body | specs/Calendly; no related |
-| All posts     | `/posts`           | Post list                                          |
-| Post detail   | `/posts/[slug]`    | Post content                                       |
-| Page          | `/[slug]`          | Static page content (e.g. `/about`)                |
-| Category      | `/category/[slug]` | Posts filtered by category                         |
-| Tag           | `/tag/[slug]`      | Posts filtered by tag                              |
+| Page          | Path                         | What it shows                                      |
+| ------------- | ---------------------------- | -------------------------------------------------- |
+| Home          | `/` → `/en/`; also `/it/`    | Locale homepage (CMS `homepage`)                   |
+| Catalogo Tour | `/en/tours`, `/it/tours`     | Intro + highlight pair + `.tour-grid` cards     |
+| Scheda Tour   | `/en/tours/[slug]`, `/it/...`| Hero + body \| specs/Calendly; no related          |
+| Libro         | `/en/puglia-the-book`, `/it/...` | Canonical Libro page                          |
+| Formazione    | `/en/training`, `/it/...`    | Training singleton                                 |
+| All posts     | `/posts`                     | Post list (out of scope for #41; unprefixed)       |
+| Post detail   | `/posts/[slug]`              | Post content                                       |
+| Page          | `/[slug]`                    | Static page content (e.g. `/about`)                |
+| Category      | `/category/[slug]`           | Posts filtered by category                         |
+| Tag           | `/tag/[slug]`                | Posts filtered by tag                              |
 
 ## Schema
 
