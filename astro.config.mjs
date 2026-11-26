@@ -18,6 +18,18 @@ export default defineConfig({
 			database: d1({ binding: "DB", session: "auto", coalesce: true }),
 			storage: r2({ binding: "MEDIA" }),
 			plugins: [formHeadingsPlugin()],
+			admin: {
+				// Keep Menus + Redirects; hide unused built-in admin areas (#31).
+				hiddenNavItems: [
+					"calendar",
+					"media",
+					"comments",
+					"widgets",
+					"sections",
+					"bylines",
+					"import",
+				],
+			},
 		}),
 	],
 	devToolbar: { enabled: false },
