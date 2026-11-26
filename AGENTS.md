@@ -3,26 +3,28 @@ This is an EmDash site -- a CMS built on Astro with a full admin UI.
 ## Commands
 
 ```bash
-bun dev                 # Start Astro with local D1 + R2 (via Wrangler)
-npm run wipe:local      # Wipe local Wrangler D1/R2 (stop `dev` first); next boot re-seeds
-npm run seed            # Upsert seed into ./data.db (does not delete missing taxonomies)
+bun dev                 # Start Astro with Node + SQLite (`./data.db`) + local uploads
+npm run wipe:local      # Wipe `data.db` + `uploads/` (stop `dev` first)
+npm run seed            # Upsert seed into `./data.db` (stop `dev` first)
 npm run deploy          # Build + wrangler deploy to spaghettiabc-staging
 npx emdash types        # Regenerate TypeScript types from a running site
-npm run migrate:status  # Inspect D1 migration target (needs wrangler auth)
+npm run migrate:status  # Inspect remote D1 migration target (needs wrangler auth)
 ```
+
+Local dev uses Node + SQLite + filesystem storage so `$media.file` works. Production build/deploy stays on Cloudflare Workers + D1 + R2 (`import.meta.env.PROD` in `astro.config.mjs`).
 
 The admin UI is at `http://localhost:4321/_emdash/admin` (local) or `https://spaghettiabc-staging.<account>.workers.dev/_emdash/admin` (staging).
 
 ## Cloudflare staging / repo deploy
 
-Stack: Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`, CI: `.github/workflows/deploy.yml`.
+Stack (prod): Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`, CI: `.github/workflows/deploy.yml`.
 
 **Full guide (new Cloudflare account → first deploy → GitHub Actions):** see [`DEPLOY.md`](DEPLOY.md).
 ## Key Files
 
 | File                     | Purpose                                                                            |
 | ------------------------ | ---------------------------------------------------------------------------------- |
-| `astro.config.mjs`       | Astro config with `emdash()` integration, D1 + R2                                  |
+| `astro.config.mjs`       | Astro config with `emdash()` — Node/SQLite locally, D1 + R2 on prod build          |
 | `wrangler.jsonc`         | Worker name, D1/R2 bindings, cron, Durable Objects                                 |
 | `src/worker.ts`          | Cloudflare Worker entry (fetch + scheduled)                                        |
 | `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                           |
@@ -59,7 +61,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - Homepage Sezione Tour uses `SezioneTour.astro`: equal vertical highlight pair (first two `featured_tours`) + compact `.tour-rail--compact` + `.review-rail`. Catalogo reuses `TourLargeCard` for highlight + grid.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
 - **Sezione Dicono di me** is homepage-only logos (`partner_logos`). Punteggio/Recensioni Google render in **Sezione Tour**. No `/collaborazioni` landing. See `GLOSSARY.md`.
-- **Libro / Edizioni**: collection `libri` (title, subtitle, cover, excerpt, content). **Pagina Libri** `/puglia-the-book` is a hardcoded hub; **Scheda Edizione** is `/puglia-the-book/[slug]`. Homepage **Sezione Libro** keeps `book_title`/`book_subtitle` and loads published editions as cover+title teasers (no `book_image` / `book_cta_label`). See `GLOSSARY.md`.
+- **Libro / Edizioni**: collection `libri` (title, subtitle, cover, optional `buy_url`/`buy_label`, content). No hub page — homepage **Sezione Libro** (`/#libro`) is the listing; **Scheda Edizione** is `/books/[slug]` (back link → `/#libro`). Sezione chrome: `book_title` / `book_subtitle` / `featured_books` (ordered refs to `libri`) / `book_cta_label` (teaser button → scheda). Buy CTA only on the scheda. See `GLOSSARY.md`.
 
 ## This Template
 
@@ -74,8 +76,8 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 | Home          | `/`                | Site title + tagline, links into Posts / About     |
 | Catalogo Tour | `/tours`           | Intro + highlight pair + `.tour-grid` cards |
 | Scheda Tour   | `/tours/[slug]`    | Hero + body | specs/Calendly; no related |
-| Pagina Libri  | `/puglia-the-book` | Hub intro + edition teasers                |
-| Scheda Edizione | `/puglia-the-book/[slug]` | Cover + title/subtitle/excerpt + content |
+| Sezione Libro | `/#libro` | Homepage edition teasers |
+| Scheda Edizione | `/books/[slug]` | Cover + title/subtitle + content |
 | All posts     | `/posts`           | Post list                                          |
 | Post detail   | `/posts/[slug]`    | Post content                                       |
 | Page          | `/[slug]`          | Static page content (e.g. `/about`)                |

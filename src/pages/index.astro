@@ -1,5 +1,5 @@
 ---
-import { getEmDashCollection, getEmDashEntry, getSiteSettings } from "emdash";
+import { getEmDashEntry, getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Base from "../layouts/Base.astro";
@@ -8,16 +8,10 @@ import SezioneTour from "../components/SezioneTour.astro";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
 const { entry: home, cacheHint } = await getEmDashEntry("homepage", "home", {
-	references: { featured_tours: true },
+	references: { featured_tours: true, featured_books: true },
 });
-const { entries: bookEntries, cacheHint: booksCacheHint } =
-	await getEmDashCollection("libri", {
-		status: "published",
-		limit: 20,
-	});
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
-	Astro.cache.set(booksCacheHint);
 }
 
 const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
@@ -25,11 +19,8 @@ const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 );
 
 const featuredTours = home?.references?.featured_tours?.entries ?? [];
-const books = [...bookEntries].sort((a, b) => {
-	const titleCmp = (a.data.title ?? "").localeCompare(b.data.title ?? "", "it");
-	if (titleCmp !== 0) return titleCmp;
-	return (a.data.subtitle ?? "").localeCompare(b.data.subtitle ?? "", "it");
-});
+const books = home?.references?.featured_books?.entries ?? [];
+const bookCtaLabel = home?.data.book_cta_label?.trim() || "Scopri";
 const partnerLogos = home?.data.partner_logos ?? [];
 const googleReviews = home?.data.google_reviews ?? [];
 const googleScore = Number(home?.data.google_score) || 0;
@@ -60,7 +51,7 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 									{home.data.tour_cta_label}
 								</a>
 							)}
-							<a class="btn btn-outline" href="/puglia-the-book">
+							<a class="btn btn-outline" href="/#libro">
 								Il libro
 							</a>
 						</div>
@@ -97,30 +88,36 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 					}}
 				/>
 
-				<section class="shell section sezione-libro" aria-labelledby="book-heading">
+				<section
+					id="libro"
+					class="shell section sezione-libro"
+					aria-labelledby="book-heading"
+				>
 					<div class="rule" data-reveal="line" />
 					<div class="sezione-libro__layout">
 						<div class="sezione-libro__intro" data-reveal>
-							{home.data.book_title && (
-								<h2 class="type-h2" id="book-heading" {...home.edit.book_title}>
-									{home.data.book_title}
-								</h2>
-							)}
-							{home.data.book_subtitle && (
-								<p class="type-lead sezione-libro__lede" {...home.edit.book_subtitle}>
-									{home.data.book_subtitle}
-								</p>
-							)}
-							<div class="sezione-libro__illust" aria-hidden="true">
-								<img
-									class="sezione-libro__illust-img"
-									src="/illustrations/pomodori.svg"
-									alt=""
-									width="640"
-									height="640"
-									loading="lazy"
-									decoding="async"
-								/>
+							<div class="sezione-libro__stack">
+								{home.data.book_title && (
+									<h2 class="type-h2" id="book-heading" {...home.edit.book_title}>
+										{home.data.book_title}
+									</h2>
+								)}
+								{home.data.book_subtitle && (
+									<p class="type-lead sezione-libro__lede" {...home.edit.book_subtitle}>
+										{home.data.book_subtitle}
+									</p>
+								)}
+								<div class="sezione-libro__illust" aria-hidden="true">
+									<img
+										class="sezione-libro__illust-img"
+										src="/illustrations/pomodori.svg"
+										alt=""
+										width="373"
+										height="160"
+										loading="lazy"
+										decoding="async"
+									/>
+								</div>
 							</div>
 						</div>
 
@@ -130,13 +127,13 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 								aria-label="Edizioni del libro"
 							>
 								{books.map((book) => {
-									const label = book.data.subtitle ?? book.data.title;
+									const label = book.data.title;
 									return (
 										<li class="sezione-libro__edition">
 											{book.data.cover && (
 												<a
 													class="sezione-libro__cover-link"
-													href={`/puglia-the-book/${book.id}`}
+													href={`/books/${book.id}`}
 													aria-label={label}
 												>
 													<div class="sezione-libro__cover" {...book.edit.cover}>
@@ -144,17 +141,13 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 													</div>
 												</a>
 											)}
-											<h3 class="sezione-libro__edition-title">{label}</h3>
-											{book.data.excerpt && (
-												<p class="sezione-libro__edition-lede" {...book.edit.excerpt}>
-													{book.data.excerpt}
-												</p>
-											)}
-											<a
-												class="btn btn-primary"
-												href={`/puglia-the-book/${book.id}`}
-											>
-												Scopri e acquista
+											<h3 class="sezione-libro__edition-title">
+												{label.split(" – ").flatMap((line, i) =>
+													i === 0 ? [line] : [<br />, line],
+												)}
+											</h3>
+											<a class="btn btn-primary" href={`/books/${book.id}`}>
+												<span {...home.edit.book_cta_label}>{bookCtaLabel}</span>
 											</a>
 										</li>
 									);
@@ -429,10 +422,19 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		text-wrap: balance;
 	}
 
+	.sezione-libro {
+		scroll-margin-top: 5rem;
+		position: relative;
+		overflow: visible;
+	}
+
 	.sezione-libro__layout {
+		margin-top: 2.5rem;
 		display: grid;
 		gap: 2.5rem;
 		align-items: start;
+		position: relative;
+		z-index: 1;
 	}
 
 	@media (min-width: 900px) {
@@ -445,10 +447,14 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 
 	.sezione-libro__intro {
 		display: grid;
-		gap: 1rem;
-		align-content: start;
 		justify-items: center;
 		text-align: center;
+	}
+
+	.sezione-libro__stack {
+		display: grid;
+		gap: 1rem;
+		justify-items: center;
 	}
 
 	.sezione-libro__intro .type-h2 {
@@ -469,28 +475,41 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		display: block;
 		width: 100%;
 		height: auto;
-		/* Drop black studio plate so the vine sits on the page canvas */
-		mix-blend-mode: screen;
 	}
 
-	/* Desktop side column: tomatoes bottom-left under the lede (not on mobile) */
+	/*
+	 * Desktop: center title + lede + vine as one block.
+	 * Vine is absolute (width must not grow the intro column);
+	 * stack padding-bottom reserves its height for the middle align.
+	 */
 	@media (min-width: 900px) {
 		.sezione-libro__intro {
 			justify-items: start;
+			align-content: center;
 			text-align: left;
-			align-content: stretch;
-			grid-template-rows: auto auto 1fr;
 			min-height: 100%;
+			overflow: visible;
+		}
+
+		.sezione-libro__stack {
+			position: relative;
+			width: 100%;
+			justify-items: start;
+			/* gap (3rem) + vine height: 27rem × (160/373) */
+			padding-bottom: calc(3rem + 27rem * 160 / 373);
 		}
 
 		.sezione-libro__illust {
 			display: block;
-			align-self: end;
-			justify-self: start;
-			width: min(100%, 13.5rem);
-			margin-top: 2rem;
-			margin-left: -0.75rem;
-			margin-bottom: -0.85rem;
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			width: 27rem;
+			max-width: none;
+			margin: 0;
+			pointer-events: none;
+			transform: rotate(-8deg);
+			transform-origin: right center;
 		}
 	}
 
@@ -600,16 +619,6 @@ const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 		font-size: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
 		line-height: 1.2;
 		color: var(--title);
-		text-wrap: balance;
-	}
-
-	.sezione-libro__edition-lede {
-		margin: 0;
-		max-width: 18rem;
-		font-size: 0.98rem;
-		line-height: 1.45;
-		color: var(--muted);
-		text-wrap: balance;
 	}
 
 	.sezione-libro__edition .btn {

@@ -103,6 +103,20 @@
 					"type": "string"
 				},
 				{
+					"slug": "featured_books",
+					"label": "Edizioni in evidenza",
+					"type": "reference",
+					"validation": {
+						"targetCollection": "libri",
+						"multiple": true
+					}
+				},
+				{
+					"slug": "book_cta_label",
+					"label": "Testo CTA",
+					"type": "string"
+				},
+				{
 					"slug": "form_heading_training",
 					"label": "Formazione",
 					"type": "boolean",
@@ -376,10 +390,14 @@
 					"type": "image"
 				},
 				{
-					"slug": "excerpt",
-					"label": "Excerpt",
-					"type": "text",
-					"searchable": true
+					"slug": "buy_url",
+					"label": "Buy URL",
+					"type": "url"
+				},
+				{
+					"slug": "buy_label",
+					"label": "Buy label",
+					"type": "string"
 				},
 				{
 					"slug": "content",
@@ -851,6 +869,84 @@
 				}
 			}
 		],
+		"libri": [
+			{
+				"id": "international",
+				"slug": "international",
+				"status": "published",
+				"data": {
+					"title": "Puglia – Edizione internazionale",
+					"subtitle": "Un viaggio di cucina attraverso una terra e i suoi ingredienti unici",
+					"cover": {
+						"$media": {
+							"file": "media/copertina-libro-international.webp",
+							"alt": "Copertina del libro Puglia — edizione internazionale (viola)",
+							"filename": "copertina-libro-international.webp"
+						}
+					},
+					"buy_url": "https://example.com/shop/puglia-international",
+					"buy_label": "Acquista",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questa è la Scheda Edizione internazionale del Libro. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Qui andranno capitoli, anteprime e dettagli di pubblicazione.",
+									"_key": "k3"
+								}
+							],
+							"_key": "k2"
+						}
+					]
+				}
+			},
+			{
+				"id": "special",
+				"slug": "special",
+				"status": "published",
+				"data": {
+					"title": "Puglia – Edizione speciale",
+					"subtitle": "Storie di ingredienti, cucina e territorio in un volume da collezione",
+					"cover": {
+						"$media": {
+							"file": "media/copertina-libro-special.webp",
+							"alt": "Copertina del libro Puglia — edizione speciale (bianca)",
+							"filename": "copertina-libro-special.webp"
+						}
+					},
+					"buy_url": "https://example.com/shop/puglia-special",
+					"buy_label": "Acquista l’edizione speciale",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questa è la Scheda Edizione speciale. Placeholder: sostituisci titolo e contenuto dall’admin quando l’edizione è pronta.",
+									"_key": "k1"
+								}
+							],
+							"_key": "k0"
+						}
+					]
+				}
+			}
+		],
 		"homepage": [
 			{
 				"id": "home",
@@ -880,6 +976,11 @@
 					],
 					"book_title": "Il Libro",
 					"book_subtitle": "La mia Puglia, attraverso gli ingredienti, le ricette e le storie di chi porta in tavola.",
+					"featured_books": [
+						"$ref:international",
+						"$ref:special"
+					],
+					"book_cta_label": "Scopri",
 					"training_title": "Formazione",
 					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
 					"training_cta_label": "Scopri la formazione",
@@ -1021,82 +1122,6 @@
 					"newsletter_subtitle": "Ricette di stagione, eventi e novità — direttamente dalla cucina di Flavia",
 					"newsletter_button_label": "Iscriviti",
 					"newsletter_email_placeholder": "La tua email"
-				}
-			}
-		],
-		"libri": [
-			{
-				"id": "international",
-				"slug": "international",
-				"status": "published",
-				"data": {
-					"title": "Puglia",
-					"subtitle": "International Edition",
-					"excerpt": "A cooking journey through a land and its unique ingredients.",
-					"cover": {
-						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/feat/42-books-section-editions/seed/media/copertina-libro-international.webp",
-							"alt": "Copertina del libro Puglia — edizione internazionale (viola)",
-							"filename": "copertina-libro-international.webp"
-						}
-					},
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Questa è la Scheda Edizione internazionale del Libro. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Qui andranno capitoli, anteprime e dettagli di pubblicazione.",
-									"_key": "k3"
-								}
-							],
-							"_key": "k2"
-						}
-					]
-				}
-			},
-			{
-				"id": "special",
-				"slug": "special",
-				"status": "published",
-				"data": {
-					"title": "Puglia",
-					"subtitle": "Edizione speciale",
-					"excerpt": "Storie di ingredienti, cucina e territorio.",
-					"cover": {
-						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/feat/42-books-section-editions/seed/media/copertina-libro-special.webp",
-							"alt": "Copertina del libro Puglia — edizione speciale (bianca)",
-							"filename": "copertina-libro-special.webp"
-						}
-					},
-					"content": [
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Questa è la Scheda Edizione speciale. Placeholder: sostituisci titolo, excerpt e contenuto dall’admin quando l’edizione è pronta.",
-									"_key": "k1"
-								}
-							],
-							"_key": "k0"
-						}
-					]
 				}
 			}
 		],

@@ -45,7 +45,7 @@ const seo = getSeoMeta(book, {
 >
 	<article class="book-page">
 		<p class="book-page__back">
-			<a class="text-link" href="/puglia-the-book">← Tutte le edizioni</a>
+			<a class="text-link" href="/#libro">← Il libro</a>
 		</p>
 
 		<header class="book-page__header">
@@ -68,9 +68,17 @@ const seo = getSeoMeta(book, {
 					)
 				}
 				{
-					book.data.excerpt && (
-						<p class="book-page__excerpt" {...book.edit.excerpt}>
-							{book.data.excerpt}
+					book.data.buy_url && (
+						<p class="book-page__buy">
+							<a
+								class="btn btn-primary"
+								href={book.data.buy_url}
+								{...book.edit.buy_url}
+							>
+								<span {...book.edit.buy_label}>
+									{book.data.buy_label?.trim() || "Acquista"}
+								</span>
+							</a>
 						</p>
 					)
 				}
@@ -134,9 +142,8 @@ const seo = getSeoMeta(book, {
 		color: var(--muted, var(--color-sea));
 	}
 
-	.book-page__excerpt {
-		font-size: var(--text-lg, 1.125rem);
-		color: var(--muted, var(--color-ink-soft));
+	.book-page__buy {
+		margin: 0.35rem 0 0;
 	}
 
 	.book-page__content {

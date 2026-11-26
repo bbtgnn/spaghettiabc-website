@@ -13,16 +13,12 @@ Una variante pubblicata del Libro (internazionale e speciale), di prima classe n
 _Avoid_: Libro (per indicare una singola variante); version; SKU; product variant
 
 **Sezione Libro**:
-Blocco della homepage con titolo (e opz. sottotitolo) di sezione, più teaser delle Edizioni pubblicate (non copertina/CTA di sezione duplicati).
-_Avoid_: teaser chrome-only come Sezione Formazione; caricare il dettaglio completo delle Edizioni in homepage
-
-**Pagina Libri**:
-Hub pubblico a `/puglia-the-book` che fa da teaser verso le Edizioni (non il dettaglio completo di ciascuna).
-_Avoid_: Catalogo Tour (pattern diverso); Scheda Edizione; singleton come unica pagina dell’opera
+Blocco della homepage con titolo (e opz. sottotitolo), riferimento ordinato alle Edizioni (`featured_books`), e testo CTA condiviso (`book_cta_label`) verso le Schede.
+_Avoid_: caricare automaticamente tutte le Edizioni senza selezione; buy CTA (sta sulla Scheda); caricare il dettaglio completo delle Edizioni in homepage
 
 **Scheda Edizione**:
-Pagina dettaglio di una Edizione a `/puglia-the-book/{slug}`.
-_Avoid_: Pagina Libri; product page; pagina del Libro (come se l’opera avesse una sola URL)
+Pagina dettaglio di una Edizione a `/books/{slug}`. Il back link torna alla Sezione Libro in homepage (`/#libro`).
+_Avoid_: product page; pagina del Libro (come se l’opera avesse una sola URL); hub intermedio `/puglia-the-book`
 
 **Tour**:
 Esperienza cibo guidata di Flavia — di solito in un paese pugliese, a volte un formato speciale senza singolo paese (cena narrativa, MICE, su misura). Non è un itinerario di viaggio plurigiornaliero in Italia. Campo `destination` = nome del paese oppure etichetta di formato.
