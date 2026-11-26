@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Wipe local Wrangler / Miniflare state so the next `npm run dev` migrates and
- * auto-seeds from seed/seed.json (empty DB + setup not completed).
+ * Wipe local Node/SQLite state (`data.db` + WAL) and `uploads/`.
+ * Also clears legacy Wrangler Miniflare D1/R2 under `.wrangler` if present.
+ * Standalone wipe. `npm run dev` already runs wipe + seed via `predev`.
  *
  * Local only — never touches remote D1/R2. Works on macOS, Linux, and Windows.
  */
@@ -15,11 +16,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DEV_PORT = 4321;
 
 const TARGETS = [
-	".wrangler/state/v3/d1",
-	".wrangler/state/v3/r2",
 	"data.db",
 	"data.db-shm",
 	"data.db-wal",
+	"uploads",
+	".wrangler/state/v3/d1",
+	".wrangler/state/v3/r2",
 ];
 
 function isPortInUse(port) {
@@ -54,11 +56,12 @@ for (const relative of TARGETS) {
 if (removed === 0) {
 	console.log("Nothing to wipe (already clean).");
 } else {
-	console.log("Local D1/R2 (and legacy data.db, if present) wiped.");
+	console.log("Local SQLite + uploads (and legacy Wrangler state, if present) wiped.");
 }
 
 console.log(`
-Next:
+Next (if not already via predev):
+  npm run seed
   npm run dev
   open http://localhost:${DEV_PORT}/_emdash/api/setup/dev-bypass?redirect=/_emdash/admin
 

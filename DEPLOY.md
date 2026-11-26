@@ -128,7 +128,7 @@ npx wrangler secret put EMDASH_ENCRYPTION_KEY
 4. Register a passkey on that hostname.
 5. Settings → **Backups** → enable daily automatic backups (optional but recommended).
 
-Schema comes from the seed bundled at build time (`seed/seed.json`). The CLI `npm run seed` targets local SQLite only; it does **not** push to remote D1.
+Schema comes from the seed bundled at build time (`seed/seed.json`). Locally, `npm run seed` upserts into **`./data.db`** (Node/SQLite) — stop `dev` first. It does **not** push to remote D1.
 
 ---
 
@@ -220,7 +220,7 @@ After that, every push to `main` deploys the same way.
 
 | Task | Command / place |
 |------|------------------|
-| Local dev | `bun dev` or `npm run dev` (local D1/R2 via Wrangler; need `.env`) |
+| Local dev | `bun dev` or `npm run dev` (Node + SQLite `./data.db` + `uploads/`; need `.env`) |
 | Manual deploy | `npm run deploy` (after `wrangler login`) |
 | CI deploy | push to `main` or workflow_dispatch |
 | Admin (staging) | `https://spaghettiabc-staging.<subdomain>.workers.dev/_emdash/admin` |
