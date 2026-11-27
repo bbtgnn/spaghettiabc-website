@@ -1,8 +1,12 @@
 import type { LogAccess, StorageCollection } from "emdash";
 import type { GbpReviewLike } from "./reviews-source.ts";
 import {
+	isDisplayTextEdited,
+	originalDisplayText,
 	reviewStorageId,
 	starRatingToNumber,
+	textEditedFlag,
+	withDisplayText,
 	type LocationSummary,
 	type StoredReview,
 	type SyncMeta,
@@ -15,6 +19,10 @@ type KvAccess = {
 
 export type CatalogMutationResult =
 	| { ok: true; review: StoredReview }
+	| { ok: false; error: string };
+
+type LoadMutableResult =
+	| { ok: true; id: string; existing: StoredReview }
 	| { ok: false; error: string };
 
 export type ReplaceFromSyncInput = {
@@ -68,22 +76,18 @@ async function queryAll(
 	return items;
 }
 
-function applyDisplayText(
-	existing: StoredReview,
-	text: string,
-): StoredReview {
-	const originalText = existing.originalText ?? existing.text ?? "";
-	const textEdited = text !== originalText;
-	return {
-		...existing,
-		originalText,
-		text,
-		textEdited: textEdited || undefined,
-	};
-}
-
 export function createReviewsCatalog(deps: CatalogDeps): ReviewsCatalog {
 	const { reviews, kv, log } = deps;
+
+	async function loadMutable(name: string): Promise<LoadMutableResult> {
+		if (!name) return { ok: false, error: "name mancante" };
+		const id = reviewStorageId(name);
+		const existing = await reviews.get(id);
+		if (!existing) {
+			return { ok: false, error: "Recensione non trovata. Esegui prima Sync." };
+		}
+		return { ok: true, id, existing };
+	}
 
 	return {
 		async listAll() {
@@ -106,39 +110,29 @@ export function createReviewsCatalog(deps: CatalogDeps): ReviewsCatalog {
 		},
 
 		async setFeatured(name, featured) {
-			if (!name) return { ok: false, error: "name mancante" };
-			const id = reviewStorageId(name);
-			const existing = await reviews.get(id);
-			if (!existing) {
-				return { ok: false, error: "Recensione non trovata. Esegui prima Sync." };
-			}
-			const next: StoredReview = { ...existing, featured };
-			await reviews.put(id, next);
+			const loaded = await loadMutable(name);
+			if (!loaded.ok) return loaded;
+			const next: StoredReview = { ...loaded.existing, featured };
+			await reviews.put(loaded.id, next);
 			return { ok: true, review: next };
 		},
 
 		async setDisplayText(name, text) {
-			if (!name) return { ok: false, error: "name mancante" };
-			const id = reviewStorageId(name);
-			const existing = await reviews.get(id);
-			if (!existing) {
-				return { ok: false, error: "Recensione non trovata. Esegui prima Sync." };
-			}
-			const next = applyDisplayText(existing, text.trim());
-			await reviews.put(id, next);
+			const loaded = await loadMutable(name);
+			if (!loaded.ok) return loaded;
+			const next = withDisplayText(loaded.existing, text.trim());
+			await reviews.put(loaded.id, next);
 			return { ok: true, review: next };
 		},
 
 		async restoreText(name) {
-			if (!name) return { ok: false, error: "name mancante" };
-			const id = reviewStorageId(name);
-			const existing = await reviews.get(id);
-			if (!existing) {
-				return { ok: false, error: "Recensione non trovata. Esegui prima Sync." };
-			}
-			const originalText = existing.originalText ?? existing.text ?? "";
-			const next = applyDisplayText(existing, originalText);
-			await reviews.put(id, next);
+			const loaded = await loadMutable(name);
+			if (!loaded.ok) return loaded;
+			const next = withDisplayText(
+				loaded.existing,
+				originalDisplayText(loaded.existing),
+			);
+			await reviews.put(loaded.id, next);
 			return { ok: true, review: next };
 		},
 
@@ -154,14 +148,12 @@ export function createReviewsCatalog(deps: CatalogDeps): ReviewsCatalog {
 				const existing = await reviews.get(id);
 				const anonymous = review.reviewer?.isAnonymous === true;
 				const originalText = (review.comment ?? "").trim();
-				// Migrate rows missing originalText: treat prior text as the old original.
-				const priorOriginal = existing?.originalText ?? existing?.text ?? "";
+				// Keep admin edits: flag or text≠original (legacy rows without originalText).
 				const wasEdited = Boolean(
 					existing &&
-						(existing.textEdited === true || existing.text !== priorOriginal),
+						(existing.textEdited === true || isDisplayTextEdited(existing)),
 				);
 				const text = wasEdited && existing ? existing.text : originalText;
-				const textEdited = text !== originalText;
 				const stored: StoredReview = {
 					name: review.name,
 					reviewId: review.reviewId ?? id,
@@ -170,7 +162,7 @@ export function createReviewsCatalog(deps: CatalogDeps): ReviewsCatalog {
 					rating: starRatingToNumber(review.starRating),
 					text,
 					originalText,
-					textEdited: textEdited || undefined,
+					textEdited: textEditedFlag(text !== originalText),
 					createTime: review.createTime,
 					updateTime: review.updateTime,
 					authorName: anonymous

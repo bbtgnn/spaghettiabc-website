@@ -3,7 +3,10 @@ import ArrowRight from "@lucide/astro/icons/arrow-right";
 import CompactReviewRail from "./CompactReviewRail.astro";
 import TourLargeCard from "./TourLargeCard.astro";
 import { entrySlug, localePath, resolveLocale, t } from "../i18n/utils";
-import type { TourGoogleSocialProof } from "../utils/tour-google-social-proof";
+import {
+	EMPTY_TOUR_GOOGLE_SOCIAL_PROOF,
+	type TourGoogleSocialProof,
+} from "../utils/tour-google-social-proof";
 
 interface TourEntry {
 	id: string;
@@ -34,19 +37,12 @@ interface Props {
 	};
 }
 
-const emptyGoogleSocialProof: TourGoogleSocialProof = {
-	score: 0,
-	reviewCount: 0,
-	profileUrl: null,
-	reviews: [],
-};
-
 const {
 	title,
 	subtitle,
 	ctaLabel,
 	tours,
-	googleSocialProof = emptyGoogleSocialProof,
+	googleSocialProof = EMPTY_TOUR_GOOGLE_SOCIAL_PROOF,
 	locale: localeProp,
 	edit,
 } = Astro.props;
@@ -111,7 +107,7 @@ const railTours = tours.slice(2);
 				{railTours.length > 0 && (
 					<div class="tour-rail tour-rail--compact" data-reveal>
 						<div
-							class="tour-rail__track"
+							class="tour-rail__track rail-track--fade"
 							role="list"
 							aria-label={t(locale, "tourMoreFeatured")}
 						>

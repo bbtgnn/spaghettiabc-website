@@ -4,8 +4,15 @@
  */
 
 import { apiFetch as defaultApiFetch, isRecord, parseApiResponse } from "emdash/plugin-utils";
-import type { ReviewCardsEvent, ReviewCardsState } from "./review-card-machine";
-import type { ListResponse, StoredReview, SyncMeta } from "./types";
+import type { ReviewCardsEvent, ReviewCardsState } from "./review-card-machine.ts";
+import {
+	isDisplayTextEdited,
+	originalDisplayText,
+	textEditedFlag,
+	type ListResponse,
+	type StoredReview,
+	type SyncMeta,
+} from "./types.ts";
 
 const PLUGIN_API = "/_emdash/api/plugins/google-reviews";
 
@@ -76,12 +83,6 @@ function networkMessage(err: unknown): string {
 	return err instanceof Error ? err.message : "Errore di rete";
 }
 
-function normalizeTextEdited(
-	flag: boolean | undefined,
-): true | undefined {
-	return flag === true ? true : undefined;
-}
-
 function patchFromEditPayload(
 	payload: EditPayload,
 	fallback: Partial<StoredReview>,
@@ -90,7 +91,7 @@ function patchFromEditPayload(
 		const saved = payload.review as StoredReview;
 		return {
 			...saved,
-			textEdited: normalizeTextEdited(saved.textEdited),
+			textEdited: textEditedFlag(saved.textEdited === true),
 		};
 	}
 	return fallback;
@@ -254,10 +255,11 @@ export function createSyncPageController(
 				return { status: "abandoned" };
 			}
 			const trimmed = draftText.trim();
-			const original = review.originalText ?? review.text;
 			const patch = patchFromEditPayload(payload, {
 				text: trimmed,
-				textEdited: trimmed !== original ? true : undefined,
+				textEdited: textEditedFlag(
+					isDisplayTextEdited({ ...review, text: trimmed }),
+				),
 			});
 			return {
 				status: "ok",
@@ -290,9 +292,8 @@ export function createSyncPageController(
 				res,
 				"Impossibile ripristinare",
 			);
-			const original = review.originalText ?? review.text;
 			const patch = patchFromEditPayload(payload, {
-				text: original,
+				text: originalDisplayText(review),
 				textEdited: undefined,
 			});
 			accept({ type: "RESTORE_OK" });

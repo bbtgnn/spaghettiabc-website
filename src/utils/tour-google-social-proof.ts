@@ -1,3 +1,4 @@
+import type { FeaturedResponse } from "@spaghettiabc/google-reviews/types";
 import {
 	getPublicPluginApiRouteHandler,
 	type PublicPluginRuntimeLocals,
@@ -9,13 +10,6 @@ export type TourGoogleReview = {
 	quote: string;
 	rating: number;
 	reviewUrl?: string | null;
-	avatar?: {
-		id: string;
-		src?: string;
-		alt?: string;
-		width?: number;
-		height?: number;
-	} | null;
 	/** External photo URL from plugin sync (Google author avatar). */
 	avatarSrc?: string | null;
 };
@@ -31,29 +25,19 @@ export type TourGoogleSocialProof = {
 	reviews: TourGoogleReview[];
 };
 
-type PluginFeaturedPayload = {
-	place: {
-		rating?: number;
-		userRatingCount?: number;
-		googleMapsUri?: string;
-	} | null;
-	reviews: Array<{
-		authorName: string;
-		text: string;
-		rating: number;
-		authorPhotoUri?: string;
-		mapsUri?: string;
-	}>;
-};
-
-const EMPTY_PROOF: TourGoogleSocialProof = {
+export const EMPTY_TOUR_GOOGLE_SOCIAL_PROOF: TourGoogleSocialProof = {
 	score: 0,
 	reviewCount: 0,
 	profileUrl: null,
 	reviews: [],
 };
 
-function fromPlugin(payload: PluginFeaturedPayload): TourGoogleSocialProof {
+function isFeaturedResponse(data: unknown): data is FeaturedResponse {
+	if (!data || typeof data !== "object") return false;
+	return "place" in data && Array.isArray((data as FeaturedResponse).reviews);
+}
+
+function fromPlugin(payload: FeaturedResponse): TourGoogleSocialProof {
 	const place = payload.place ?? null;
 	const profileUrl = place?.googleMapsUri ?? null;
 
@@ -62,15 +46,13 @@ function fromPlugin(payload: PluginFeaturedPayload): TourGoogleSocialProof {
 		reviewCount:
 			typeof place?.userRatingCount === "number" ? place.userRatingCount : 0,
 		profileUrl,
-		reviews: (Array.isArray(payload.reviews) ? payload.reviews : []).map(
-			(review) => ({
-				author: review.authorName,
-				quote: review.text?.trim() || "",
-				rating: Number(review.rating) || 5,
-				reviewUrl: review.mapsUri ?? profileUrl,
-				avatarSrc: review.authorPhotoUri ?? null,
-			}),
-		),
+		reviews: payload.reviews.map((review) => ({
+			author: review.authorName,
+			quote: review.text?.trim() || "",
+			rating: Number(review.rating) || 5,
+			reviewUrl: review.mapsUri ?? profileUrl,
+			avatarSrc: review.authorPhotoUri ?? null,
+		})),
 	};
 }
 
@@ -83,12 +65,12 @@ export async function getTourGoogleSocialProof(
 	request: Request,
 ): Promise<TourGoogleSocialProof> {
 	const pluginApi = getPublicPluginApiRouteHandler(locals);
-	if (!pluginApi) return EMPTY_PROOF;
+	if (!pluginApi) return EMPTY_TOUR_GOOGLE_SOCIAL_PROOF;
 
 	const featured = await pluginApi("google-reviews", "GET", "featured", request);
-	if (!featured.success || !featured.data || typeof featured.data !== "object") {
-		return EMPTY_PROOF;
+	if (!featured.success || !isFeaturedResponse(featured.data)) {
+		return EMPTY_TOUR_GOOGLE_SOCIAL_PROOF;
 	}
 
-	return fromPlugin(featured.data as PluginFeaturedPayload);
+	return fromPlugin(featured.data);
 }

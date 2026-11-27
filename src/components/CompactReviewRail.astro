@@ -1,5 +1,4 @@
 ---
-import { Image } from "emdash/ui";
 import Star from "@lucide/astro/icons/star";
 import { resolveLocale, t } from "../i18n/utils";
 import type { TourGoogleSocialProof } from "../utils/tour-google-social-proof";
@@ -54,7 +53,7 @@ const show = hasScore || reviews.length > 0;
 
 				{reviews.length > 0 && (
 					<div
-						class="review-rail__track"
+						class="review-rail__track rail-track--fade"
 						role="list"
 						aria-label={t(locale, "reviewGoogleList")}
 					>
@@ -80,7 +79,7 @@ const show = hasScore || reviews.length > 0;
 											<p>{item.quote}</p>
 										</blockquote>
 										<div class="review-rail__author">
-											{item.avatarSrc ? (
+											{item.avatarSrc && (
 												<span class="review-rail__avatar">
 													<img
 														src={item.avatarSrc}
@@ -92,12 +91,6 @@ const show = hasScore || reviews.length > 0;
 														referrerpolicy="no-referrer"
 													/>
 												</span>
-											) : (
-												item.avatar && (
-													<span class="review-rail__avatar">
-														<Image image={item.avatar} />
-													</span>
-												)
 											)}
 											{item.reviewUrl ? (
 												<a

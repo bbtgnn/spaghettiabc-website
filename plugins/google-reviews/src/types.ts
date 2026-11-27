@@ -62,6 +62,39 @@ export function reviewStorageId(googleName: string): string {
 	return googleName.replace(/\//g, "__");
 }
 
+/** Last-synced Google/mock comment; falls back to display text for legacy rows. */
+export function originalDisplayText(
+	review: Pick<StoredReview, "originalText" | "text">,
+): string {
+	return review.originalText ?? review.text ?? "";
+}
+
+/** Whether display text differs from the synced original (string compare). */
+export function isDisplayTextEdited(
+	review: Pick<StoredReview, "originalText" | "text">,
+): boolean {
+	return review.text !== originalDisplayText(review);
+}
+
+/** Persist `textEdited` only when true so storage omits the false flag. */
+export function textEditedFlag(edited: boolean): true | undefined {
+	return edited || undefined;
+}
+
+/** Apply admin/display text while preserving original and the edited flag. */
+export function withDisplayText(
+	existing: StoredReview,
+	text: string,
+): StoredReview {
+	const originalText = originalDisplayText(existing);
+	return {
+		...existing,
+		originalText,
+		text,
+		textEdited: textEditedFlag(text !== originalText),
+	};
+}
+
 export function normalizeAccountId(raw: string): string {
 	return raw.trim().replace(/^accounts\//, "");
 }

@@ -38,11 +38,16 @@ import {
 	type ReviewCardsEvent,
 	type ReviewCardsState,
 } from "./review-card-machine";
+import { MOCK_PAGE_SIZE, MOCK_REVIEWS } from "./mock-data";
 import {
 	patchReviewInList,
 	syncPageController,
 } from "./sync-page-controller";
-import type { ListResponse, StoredReview } from "./types";
+import {
+	isDisplayTextEdited,
+	type ListResponse,
+	type StoredReview,
+} from "./types";
 
 const HOME_SECTION_ID = "recensioni-in-home";
 const JUST_ADDED_CLASS = "gr-just-added";
@@ -88,11 +93,6 @@ function SectionTrigger({
 	);
 }
 
-function isTextEdited(review: StoredReview): boolean {
-	const original = review.originalText ?? review.text;
-	return review.text !== original;
-}
-
 function useReviewCardsMachine() {
 	const [state, dispatch] = React.useReducer(
 		transition,
@@ -132,7 +132,7 @@ function ReviewCard({
 	onSaveText,
 	onRestoreText,
 }: ReviewCardProps) {
-	const edited = isTextEdited(review);
+	const edited = isDisplayTextEdited(review);
 	const featured = featureAction === "remove";
 	const editing = isEditingCard(cards, review.name);
 	const savingText = isSavingCard(cards, review.name);
@@ -462,7 +462,7 @@ function SyncPage() {
 				<Banner
 					variant="alert"
 					title="Dev mock sync attivo"
-					description="Nessun OAuth/API. «Sincronizza ora» carica 12 fixture in pagine da 5 (come GBP). Spegni l’opzione in Settings prima della produzione."
+					description={`Nessun OAuth/API. «Sincronizza ora» carica ${MOCK_REVIEWS.length} fixture in pagine da ${MOCK_PAGE_SIZE} (come GBP). Spegni l’opzione in Settings prima della produzione.`}
 				/>
 			)}
 

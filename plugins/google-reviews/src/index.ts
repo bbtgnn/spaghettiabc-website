@@ -6,6 +6,7 @@ import {
 	type StorageCollection,
 } from "emdash";
 import { syncGoogleReviews } from "./business-profile.ts";
+import { MOCK_PAGE_SIZE, MOCK_REVIEWS } from "./mock-data.ts";
 import { createReviewsCatalog } from "./reviews-catalog.ts";
 import {
 	isTruthySetting,
@@ -14,8 +15,10 @@ import {
 	type LocationSummary,
 	type StoredReview,
 } from "./types.ts";
+import packageJson from "../package.json" with { type: "json" };
 
 const PLUGIN_ID = "google-reviews";
+const PLUGIN_VERSION = packageJson.version;
 
 function catalogFrom(ctx: {
 	storage: { reviews: StorageCollection<unknown> };
@@ -35,7 +38,7 @@ function catalogFrom(ctx: {
 export function googleReviewsPlugin(): PluginDescriptor {
 	return {
 		id: PLUGIN_ID,
-		version: "1.1.0",
+		version: PLUGIN_VERSION,
 		format: "native",
 		entrypoint: "@spaghettiabc/google-reviews",
 		adminEntry: "@spaghettiabc/google-reviews/admin",
@@ -45,7 +48,7 @@ export function googleReviewsPlugin(): PluginDescriptor {
 export function createPlugin() {
 	return definePlugin({
 		id: PLUGIN_ID,
-		version: "1.1.0",
+		version: PLUGIN_VERSION,
 		capabilities: ["network:request"],
 		allowedHosts: ["oauth2.googleapis.com", "mybusiness.googleapis.com"],
 		storage: {
@@ -94,8 +97,7 @@ export function createPlugin() {
 				devMockSync: {
 					type: "boolean",
 					label: "Dev mock sync",
-					description:
-						"Se attivo, «Sincronizza ora» carica 12 recensioni fixture (paginazione simulata) senza OAuth/API. Solo per sviluppo: spegni in produzione.",
+					description: `Se attivo, «Sincronizza ora» carica ${MOCK_REVIEWS.length} recensioni fixture (pagine da ${MOCK_PAGE_SIZE}) senza OAuth/API. Solo per sviluppo: spegni in produzione.`,
 				},
 			},
 			pages: [
@@ -178,16 +180,13 @@ export function createPlugin() {
 					});
 					if (!result.ok) return result;
 
-					const [reviews, meta] = await Promise.all([
-						catalog.listAll(),
-						catalog.readMeta(),
-					]);
+					const meta = await catalog.readMeta();
 					return {
 						ok: true,
 						upserted: result.upserted,
 						place: result.place,
 						meta,
-						reviews,
+						reviews: result.reviews,
 						source: result.source,
 					};
 				},
@@ -214,9 +213,6 @@ export function createPlugin() {
 						restore?: unknown;
 					} | null;
 					const name = typeof input?.name === "string" ? input.name : "";
-					if (!name) {
-						return { ok: false, error: "name mancante" };
-					}
 					const catalog = catalogFrom(ctx);
 					if (input?.restore === true) {
 						return catalog.restoreText(name);
