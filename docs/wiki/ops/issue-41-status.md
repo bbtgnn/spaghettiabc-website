@@ -22,7 +22,7 @@
   - See [enablement Wave 1](./emdash-i18n-enablement.md#implementation-waves-file-touch-list)
 - **2026-11-26** — **Wave 2 landed** (bilingual seed + locale-aware queries + hardcoded href sweep for in-scope surfaces). Files touched summary:
   - `seed/seed.json` — `defaultLocale: en`; EN canonical + IT `translationOf` for tours (16 rows), homepage, `libri`, `training`, `site_globals`; per-locale `primary` menus (`/en/...`, `/it/...`); shared settings title / EN tagline
-  - `scripts/wave2-bilingual-seed.mjs` — one-shot generator for the bilingual content block
+  - Bilingual content lives in `seed/seed.json` only (Wave 2 one-shot generator removed after apply)
   - `src/utils/i18n.ts` — `contentLocaleChain`, `getEmDashEntryWithFallback` (requested → EN → IT)
   - `src/i18n/ui.ts` — catalog / scheda / newsletter / empty-state chrome keys
   - Pages: `index`, `tours/index`, `tours/[slug]`, `puglia-the-book`, `training` — `{ locale }` queries, `content` → Base, `localePath` hrefs
@@ -69,11 +69,11 @@
 | `/en|it/puglia-the-book`, `/en|it/training` | **Pass** | Training titles distinct; Libro title shared “Puglia” by seed |
 | FAQ + Calendly on scheda | **Pass** | Both locales |
 | Tour card hrefs (no double locale) | **Pass** | After `entrySlug` |
-| `calendly_url` `translatable: false` | **Deferred** | Needs wipe / fresh D1; omitted from seed to allow upsert |
+| Shared-field `translatable: false` matrix | **In seed** | See ADR field matrix + `seed/seed.json`; apply with wipe + seed on existing DBs |
 
-### Optional wipe still useful
+### Wipe for schema flags
 
-Stop `dev`, `npm run wipe:local`, `bun dev` if you want a clean D1 (drop orphans, apply `calendly_url` non-translatable). Not required for the smoke table above after targeted D1 seed + orphan delete.
+Stop `dev`, `npm run wipe:local`, then seed/`bun dev` so `translatable: false` fields (Calendly, featured refs, Google metrics, etc.) apply on a fresh DB.
 
 ## EN unprefix + locale page sync (post–Wave 3)
 
@@ -85,7 +85,7 @@ Both-prefixed `/en/...` + `prefixDefaultLocale` broke EmDash admin → **reverte
 
 ## Remaining gaps (post–Wave 3)
 
-- Optional wipe for `calendly_url` `translatable: false` + pristine D1.
+- Wipe + seed so locked `translatable: false` flags apply on local/staging DBs.
 - Optional `<link rel="alternate" hreflang>` polish (EmDash already emits some on scheda).
 - Out-of-scope blog routes (`posts`, `pages`, `category`, `tag`) still monolingual — decide redirect or exclusion before launch.
 - Editorial polish of IT/EN copy beyond seed placeholders.

@@ -32,13 +32,16 @@ Chiara closed the grill for full bilingual site content and routing. Implementat
 
 ### Field matrix — translate vs share
 
-| Surface | Per locale | Shared across locales |
-| ------- | ------------ | --------------------- |
-| **Tour** | `title`, `excerpt`, `destination`, `duration`, `group_size`, `language`, `included`, `price`, `content`; image `alt` per locale | Media files, `calendly_url`, structural refs |
-| **Homepage** | Section titles, subtitles, CTAs, placeholders; image alts | Google review **quote + author** (original language, not re-translated); partner logo **files + brand names**; Google score / count / URL; `featured_tours` refs resolve to **same-locale** tour entries |
-| **Libro** (`libri`) + **Formazione** (`training`) | `title`, `subtitle`, `excerpt`, `content`; cover alts per locale | Cover image files |
-| **Impostazioni sito** (`site_globals` / `site`) | FAQ `question` / `answer` per locale | `calendly_url` |
-| **Navigation + site settings** | Primary menu labels and **localized paths**; site `title` / `tagline` per locale | — |
+Locked in `seed/seed.json` via `translatable: false` on shared fields (default is per-locale). Re-evaluate on every schema/field change — see **AGENTS.md**. Image/gallery fields stay translatable so **alt** can differ; reuse the same media file by convention. Content Types admin does not expose the content-field toggle.
+
+| Surface | Per locale (`translatable` default) | Shared (`translatable: false`) |
+| ------- | ------------------------------------- | ------------------------------ |
+| **Tour** (`tours`) | `title`, `featured_image`, `excerpt`, `destination`, `duration`, `group_size`, `language`, `included`, `price`, `gallery`, `content` | `calendly_url` |
+| **Homepage** | Section titles/subtitles/CTAs/placeholders; `hero_image`, `training_image`; newsletter copy | `form_heading_*`; `featured_tours`, `featured_books` (one selection; seed canonical `$ref`s on both locales; resolve to locale siblings); `partner_logos`; `google_score`, `google_review_count`, `google_profile_url`, `google_reviews` (original language, not re-translated) |
+| **Libro** (`libri`) | `title`, `subtitle`, `cover`, `buy_label`, `content` | `buy_url` |
+| **Formazione** (`training`) | `title`, `subtitle`, `cover`, `excerpt`, `content` | — |
+| **Impostazioni sito** (`site_globals`) | `faq` | `calendly_url` |
+| **Navigation + site settings** | Primary menu labels and **localized paths** | Site `title` / `tagline` shared in EmDash 1.6 (no per-locale settings API yet) |
 
 ### Seed and editorial
 

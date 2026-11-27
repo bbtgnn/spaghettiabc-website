@@ -32,7 +32,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "hero_image",
@@ -57,7 +58,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "tour_title",
@@ -77,7 +79,8 @@
 					"validation": {
 						"targetCollection": "tours",
 						"multiple": true
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "tour_cta_label",
@@ -90,7 +93,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "book_title",
@@ -109,7 +113,8 @@
 					"validation": {
 						"targetCollection": "libri",
 						"multiple": true
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "book_cta_label",
@@ -122,7 +127,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "training_title",
@@ -150,7 +156,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "dicono_title",
@@ -180,22 +187,26 @@
 								"type": "string"
 							}
 						]
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "google_score",
 					"label": "Punteggio Google",
-					"type": "number"
+					"type": "number",
+					"translatable": false
 				},
 				{
 					"slug": "google_review_count",
 					"label": "Numero recensioni",
-					"type": "integer"
+					"type": "integer",
+					"translatable": false
 				},
 				{
 					"slug": "google_profile_url",
 					"label": "Link profilo Google",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "google_reviews",
@@ -232,7 +243,8 @@
 								"type": "url"
 							}
 						]
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "form_heading_newsletter",
@@ -240,7 +252,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "newsletter_title",
@@ -332,7 +345,8 @@
 				{
 					"slug": "calendly_url",
 					"label": "URL Calendly",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "gallery",
@@ -392,7 +406,8 @@
 				{
 					"slug": "buy_url",
 					"label": "Buy URL",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "buy_label",
@@ -470,7 +485,8 @@
 				{
 					"slug": "calendly_url",
 					"label": "URL Calendly predefinito",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "faq",
@@ -1637,14 +1653,14 @@
 					"tour_subtitle": "Esperienze guidate in un paese della Puglia, tra sapori locali e incontri",
 					"tour_cta_label": "Vedi tutti i tour",
 					"featured_tours": [
-						"$ref:tour-polignano-it",
-						"$ref:tour-bari-it",
-						"$ref:tour-ostuni-it",
-						"$ref:tour-altamura-it",
-						"$ref:tour-monopoli-it",
-						"$ref:tour-narrative-dinner-it",
-						"$ref:tour-mice-sensory-it",
-						"$ref:tour-customized-it"
+						"$ref:tour-polignano",
+						"$ref:tour-bari",
+						"$ref:tour-ostuni",
+						"$ref:tour-altamura",
+						"$ref:tour-monopoli",
+						"$ref:tour-narrative-dinner",
+						"$ref:tour-mice-sensory",
+						"$ref:tour-customized"
 					],
 					"book_title": "Il libro",
 					"book_subtitle": "Puglia raccontata attraverso luoghi, sapori e incontri",
@@ -1798,8 +1814,8 @@
 					"newsletter_button_label": "Iscriviti",
 					"newsletter_email_placeholder": "La tua email",
 					"featured_books": [
-						"$ref:international-it",
-						"$ref:special-it"
+						"$ref:international",
+						"$ref:special"
 					]
 				}
 			}
