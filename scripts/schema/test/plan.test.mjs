@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { splitOps } from "../lib/index.mjs";
-import { collectionCreateBodies, collectionUpdateBody, fieldCreateBody, fieldUpdateBody } from "../lib/live-ops.mjs";
+import { collectionCreateBodies, collectionUpdateBody, fieldCreateBody, fieldUpdateBody } from "../lib/project.mjs";
 import { buildPlan } from "../lib/plan.mjs";
 import { buildPositions, locate, nearest } from "../lib/position.mjs";
 

@@ -35,6 +35,9 @@
  *   normalizeCollection / normalizeField / minimizeCollection / minimizeField ; COLLECTION_DEFAULTS, FIELD_DEFAULTS
  *   CLEARABLE_COLLECTION_KEYS / CLEARABLE_FIELD_KEYS              value the REST update must send to clear a key
  *
+ * REST projection (project.mjs; CLEARABLE_* stay in model)
+ *   collectionCreateBodies / collectionUpdateBody / fieldCreateBody / fieldUpdateBody
+ *
  * Differ
  *   diffSchemas(oldCanonical, newCanonical, { renames, dropAdd, allowDestructive, history })
  *       -> { ops, pre, post, backfills, stops, notes }
@@ -67,3 +70,6 @@ export {
 	COLLECTION_DEFAULTS, FIELD_DEFAULTS, FIELD_TYPE_TO_COLUMN, TEXT_ALIAS_TYPES, CANONICAL_VERSION,
 	CLEARABLE_COLLECTION_KEYS, CLEARABLE_FIELD_KEYS, SEED_COLLECTION_KEYS, SEED_FIELD_KEYS, OP_NAMES,
 } from "./model.mjs";
+export {
+	collectionCreateBodies, collectionUpdateBody, fieldCreateBody, fieldUpdateBody,
+} from "./project.mjs";

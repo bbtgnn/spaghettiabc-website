@@ -7,60 +7,16 @@
  *  - `null` in `set` means "clear": the value to send is CLEARABLE_*;
  *  - removing a reference field also deletes its relation (`?deleteRelation=true`);
  *  - deleteCollection never sends `force`: a collection with content is refused (COLLECTION_HAS_CONTENT).
+ *
+ * REST body projection lives in project.mjs; this module only sequences HTTP calls.
  */
+import { EXIT } from "./index.mjs";
 import {
-	CLEARABLE_COLLECTION_KEYS, CLEARABLE_FIELD_KEYS, EXIT, normalizeCollection, normalizeField,
-} from "./index.mjs";
+	collectionCreateBodies, collectionUpdateBody, fieldCreateBody, fieldUpdateBody,
+} from "./project.mjs";
 import { LoopError } from "./cli.mjs";
-import { EmDashApiError } from "./server.mjs";
 
 const enc = encodeURIComponent;
-const COLLECTION_CREATE_KEYS = [
-	"slug", "label", "labelSingular", "description", "icon", "admin", "supports", "urlPattern", "routable", "hidden",
-	"sortOrder", "editLocking", "group",
-];
-
-export function fieldCreateBody(f) {
-	const n = normalizeField(f);
-	const body = {
-		slug: n.slug, label: n.label, type: n.type, required: n.required, unique: n.unique, searchable: n.searchable,
-		indexed: n.indexed, translatable: n.translatable, validation: n.validation ?? null,
-	};
-	if ("defaultValue" in n) body.defaultValue = n.defaultValue;
-	if (n.widget !== undefined) body.widget = n.widget;
-	if (n.options !== undefined) body.options = n.options;
-	return body;
-}
-
-export function collectionCreateBodies(op) {
-	const n = normalizeCollection({ ...op.collection, fields: [] });
-	const create = {};
-	for (const k of COLLECTION_CREATE_KEYS) if (n[k] !== undefined) create[k] = n[k];
-	const follow = {};
-	if (n.commentsEnabled) follow.commentsEnabled = true;
-	for (const k of ["titleField", "dateField"]) if (n[k] !== undefined) follow[k] = n[k];
-	return { create, follow };
-}
-
-function clearing(set, clearable, extra = {}) {
-	const body = {};
-	for (const [k, v] of Object.entries(set)) {
-		if (v !== null) body[k] = v;
-		else if (k in clearable) body[k] = clearable[k];
-		else if (k in extra) body[k] = extra[k];
-		else throw new LoopError(EXIT.USAGE, "OP_NOT_APPLICABLE", `cannot send null for "${k}"`);
-	}
-	return body;
-}
-
-/** -> body of the REST update that implements `updateCollection.set` */
-export function collectionUpdateBody(set) {
-	const body = clearing(set, CLEARABLE_COLLECTION_KEYS);
-	delete body.hasSeo; // derived from `supports` by the server
-	return body;
-}
-/** -> body of the REST update that implements `updateField.set` (`defaultValue: null` is the literal null) */
-export const fieldUpdateBody = (set) => clearing(set, CLEARABLE_FIELD_KEYS, { defaultValue: null });
 
 /** apply one op over HTTP. Throws EmDashApiError (server refusal) or LoopError. */
 export async function applyOpLive(server, op) {
@@ -101,5 +57,3 @@ export async function applyOpLive(server, op) {
 			throw new LoopError(EXIT.USAGE, "UNKNOWN_OP", `unknown op ${op.op}`);
 	}
 }
-
-export { EmDashApiError };
