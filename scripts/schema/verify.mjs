@@ -4,7 +4,8 @@
  * Live schema hash must equal canonical(seed.json) hash. Exit 0 ok · 1 differs (path-level diff) · 2 usage · 6 API error.
  */
 import { EXIT, canonicalFromSeed, diffPaths, hashSchema, loadSeedSchema } from "./lib/index.mjs";
-import { LoopError, connect, parseArgs, run } from "./lib/server.mjs";
+import { LoopError, parseArgs, run } from "./lib/cli.mjs";
+import { connect } from "./lib/server.mjs";
 
 const USAGE = "node scripts/schema/verify.mjs --url <url> [--json]";
 

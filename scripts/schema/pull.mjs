@@ -21,7 +21,8 @@ import {
 } from "./lib/index.mjs";
 import { devPort } from "../lib/dev-port.mjs";
 import { listenerCwds, ownershipVerdict } from "../lib/port-owner.mjs";
-import { LoopError, connect, isLocalUrl, normalizeUrl, parseArgs, run } from "./lib/server.mjs";
+import { LoopError, parseArgs, run } from "./lib/cli.mjs";
+import { connect, isLocalUrl, normalizeUrl } from "./lib/server.mjs";
 
 const USAGE = "node scripts/schema/pull.mjs [--url http://127.0.0.1:$PORT|4321] [--dry-run] [--json]";
 const defaultUrl = () => `http://127.0.0.1:${devPort(repoRoot())}`;

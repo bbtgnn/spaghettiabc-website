@@ -8,7 +8,8 @@
 import { EXIT, canonicalFromSeed, diffPaths, hashSchema } from "./lib/index.mjs";
 import { loadChainOrFail } from "./lib/context.mjs";
 import { locate, nearest } from "./lib/position.mjs";
-import { LoopError, connect, parseArgs, run } from "./lib/server.mjs";
+import { LoopError, parseArgs, run } from "./lib/cli.mjs";
+import { connect } from "./lib/server.mjs";
 
 const USAGE = "node scripts/schema/drift.mjs --url <url> [--json]";
 

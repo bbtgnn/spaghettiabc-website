@@ -1,7 +1,7 @@
 import { EXIT, loadMigrations, loadSeedSchema } from "./index.mjs";
 import { repoRoot } from "./paths.mjs";
 import { buildPositions, chainFromBuilt } from "./position.mjs";
-import { LoopError } from "./server.mjs";
+import { LoopError } from "./cli.mjs";
 
 /** load seed + migrations + chain, fail with exit 1 when they disagree (that is `schema:check`'s job to fix) */
 /** `strictSeed: false` tolerates seed != replay (reported as `seedInSync: false`) */

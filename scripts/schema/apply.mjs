@@ -15,7 +15,8 @@ import { defaultLocaleOf, findBlockers, runBackfill } from "./lib/backfill.mjs";
 import { applyOpLive } from "./lib/live-ops.mjs";
 import { buildPlan, describeStep } from "./lib/plan.mjs";
 import { locate, nearest, positionAt } from "./lib/position.mjs";
-import { EmDashApiError, LoopError, connect, parseArgs, run } from "./lib/server.mjs";
+import { LoopError, parseArgs, run } from "./lib/cli.mjs";
+import { EmDashApiError, connect } from "./lib/server.mjs";
 
 const USAGE = "node scripts/schema/apply.mjs --url <url> [--phase pre|post|all] [--dry-run] [--json] [--verbose]";
 

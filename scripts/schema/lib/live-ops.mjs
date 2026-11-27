@@ -11,7 +11,8 @@
 import {
 	CLEARABLE_COLLECTION_KEYS, CLEARABLE_FIELD_KEYS, EXIT, normalizeCollection, normalizeField,
 } from "./index.mjs";
-import { EmDashApiError, LoopError } from "./server.mjs";
+import { LoopError } from "./cli.mjs";
+import { EmDashApiError } from "./server.mjs";
 
 const enc = encodeURIComponent;
 const COLLECTION_CREATE_KEYS = [

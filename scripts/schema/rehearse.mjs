@@ -23,7 +23,8 @@ import { fileURLToPath } from "node:url";
 import { EXIT, diffPaths } from "./lib/index.mjs";
 import { loadChainOrFail } from "./lib/context.mjs";
 import { repoRoot } from "./lib/paths.mjs";
-import { LoopError, connect, parseArgs, run } from "./lib/server.mjs";
+import { LoopError, parseArgs, run } from "./lib/cli.mjs";
+import { connect } from "./lib/server.mjs";
 
 const USAGE = "node scripts/schema/rehearse.mjs [--keep] [--json] [--update-types]";
 const here = path.dirname(fileURLToPath(import.meta.url));
