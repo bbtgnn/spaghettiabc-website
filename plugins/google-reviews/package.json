@@ -8,7 +8,7 @@
 		"./admin": "./src/admin.tsx"
 	},
 	"scripts": {
-		"test": "node --test --experimental-strip-types src/review-card-machine.test.ts"
+		"test": "node --test --experimental-strip-types src/*.test.ts"
 	},
 	"peerDependencies": {
 		"@cloudflare/kumo": "2.19.0",

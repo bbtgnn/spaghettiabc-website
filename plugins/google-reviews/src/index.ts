@@ -1,61 +1,35 @@
 import {
 	definePlugin,
 	definePluginRoute,
+	type LogAccess,
 	type PluginDescriptor,
 	type StorageCollection,
 } from "emdash";
-import { syncGoogleReviews } from "./business-profile";
+import { syncGoogleReviews } from "./business-profile.ts";
+import { createReviewsCatalog } from "./reviews-catalog.ts";
 import {
 	isTruthySetting,
-	reviewStorageId,
 	type FeaturedResponse,
 	type ListResponse,
 	type LocationSummary,
 	type StoredReview,
-	type SyncMeta,
-} from "./types";
+} from "./types.ts";
 
 const PLUGIN_ID = "google-reviews";
 
-async function readMeta(kv: {
-	get<T>(key: string): Promise<T | null>;
-}): Promise<SyncMeta> {
-	return (await kv.get<SyncMeta>("meta")) ?? {};
-}
-
-async function listStoredReviews(
-	reviews: StorageCollection<StoredReview>,
-): Promise<Array<{ id: string; data: StoredReview }>> {
-	const items: Array<{ id: string; data: StoredReview }> = [];
-	let cursor: string | undefined;
-	do {
-		const page = await reviews.query({
-			orderBy: { syncedAt: "desc" },
-			limit: 100,
-			cursor,
-		});
-		items.push(...page.items);
-		cursor = page.hasMore ? page.cursor : undefined;
-	} while (cursor);
-	return items;
-}
-
-async function listFeaturedReviews(
-	reviews: StorageCollection<StoredReview>,
-): Promise<StoredReview[]> {
-	const items: StoredReview[] = [];
-	let cursor: string | undefined;
-	do {
-		const page = await reviews.query({
-			where: { featured: true },
-			orderBy: { updateTime: "desc" },
-			limit: 100,
-			cursor,
-		});
-		items.push(...page.items.map((item) => item.data));
-		cursor = page.hasMore ? page.cursor : undefined;
-	} while (cursor);
-	return items;
+function catalogFrom(ctx: {
+	storage: { reviews: StorageCollection<unknown> };
+	kv: {
+		get<T>(key: string): Promise<T | null>;
+		set(key: string, value: unknown): Promise<void>;
+	};
+	log?: LogAccess;
+}) {
+	return createReviewsCatalog({
+		reviews: ctx.storage.reviews as StorageCollection<StoredReview>,
+		kv: ctx.kv,
+		log: ctx.log,
+	});
 }
 
 export function googleReviewsPlugin(): PluginDescriptor {
@@ -86,7 +60,7 @@ export function createPlugin() {
 					type: "string",
 					label: "OAuth Client ID",
 					description:
-						"Client ID dell’app Google Cloud (OAuth) con accesso Business Profile.",
+						"Client ID dell’app Google Cloud (OAuth) con accesso Business Profile. Guida: plugins/google-reviews/SETUP.md.",
 				},
 				oauthClientSecret: {
 					type: "secret",
@@ -138,7 +112,7 @@ export function createPlugin() {
 				methods: ["GET"],
 				permission: "plugins:manage",
 				handler: async (ctx): Promise<ListResponse> => {
-					const reviewsStore = ctx.storage.reviews as StorageCollection<StoredReview>;
+					const catalog = catalogFrom(ctx);
 					const [
 						meta,
 						devMockSync,
@@ -148,9 +122,9 @@ export function createPlugin() {
 						accountId,
 						locationId,
 						mapsUri,
-						items,
+						reviews,
 					] = await Promise.all([
-						readMeta(ctx.kv),
+						catalog.readMeta(),
 						ctx.settings.get("devMockSync"),
 						ctx.settings.get<string>("oauthClientId"),
 						ctx.settings.get<string>("oauthClientSecret"),
@@ -158,12 +132,12 @@ export function createPlugin() {
 						ctx.settings.get<string>("accountId"),
 						ctx.settings.get<string>("locationId"),
 						ctx.settings.get<string>("mapsUri"),
-						listStoredReviews(reviewsStore),
+						catalog.listAll(),
 					]);
 					return {
 						place: meta.place ?? null,
 						meta,
-						reviews: items.map((item) => item.data),
+						reviews,
 						configured: {
 							devMockSync: isTruthySetting(devMockSync),
 							hasClientId: Boolean(oauthClientId?.trim()),
@@ -189,6 +163,7 @@ export function createPlugin() {
 						};
 					}
 					const reviewsStore = ctx.storage.reviews as StorageCollection<StoredReview>;
+					const catalog = catalogFrom(ctx);
 					const result = await syncGoogleReviews({
 						settings: ctx.settings,
 						http: ctx.http ?? {
@@ -199,17 +174,20 @@ export function createPlugin() {
 						log: ctx.log,
 						reviews: reviewsStore,
 						kv: ctx.kv,
+						catalog,
 					});
 					if (!result.ok) return result;
 
-					const items = await listStoredReviews(reviewsStore);
-					const meta = await readMeta(ctx.kv);
+					const [reviews, meta] = await Promise.all([
+						catalog.listAll(),
+						catalog.readMeta(),
+					]);
 					return {
 						ok: true,
 						upserted: result.upserted,
 						place: result.place,
 						meta,
-						reviews: items.map((item) => item.data),
+						reviews,
 						source: result.source,
 					};
 				},
@@ -222,20 +200,7 @@ export function createPlugin() {
 					const input = ctx.input as { name?: unknown; featured?: unknown } | null;
 					const name = typeof input?.name === "string" ? input.name : "";
 					const featured = input?.featured === true;
-					if (!name) {
-						return { ok: false, error: "name mancante" };
-					}
-
-					const reviewsStore = ctx.storage.reviews as StorageCollection<StoredReview>;
-					const id = reviewStorageId(name);
-					const existing = await reviewsStore.get(id);
-					if (!existing) {
-						return { ok: false, error: "Recensione non trovata. Esegui prima Sync." };
-					}
-
-					const next: StoredReview = { ...existing, featured };
-					await reviewsStore.put(id, next);
-					return { ok: true, review: next };
+					return catalogFrom(ctx).setFeatured(name, featured);
 				},
 			}),
 			"edit-text": definePluginRoute({
@@ -252,34 +217,14 @@ export function createPlugin() {
 					if (!name) {
 						return { ok: false, error: "name mancante" };
 					}
-
-					const reviewsStore = ctx.storage.reviews as StorageCollection<StoredReview>;
-					const id = reviewStorageId(name);
-					const existing = await reviewsStore.get(id);
-					if (!existing) {
-						return { ok: false, error: "Recensione non trovata. Esegui prima Sync." };
+					const catalog = catalogFrom(ctx);
+					if (input?.restore === true) {
+						return catalog.restoreText(name);
 					}
-
-					const originalText = existing.originalText ?? existing.text ?? "";
-					const restore = input?.restore === true;
-					const text = restore
-						? originalText
-						: typeof input?.text === "string"
-							? input.text.trim()
-							: null;
-					if (text === null) {
+					if (typeof input?.text !== "string") {
 						return { ok: false, error: "text mancante" };
 					}
-
-					const textEdited = text !== originalText;
-					const next: StoredReview = {
-						...existing,
-						originalText,
-						text,
-						textEdited: textEdited || undefined,
-					};
-					await reviewsStore.put(id, next);
-					return { ok: true, review: next };
+					return catalog.setDisplayText(name, input.text);
 				},
 			}),
 			featured: {
@@ -287,10 +232,11 @@ export function createPlugin() {
 				methods: ["GET"],
 				cacheControl: "public, max-age=60, stale-while-revalidate=300",
 				handler: async (ctx): Promise<FeaturedResponse> => {
-					const reviewsStore = ctx.storage.reviews as StorageCollection<StoredReview>;
-					const meta = await readMeta(ctx.kv);
-					// Drain all featured pages so admin “Mostra in homepage” matches the home list.
-					const reviews = await listFeaturedReviews(reviewsStore);
+					const catalog = catalogFrom(ctx);
+					const [meta, reviews] = await Promise.all([
+						catalog.readMeta(),
+						catalog.listFeatured(),
+					]);
 					return {
 						place: (meta.place as LocationSummary | null | undefined) ?? null,
 						reviews,

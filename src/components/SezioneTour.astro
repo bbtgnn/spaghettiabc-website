@@ -3,6 +3,7 @@ import ArrowRight from "@lucide/astro/icons/arrow-right";
 import CompactReviewRail from "./CompactReviewRail.astro";
 import TourLargeCard from "./TourLargeCard.astro";
 import { entrySlug, localePath, resolveLocale, t } from "../i18n/utils";
+import type { TourGoogleSocialProof } from "../utils/tour-google-social-proof";
 
 interface TourEntry {
 	id: string;
@@ -19,30 +20,12 @@ interface TourEntry {
 	};
 }
 
-interface Review {
-	author: string;
-	quote: string;
-	rating?: number | null;
-	avatar?: {
-		id: string;
-		src?: string;
-		alt?: string;
-		width?: number;
-		height?: number;
-	} | null;
-	avatarSrc?: string | null;
-	reviewUrl?: string | null;
-}
-
 interface Props {
 	title?: string | null;
 	subtitle?: string | null;
 	ctaLabel?: string | null;
 	tours: TourEntry[];
-	reviews?: Review[];
-	googleScore?: number;
-	googleReviewCount?: number;
-	googleProfileUrl?: string | null;
+	googleSocialProof?: TourGoogleSocialProof;
 	locale?: string;
 	edit?: {
 		tour_title?: Record<string, unknown>;
@@ -51,15 +34,19 @@ interface Props {
 	};
 }
 
+const emptyGoogleSocialProof: TourGoogleSocialProof = {
+	score: 0,
+	reviewCount: 0,
+	profileUrl: null,
+	reviews: [],
+};
+
 const {
 	title,
 	subtitle,
 	ctaLabel,
 	tours,
-	reviews = [],
-	googleScore = 0,
-	googleReviewCount = 0,
-	googleProfileUrl = null,
+	googleSocialProof = emptyGoogleSocialProof,
 	locale: localeProp,
 	edit,
 } = Astro.props;
@@ -146,10 +133,7 @@ const railTours = tours.slice(2);
 
 				<div data-reveal>
 					<CompactReviewRail
-						reviews={reviews}
-						googleScore={googleScore}
-						googleReviewCount={googleReviewCount}
-						googleProfileUrl={googleProfileUrl}
+						googleSocialProof={googleSocialProof}
 						locale={locale}
 					/>
 				</div>

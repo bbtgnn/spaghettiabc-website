@@ -2,42 +2,19 @@
 import { Image } from "emdash/ui";
 import Star from "@lucide/astro/icons/star";
 import { resolveLocale, t } from "../i18n/utils";
-
-interface Review {
-	author: string;
-	quote: string;
-	rating?: number | null;
-	avatar?: {
-		id: string;
-		src?: string;
-		alt?: string;
-		width?: number;
-		height?: number;
-	} | null;
-	/** External photo URL from plugin sync (Google author avatar). */
-	avatarSrc?: string | null;
-	reviewUrl?: string | null;
-}
+import type { TourGoogleSocialProof } from "../utils/tour-google-social-proof";
 
 interface Props {
-	reviews: Review[];
-	googleScore?: number;
-	googleReviewCount?: number;
-	googleProfileUrl?: string | null;
+	googleSocialProof: TourGoogleSocialProof;
 	locale?: string;
 }
 
-const {
-	reviews,
-	googleScore = 0,
-	googleReviewCount = 0,
-	googleProfileUrl = null,
-	locale: localeProp,
-} = Astro.props;
+const { googleSocialProof, locale: localeProp } = Astro.props;
+const { score, reviewCount, profileUrl, reviews } = googleSocialProof;
 
 const locale = resolveLocale(localeProp ?? Astro.currentLocale);
 const starSlots = [1, 2, 3, 4, 5] as const;
-const hasScore = googleScore > 0 || googleReviewCount > 0 || Boolean(googleProfileUrl);
+const hasScore = score > 0 || reviewCount > 0 || Boolean(profileUrl);
 const show = hasScore || reviews.length > 0;
 ---
 
@@ -47,25 +24,25 @@ const show = hasScore || reviews.length > 0;
 			<div class="review-rail__row">
 				{hasScore && (
 					<aside class="review-rail__score">
-						{googleScore > 0 && (
+						{score > 0 && (
 							<p
 								class="review-rail__score-value"
 								aria-label={t(locale, "reviewAvgLabel", {
-									score: googleScore.toFixed(1),
+									score: score.toFixed(1),
 								})}
 							>
-								{googleScore.toFixed(1)}
+								{score.toFixed(1)}
 							</p>
 						)}
-						{googleReviewCount > 0 && (
+						{reviewCount > 0 && (
 							<p class="review-rail__score-count">
-								{t(locale, "reviewCount", { count: googleReviewCount })}
+								{t(locale, "reviewCount", { count: reviewCount })}
 							</p>
 						)}
-						{googleProfileUrl && (
+						{profileUrl && (
 							<a
 								class="review-rail__score-link"
-								href={googleProfileUrl}
+								href={profileUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 							>

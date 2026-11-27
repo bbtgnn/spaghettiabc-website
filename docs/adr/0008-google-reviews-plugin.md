@@ -2,7 +2,7 @@
 
 Flavia needs more than five Google quotes on Sezione Tour, with control over which appear and how the display text reads. Curating them only on the `homepage` entry and capping at Places’ five-review limit both failed that need.
 
-**Decision:** native EmDash plugin `@spaghettiabc/google-reviews` syncs reviews through Google Business Profile (OAuth + account/location; optional local mock sync), stores them in plugin storage (not a content collection), and exposes admin feature + editable display text. Sezione Tour reads featured reviews and Punteggio Google via the plugin’s public `featured` route (`src/utils/featured-google-reviews.ts`). Homepage CMS `google_*` remains a fallback only when that route is unavailable.
+**Decision:** native EmDash plugin `@spaghettiabc/google-reviews` syncs reviews through Google Business Profile (OAuth + account/location; optional local mock sync), stores them in plugin storage (not a content collection), and exposes admin feature + editable display text. Sezione Tour reads featured reviews and Punteggio Google via `getTourGoogleSocialProof` (`src/utils/tour-google-social-proof.ts`), which calls the plugin’s public `featured` route and keeps homepage CMS `google_*` as an internal fallback only when that route is unavailable.
 
 **Rejected:**
 

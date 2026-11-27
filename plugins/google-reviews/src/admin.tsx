@@ -25,7 +25,6 @@ import {
 	type Icon,
 } from "@phosphor-icons/react";
 import type { PluginAdminExports } from "emdash";
-import { apiFetch, isRecord, parseApiResponse } from "emdash/plugin-utils";
 import {
 	getDraftText,
 	initialReviewCardsState,
@@ -39,9 +38,12 @@ import {
 	type ReviewCardsEvent,
 	type ReviewCardsState,
 } from "./review-card-machine";
-import type { ListResponse, StoredReview, SyncMeta } from "./types";
+import {
+	patchReviewInList,
+	syncPageController,
+} from "./sync-page-controller";
+import type { ListResponse, StoredReview } from "./types";
 
-const PLUGIN_API = "/_emdash/api/plugins/google-reviews";
 const HOME_SECTION_ID = "recensioni-in-home";
 const JUST_ADDED_CLASS = "gr-just-added";
 /** Height transition classes from Kumo DefaultPanel, without the left-border accent.
@@ -59,22 +61,6 @@ const SYNC_SECTION_CLASS =
  * node_modules, outside Tailwind content scan). */
 const SECTION_TRIGGER_CLASS =
 	"m-0 flex cursor-pointer items-center gap-2 border-none bg-transparent p-0 text-base font-medium leading-none text-kumo-default shadow-none select-none";
-
-type SyncPayload = {
-	ok?: boolean;
-	error?: string;
-	upserted?: number;
-	place?: ListResponse["place"];
-	meta?: SyncMeta;
-	reviews?: StoredReview[];
-	source?: "live" | "mock";
-};
-
-type EditPayload = {
-	ok?: boolean;
-	error?: string;
-	review?: StoredReview;
-};
 
 function stars(rating: number): string {
 	const n = Math.max(0, Math.min(5, Math.round(rating)));
@@ -294,6 +280,8 @@ function SyncPage() {
 	>(null);
 	const [justAddedName, setJustAddedName] = React.useState<string | null>(null);
 	const [homeOpen, setHomeOpen] = React.useState(true);
+	const dataRef = React.useRef(data);
+	dataRef.current = data;
 
 	function showError(message: string) {
 		setError(message);
@@ -307,18 +295,13 @@ function SyncPage() {
 
 	const load = React.useCallback(async () => {
 		setError(null);
-		try {
-			const res = await apiFetch(`${PLUGIN_API}/list`);
-			const payload = await parseApiResponse<ListResponse>(
-				res,
-				"Impossibile caricare le recensioni",
-			);
-			setData(payload);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Errore di rete");
-		} finally {
-			setLoading(false);
+		const outcome = await syncPageController.load();
+		if (outcome.status === "ok") {
+			setData(outcome.data);
+		} else {
+			setError(outcome.message);
 		}
+		setLoading(false);
 	}, []);
 
 	React.useEffect(() => {
@@ -346,162 +329,70 @@ function SyncPage() {
 		return () => window.clearTimeout(timeout);
 	}, [justAddedName]);
 
-	function patchReview(name: string, patch: Partial<StoredReview>) {
-		setData((prev) => {
-			if (!prev) return prev;
-			return {
-				...prev,
-				reviews: prev.reviews.map((item) =>
-					item.name === name ? { ...item, ...patch } : item,
-				),
-			};
-		});
-	}
-
 	async function onSync() {
 		setSyncing(true);
 		setError(null);
-		accept({ type: "RESET_EDIT" });
-		try {
-			const res = await apiFetch(`${PLUGIN_API}/sync`, { method: "POST" });
-			const payload = await parseApiResponse<SyncPayload>(res, "Sync fallita");
-			if (payload.ok === false) {
-				showError(typeof payload.error === "string" ? payload.error : "Sync fallita");
-				await load();
-				return;
-			}
-			if (Array.isArray(payload.reviews)) {
-				const source = payload.source === "mock" ? "mock" : "live";
-				setData((prev) => ({
-					place: payload.place ?? prev?.place ?? null,
-					meta: payload.meta ?? prev?.meta ?? {},
-					reviews: payload.reviews as StoredReview[],
-					configured: prev?.configured ?? {
-						devMockSync: source === "mock",
-						hasClientId: true,
-						hasClientSecret: true,
-						hasRefreshToken: true,
-						accountId: null,
-						locationId: null,
-						mapsUri: null,
-					},
-				}));
-				showNotice(
-					source === "mock"
-						? `Sync mock: ${String(payload.upserted ?? payload.reviews.length)} recensioni fixture in cache (paginazione simulata).`
-						: `Sync completata: ${String(payload.upserted ?? payload.reviews.length)} recensioni in cache.`,
-				);
-			} else {
-				await load();
-				showNotice("Sync completata.");
-			}
-		} catch (err) {
-			showError(err instanceof Error ? err.message : "Errore di rete");
-		} finally {
-			setSyncing(false);
+		const outcome = await syncPageController.sync(accept, dataRef.current);
+		if (outcome.status === "ok") {
+			setData(outcome.data);
+			showNotice(outcome.notice);
+		} else {
+			if (outcome.data) setData(outcome.data);
+			showError(outcome.message);
 		}
+		setSyncing(false);
 	}
 
 	async function onToggleFeatured(review: StoredReview, featured: boolean) {
-		if (!accept({ type: "TOGGLE_FEATURE", name: review.name })) return;
 		setError(null);
-		try {
-			const res = await apiFetch(`${PLUGIN_API}/feature`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ name: review.name, featured }),
-			});
-			await parseApiResponse(res, "Impossibile aggiornare");
-			patchReview(review.name, { featured });
-			if (featured) {
+		const outcome = await syncPageController.toggleFeatured(
+			review,
+			featured,
+			accept,
+		);
+		if (outcome.status === "rejected") return;
+		if (outcome.status === "ok") {
+			setData((prev) =>
+				prev
+					? patchReviewInList(prev, outcome.name, { featured: outcome.featured })
+					: prev,
+			);
+			if (outcome.openHome) {
 				setHomeOpen(true);
-				setJustAddedName(review.name);
-				setScrollToFeaturedName(review.name);
+				setJustAddedName(outcome.name);
+				setScrollToFeaturedName(outcome.name);
 			}
-			accept({ type: "FEATURE_OK" });
-		} catch (err) {
-			accept({ type: "FEATURE_ERR" });
-			showError(err instanceof Error ? err.message : "Errore di rete");
+			return;
 		}
+		showError(outcome.message);
 	}
 
 	async function onSaveText(review: StoredReview) {
-		const next = accept({ type: "SAVE" });
-		if (
-			!next ||
-			next.edit.status !== "saving" ||
-			next.edit.name !== review.name
-		) {
+		setError(null);
+		const outcome = await syncPageController.saveText(review, accept);
+		if (outcome.status === "rejected" || outcome.status === "abandoned") return;
+		if (outcome.status === "ok") {
+			setData((prev) =>
+				prev ? patchReviewInList(prev, outcome.name, outcome.patch) : prev,
+			);
+			showNotice(outcome.notice);
 			return;
 		}
-		const draftText = next.edit.draftText;
-		const epoch = next.edit.epoch;
-		setError(null);
-		try {
-			const res = await apiFetch(`${PLUGIN_API}/edit-text`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ name: review.name, text: draftText }),
-			});
-			const payload = await parseApiResponse<EditPayload>(
-				res,
-				"Impossibile salvare il testo",
-			);
-			// Skip patch/toast if sync RESET_EDIT (or a newer save) abandoned this epoch.
-			if (!accept({ type: "SAVE_OK", epoch })) return;
-			if (isRecord(payload) && isRecord(payload.review)) {
-				const saved = payload.review as StoredReview;
-				patchReview(review.name, {
-					...saved,
-					textEdited: saved.textEdited === true ? true : undefined,
-				});
-			} else {
-				const trimmed = draftText.trim();
-				const original = review.originalText ?? review.text;
-				patchReview(review.name, {
-					text: trimmed,
-					textEdited: trimmed !== original ? true : undefined,
-				});
-			}
-			showNotice("Testo aggiornato.");
-		} catch (err) {
-			if (!accept({ type: "SAVE_ERR", epoch })) return;
-			showError(err instanceof Error ? err.message : "Errore di rete");
-		}
+		showError(outcome.message);
 	}
 
 	async function onRestoreText(review: StoredReview) {
-		if (!accept({ type: "RESTORE", name: review.name })) return;
 		setError(null);
-		try {
-			const res = await apiFetch(`${PLUGIN_API}/edit-text`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ name: review.name, restore: true }),
-			});
-			const payload = await parseApiResponse<EditPayload>(
-				res,
-				"Impossibile ripristinare",
+		const outcome = await syncPageController.restoreText(review, accept);
+		if (outcome.status === "rejected") return;
+		if (outcome.status === "ok") {
+			setData((prev) =>
+				prev ? patchReviewInList(prev, outcome.name, outcome.patch) : prev,
 			);
-			if (isRecord(payload) && isRecord(payload.review)) {
-				const restored = payload.review as StoredReview;
-				patchReview(review.name, {
-					...restored,
-					textEdited: restored.textEdited === true ? true : undefined,
-				});
-			} else {
-				const original = review.originalText ?? review.text;
-				patchReview(review.name, {
-					text: original,
-					textEdited: undefined,
-				});
-			}
-			accept({ type: "RESTORE_OK" });
-			showNotice("Testo originale ripristinato.");
-		} catch (err) {
-			accept({ type: "RESTORE_ERR" });
-			showError(err instanceof Error ? err.message : "Errore di rete");
+			showNotice(outcome.notice);
+			return;
 		}
+		showError(outcome.message);
 	}
 
 	const meta = data?.meta;
