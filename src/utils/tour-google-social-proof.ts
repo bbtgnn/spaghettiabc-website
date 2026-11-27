@@ -22,7 +22,7 @@ export type TourGoogleReview = {
 
 /**
  * Everything Sezione Tour needs for Recensioni Google + Punteggio Google.
- * Plugin `featured` when available; CMS `google_*` only as internal fallback.
+ * Plugin `featured` only — empty proof when the route fails or is unavailable.
  */
 export type TourGoogleSocialProof = {
 	score: number;
@@ -46,51 +46,22 @@ type PluginFeaturedPayload = {
 	}>;
 };
 
-type CmsGoogleFallback = {
-	google_reviews?: Array<{
-		author: string;
-		quote: string;
-		rating: number;
-		avatar?: TourGoogleReview["avatar"];
-		review_url?: string | null;
-	}> | null;
-	google_score?: number | null;
-	google_review_count?: number | null;
-	google_profile_url?: string | null;
+const EMPTY_PROOF: TourGoogleSocialProof = {
+	score: 0,
+	reviewCount: 0,
+	profileUrl: null,
+	reviews: [],
 };
 
-function fromCms(cms: CmsGoogleFallback | null | undefined): TourGoogleSocialProof {
-	return {
-		score: Number(cms?.google_score) || 0,
-		reviewCount: Number(cms?.google_review_count) || 0,
-		profileUrl: cms?.google_profile_url ?? null,
-		reviews: (cms?.google_reviews ?? []).map((item) => ({
-			author: item.author,
-			quote: item.quote,
-			rating: Number(item.rating) || 5,
-			reviewUrl: item.review_url,
-			avatar: item.avatar,
-		})),
-	};
-}
-
-function fromPlugin(
-	payload: PluginFeaturedPayload,
-	cms: TourGoogleSocialProof,
-): TourGoogleSocialProof {
+function fromPlugin(payload: PluginFeaturedPayload): TourGoogleSocialProof {
 	const place = payload.place ?? null;
 	const profileUrl = place?.googleMapsUri ?? null;
 
 	return {
-		// Plugin owns the quote list when the route answers (even if empty).
-		// Place metrics fall back to CMS only when missing.
-		score:
-			(typeof place?.rating === "number" ? place.rating : null) ?? cms.score,
+		score: typeof place?.rating === "number" ? place.rating : 0,
 		reviewCount:
-			(typeof place?.userRatingCount === "number"
-				? place.userRatingCount
-				: null) ?? cms.reviewCount,
-		profileUrl: profileUrl ?? cms.profileUrl,
+			typeof place?.userRatingCount === "number" ? place.userRatingCount : 0,
+		profileUrl,
 		reviews: (Array.isArray(payload.reviews) ? payload.reviews : []).map(
 			(review) => ({
 				author: review.authorName,
@@ -104,23 +75,20 @@ function fromPlugin(
 }
 
 /**
- * Resolve Tour Google social proof for the current request.
- * Callers pass CMS homepage fields as fallback only — they must not branch on
- * plugin vs CMS themselves (ADR-0008).
+ * Resolve Tour Google social proof for the current request from the plugin
+ * `featured` route only (ADR-0008).
  */
 export async function getTourGoogleSocialProof(
 	locals: PublicPluginRuntimeLocals | null | undefined,
 	request: Request,
-	cmsFallback?: CmsGoogleFallback | null,
 ): Promise<TourGoogleSocialProof> {
-	const cms = fromCms(cmsFallback);
 	const pluginApi = getPublicPluginApiRouteHandler(locals);
-	if (!pluginApi) return cms;
+	if (!pluginApi) return EMPTY_PROOF;
 
 	const featured = await pluginApi("google-reviews", "GET", "featured", request);
 	if (!featured.success || !featured.data || typeof featured.data !== "object") {
-		return cms;
+		return EMPTY_PROOF;
 	}
 
-	return fromPlugin(featured.data as PluginFeaturedPayload, cms);
+	return fromPlugin(featured.data as PluginFeaturedPayload);
 }

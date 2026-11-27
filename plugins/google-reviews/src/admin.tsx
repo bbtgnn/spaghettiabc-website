@@ -442,8 +442,8 @@ function SyncPage() {
 					<Text variant="secondary" size="sm">
 						Sincronizza le recensioni, poi usa «Aggiungi» per metterle in
 						homepage. Quelle in «Recensioni in home» alimentano lo strip in
-						Sezione Tour (non il repeater CMS). Puoi modificare il testo
-						mostrato senza perdere l’originale Google.
+						Sezione Tour. Puoi modificare il testo mostrato senza perdere
+						l’originale Google.
 					</Text>
 				</div>
 				<Button

@@ -40,7 +40,6 @@ const partnerLogos = home?.data.partner_logos ?? [];
 const googleSocialProof = await getTourGoogleSocialProof(
 	Astro.locals,
 	Astro.request,
-	home?.data,
 );
 const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
