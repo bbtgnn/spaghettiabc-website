@@ -28,7 +28,12 @@
     "migrate:check": "emdash migrate --check --wrangler-config wrangler.jsonc",
     "schema:check": "node scripts/schema/check.mjs",
     "schema:generate": "node scripts/schema/generate.mjs",
-    "schema:test": "node --test \"scripts/schema/test/*.test.mjs\""
+    "schema:test": "node --test \"scripts/schema/test/*.test.mjs\"",
+    "schema:apply": "node scripts/schema/apply.mjs",
+    "schema:verify": "node scripts/schema/verify.mjs",
+    "schema:pull": "node scripts/schema/pull.mjs",
+    "schema:drift": "node scripts/schema/drift.mjs",
+    "schema:rehearse": "node scripts/schema/rehearse.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.9",

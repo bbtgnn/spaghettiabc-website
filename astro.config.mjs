@@ -11,6 +11,9 @@ import { sqlite } from "emdash/db";
 // Local `astro dev`: Node + SQLite + filesystem (so `$media.file` works).
 // `astro build` / deploy: Cloudflare + D1 + R2.
 const isProd = import.meta.env.PROD;
+// Local-only overrides (ignored by prod builds): `schema:rehearse` boots a throwaway server on temp paths.
+const localDatabaseUrl = process.env.EMDASH_DATABASE_URL || "file:./data.db";
+const localUploadsDir = process.env.EMDASH_UPLOADS_DIR || "./uploads";
 
 // Worktree PORT lives in `.env.local` (never read `.env` — secrets). An existing process.env.PORT wins.
 try {
@@ -41,11 +44,11 @@ export default defineConfig({
 		emdash({
 			database: isProd
 				? d1({ binding: "DB", session: "auto", coalesce: true })
-				: sqlite({ url: "file:./data.db" }),
+				: sqlite({ url: localDatabaseUrl }),
 			storage: isProd
 				? r2({ binding: "MEDIA" })
 				: local({
-						directory: "./uploads",
+						directory: localUploadsDir,
 						baseUrl: "/_emdash/api/media/file",
 					}),
 			plugins: [formHeadingsPlugin(), layoutConsigliatoPlugin()],
