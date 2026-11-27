@@ -1,6 +1,6 @@
 # Architecture decision records
 
-Decisions behind the shape of the site and the CMS, in the short form: record _that_ a decision was made and _why_. The current shape itself lives in [`docs/site-structure.md`](../site-structure.md); domain terms in [`GLOSSARY.md`](../../GLOSSARY.md).
+Decisions behind the shape of the site and the CMS, in the short form: record _that_ a decision was made and _why_. The current shape lives in the code, mapped by [`docs/site-structure.md`](../site-structure.md); domain terms are in [`GLOSSARY.md`](../../GLOSSARY.md).
 
 ## Template
 
@@ -31,7 +31,7 @@ All three must hold:
 2. **Surprising without context**: a future reader will wonder why the code looks this way.
 3. **Real trade-off**: there were genuine alternatives, picked for stated reasons.
 
-Keep the choice, the boundary, the reason, and the rejected alternatives that matter. Leave field inventories, file paths, runbooks, and task lists to `docs/site-structure.md`, `DEPLOY.md`, or the code.
+Keep the choice, the boundary, the reason, and the rejected alternatives that matter. Leave field inventories, file paths, and task lists to the code, and runbooks to `DEPLOY.md`.
 
 ## Index
 

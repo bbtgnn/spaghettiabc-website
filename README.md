@@ -16,7 +16,7 @@ Every `npm run dev` wipes and reseeds the local SQLite database and uploads from
 ## Further reading
 
 - [`AGENTS.md`](AGENTS.md): how to work in this repo, for people and agents.
-- [`docs/site-structure.md`](docs/site-structure.md): routes, sections, and the CMS model.
+- [`docs/site-structure.md`](docs/site-structure.md): where each part of the site lives, and the gotchas.
 - [`docs/adr/`](docs/adr/README.md): why the site is built this way.
 - [`GLOSSARY.md`](GLOSSARY.md): the domain terms (Tour, Scheda Tour, Edizione, …).
 - [`DEPLOY.md`](DEPLOY.md): staging on Cloudflare Workers, D1, and R2.
