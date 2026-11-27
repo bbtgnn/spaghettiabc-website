@@ -4,9 +4,10 @@ The website of Flavia Giordano: her food Tours in Puglia, her Libro, and her For
 
 ## Quickstart
 
-Node is pinned in [`mise.toml`](mise.toml); use npm.
+Node is pinned in [`mise.toml`](mise.toml); use mise (or install that version) and npm.
 
 ```bash
+mise install
 npm ci
 npm run dev
 ```

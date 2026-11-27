@@ -19,6 +19,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check:workerd": "node scripts/check-workerd.mjs",
     "deploy": "astro build && wrangler deploy",
     "typecheck": "astro check",
     "seed": "emdash seed seed/seed.json --on-conflict=update",
