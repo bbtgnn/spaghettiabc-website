@@ -26,7 +26,16 @@
     "migrate:status": "emdash migrate --status --wrangler-config wrangler.jsonc",
     "migrate": "emdash migrate --wrangler-config wrangler.jsonc",
     "migrate:check": "emdash migrate --check --wrangler-config wrangler.jsonc",
-    "test:google-reviews": "npm run test --prefix plugins/google-reviews"
+    "schema:check": "node scripts/schema/check.mjs",
+    "schema:generate": "node scripts/schema/generate.mjs",
+    "schema:test": "node --test \"scripts/schema/test/*.test.mjs\"",
+    "schema:apply": "node scripts/schema/apply.mjs",
+    "schema:verify": "node scripts/schema/verify.mjs",
+    "schema:pull": "node scripts/schema/pull.mjs",
+    "schema:drift": "node scripts/schema/drift.mjs",
+    "schema:rehearse": "node scripts/schema/rehearse.mjs",
+    "test:google-reviews": "npm run test --prefix plugins/google-reviews",
+    "prepare": "git config core.hooksPath .githooks || exit 0"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.9",

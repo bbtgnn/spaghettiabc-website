@@ -1,0 +1,546 @@
+{
+	"id": "0001_baseline",
+	"description": "Baseline: create the seed schema from empty",
+	"destructive": false,
+	"ops": [
+		{
+			"op": "createCollection",
+			"collection": {
+				"slug": "homepage",
+				"label": "Home",
+				"labelSingular": "Home",
+				"icon": "house",
+				"titleField": "hero_title",
+				"sortOrder": 10,
+				"supports": [
+					"drafts",
+					"preview",
+					"revisions",
+					"seo"
+				],
+				"routable": false
+			},
+			"fields": [
+				{
+					"slug": "form_heading_hero",
+					"label": "Hero",
+					"type": "boolean",
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
+					"slug": "hero_image",
+					"label": "Immagine",
+					"type": "image"
+				},
+				{
+					"slug": "hero_title",
+					"label": "Titolo",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "hero_subtitle",
+					"label": "Sottotitolo",
+					"type": "string"
+				},
+				{
+					"slug": "form_heading_tour",
+					"label": "Tour",
+					"type": "boolean",
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
+					"slug": "tour_title",
+					"label": "Titolo",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "tour_subtitle",
+					"label": "Sottotitolo",
+					"type": "string"
+				},
+				{
+					"slug": "tour_cta_label",
+					"label": "Testo CTA",
+					"type": "string"
+				},
+				{
+					"slug": "form_heading_book",
+					"label": "Libro",
+					"type": "boolean",
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
+					"slug": "book_title",
+					"label": "Titolo",
+					"type": "string"
+				},
+				{
+					"slug": "book_subtitle",
+					"label": "Sottotitolo",
+					"type": "string"
+				},
+				{
+					"slug": "book_cta_label",
+					"label": "Testo CTA",
+					"type": "string"
+				},
+				{
+					"slug": "form_heading_training",
+					"label": "Formazione",
+					"type": "boolean",
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
+					"slug": "training_title",
+					"label": "Titolo",
+					"type": "string"
+				},
+				{
+					"slug": "training_subtitle",
+					"label": "Sottotitolo",
+					"type": "string"
+				},
+				{
+					"slug": "training_image",
+					"label": "Immagine",
+					"type": "image"
+				},
+				{
+					"slug": "training_cta_label",
+					"label": "Testo CTA",
+					"type": "string"
+				},
+				{
+					"slug": "form_heading_dicono",
+					"label": "Dicono di me",
+					"type": "boolean",
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
+					"slug": "dicono_title",
+					"label": "Titolo",
+					"type": "string"
+				},
+				{
+					"slug": "dicono_subtitle",
+					"label": "Sottotitolo",
+					"type": "string"
+				},
+				{
+					"slug": "partner_logos",
+					"label": "Loghi partner",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "logo",
+								"label": "Logo",
+								"type": "image",
+								"required": true
+							},
+							{
+								"slug": "name",
+								"label": "Nome",
+								"type": "string"
+							}
+						]
+					}
+				},
+				{
+					"slug": "google_score",
+					"label": "Punteggio Google",
+					"type": "number"
+				},
+				{
+					"slug": "google_review_count",
+					"label": "Numero recensioni",
+					"type": "integer"
+				},
+				{
+					"slug": "google_profile_url",
+					"label": "Link profilo Google",
+					"type": "url"
+				},
+				{
+					"slug": "google_reviews",
+					"label": "Recensioni Google",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "author",
+								"label": "Autore",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "quote",
+								"label": "Citazione",
+								"type": "text",
+								"required": true
+							},
+							{
+								"slug": "rating",
+								"label": "Stelle",
+								"type": "number",
+								"required": true
+							},
+							{
+								"slug": "avatar",
+								"label": "Foto profilo",
+								"type": "image"
+							},
+							{
+								"slug": "review_url",
+								"label": "Link recensione",
+								"type": "url"
+							}
+						]
+					}
+				},
+				{
+					"slug": "form_heading_newsletter",
+					"label": "Newsletter",
+					"type": "boolean",
+					"defaultValue": false,
+					"widget": "form-headings:heading"
+				},
+				{
+					"slug": "newsletter_title",
+					"label": "Titolo",
+					"type": "string"
+				},
+				{
+					"slug": "newsletter_subtitle",
+					"label": "Sottotitolo",
+					"type": "string"
+				},
+				{
+					"slug": "newsletter_button_label",
+					"label": "Testo pulsante",
+					"type": "string"
+				},
+				{
+					"slug": "newsletter_email_placeholder",
+					"label": "Placeholder email",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"op": "createCollection",
+			"collection": {
+				"slug": "tours",
+				"label": "Tour",
+				"labelSingular": "Tour",
+				"icon": "map-trifold",
+				"urlPattern": "/tours/{slug}",
+				"sortOrder": 20,
+				"supports": [
+					"drafts",
+					"preview",
+					"revisions",
+					"scheduling",
+					"search",
+					"seo"
+				]
+			},
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured Image",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "destination",
+					"label": "Destination",
+					"type": "string",
+					"searchable": true
+				},
+				{
+					"slug": "duration",
+					"label": "Duration",
+					"type": "string"
+				},
+				{
+					"slug": "group_size",
+					"label": "Group size",
+					"type": "string"
+				},
+				{
+					"slug": "language",
+					"label": "Language",
+					"type": "string"
+				},
+				{
+					"slug": "included",
+					"label": "Included",
+					"type": "string"
+				},
+				{
+					"slug": "price",
+					"label": "Price",
+					"type": "string"
+				},
+				{
+					"slug": "calendly_url",
+					"label": "URL Calendly",
+					"type": "url"
+				},
+				{
+					"slug": "gallery",
+					"label": "Gallery",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "image",
+								"label": "Image",
+								"type": "image",
+								"required": true
+							}
+						]
+					}
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"op": "createCollection",
+			"collection": {
+				"slug": "libri",
+				"label": "Libri",
+				"labelSingular": "Libro",
+				"icon": "books",
+				"sortOrder": 30,
+				"supports": [
+					"drafts",
+					"preview",
+					"revisions",
+					"search",
+					"seo"
+				],
+				"routable": false
+			},
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "cover",
+					"label": "Cover",
+					"type": "image"
+				},
+				{
+					"slug": "buy_url",
+					"label": "Buy URL",
+					"type": "url"
+				},
+				{
+					"slug": "buy_label",
+					"label": "Buy label",
+					"type": "string"
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"op": "createCollection",
+			"collection": {
+				"slug": "training",
+				"label": "Formazione",
+				"labelSingular": "Formazione",
+				"icon": "graduation-cap",
+				"titleField": "title",
+				"sortOrder": 40,
+				"supports": [
+					"drafts",
+					"preview",
+					"revisions",
+					"search",
+					"seo"
+				],
+				"routable": false
+			},
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "cover",
+					"label": "Cover",
+					"type": "image"
+				},
+				{
+					"slug": "excerpt",
+					"label": "Excerpt",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		},
+		{
+			"op": "createCollection",
+			"collection": {
+				"slug": "site_globals",
+				"label": "Impostazioni sito",
+				"labelSingular": "Impostazioni sito",
+				"icon": "gear",
+				"sortOrder": 50,
+				"supports": [
+					"drafts",
+					"preview",
+					"revisions"
+				],
+				"routable": false
+			},
+			"fields": [
+				{
+					"slug": "calendly_url",
+					"label": "URL Calendly predefinito",
+					"type": "url"
+				},
+				{
+					"slug": "faq",
+					"label": "FAQ",
+					"type": "repeater",
+					"validation": {
+						"subFields": [
+							{
+								"slug": "question",
+								"label": "Question",
+								"type": "string",
+								"required": true
+							},
+							{
+								"slug": "answer",
+								"label": "Answer",
+								"type": "text",
+								"required": true
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			"op": "addField",
+			"collection": "homepage",
+			"field": {
+				"slug": "featured_tours",
+				"label": "Tour in evidenza",
+				"type": "reference",
+				"validation": {
+					"targetCollection": "tours",
+					"multiple": true
+				}
+			}
+		},
+		{
+			"op": "addField",
+			"collection": "homepage",
+			"field": {
+				"slug": "featured_books",
+				"label": "Edizioni in evidenza",
+				"type": "reference",
+				"validation": {
+					"targetCollection": "libri",
+					"multiple": true
+				}
+			}
+		},
+		{
+			"op": "reorderFields",
+			"collection": "homepage",
+			"slugs": [
+				"form_heading_hero",
+				"hero_image",
+				"hero_title",
+				"hero_subtitle",
+				"form_heading_tour",
+				"tour_title",
+				"tour_subtitle",
+				"featured_tours",
+				"tour_cta_label",
+				"form_heading_book",
+				"book_title",
+				"book_subtitle",
+				"featured_books",
+				"book_cta_label",
+				"form_heading_training",
+				"training_title",
+				"training_subtitle",
+				"training_image",
+				"training_cta_label",
+				"form_heading_dicono",
+				"dicono_title",
+				"dicono_subtitle",
+				"partner_logos",
+				"google_score",
+				"google_review_count",
+				"google_profile_url",
+				"google_reviews",
+				"form_heading_newsletter",
+				"newsletter_title",
+				"newsletter_subtitle",
+				"newsletter_button_label",
+				"newsletter_email_placeholder"
+			]
+		}
+	]
+}

@@ -1,0 +1,27 @@
+{
+	"id": "0002_remove-homepage-google-fields",
+	"description": "removeField homepage.google_score; removeField homepage.google_review_count; removeField homepage.google_profile_url; removeField homepage.google_reviews",
+	"destructive": true,
+	"ops": [
+		{
+			"op": "removeField",
+			"collection": "homepage",
+			"field": "google_score"
+		},
+		{
+			"op": "removeField",
+			"collection": "homepage",
+			"field": "google_review_count"
+		},
+		{
+			"op": "removeField",
+			"collection": "homepage",
+			"field": "google_profile_url"
+		},
+		{
+			"op": "removeField",
+			"collection": "homepage",
+			"field": "google_reviews"
+		}
+	]
+}

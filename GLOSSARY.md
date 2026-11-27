@@ -79,3 +79,51 @@ _Avoid_: mailing list (come nome UI), iscriviti (come nome di entità)
 **Sezione Newsletter**:
 Blocco della homepage con titolo, sottotitolo e casella email per l’iscrizione (per ora solo interfaccia, senza invio reale).
 _Avoid_: pagina newsletter, form contatti
+
+## Schema migration loop
+
+Toolchain vocabulary for evolving `seed/seed.json` into immutable migrations and applying them on staging/production. Not Flavia’s site domain.
+
+**Canonical schema**:
+Normalised, comparable shape of collections and fields (defaults filled, volatile keys stripped, stable order) used for hashing and diffs.
+_Avoid_: raw `seed.json`; live admin JSON as-is; “schema document”
+
+**Schema hash / hash-chain position**:
+SHA-256 of a canonical schema at a known point on the migration replay. The full position list includes every op-prefix (base, pre, full, and partial); the coarse **chain state** view keeps only base|pre|full. Positions are derived by replaying committed migrations — there is no separate ledger.
+_Avoid_: ledger; migration log; version number as the identity of live schema
+
+**Partial position**:
+Live schema hash matches an interrupted mid-migration op-prefix (between ops of one migration), not a complete chain state. Apply resumes from there; it is not DRIFT.
+_Avoid_: DRIFT; “behind” / pending when the apply was cut mid-migration
+
+**Migration**:
+Immutable generated JSON (and optional sibling backfill module) that takes the schema from one hash-chain position to the next. Once committed, it is never edited.
+_Avoid_: schema patch; admin save; changelog entry
+
+**DRIFT**:
+Live schema hash is not any position on the committed migration chain — including partials (usually an out-of-band admin edit). Exit 4.
+_Avoid_: SEED_DRIFT; “out of date” when the live schema is simply behind pending migrations; Partial position
+
+**SEED_DRIFT**:
+Working-tree `seed/seed.json` no longer matches the final hash of the committed migrations. Exit 1; fix with `schema:generate`.
+_Avoid_: DRIFT; live drift
+
+**Pre phase**:
+Apply steps before the Worker/code deploy: additive and update ops, then backfills. Removals wait for post.
+_Avoid_: “before deploy” as a vague label; calling backfills a separate phase
+
+**Post phase**:
+Apply steps after the code deploy: `removeField` / `deleteCollection`, so old code never reads a missing column.
+_Avoid_: cleanup phase; destructive phase (destructive is a property of ops, not the phase name)
+
+**STOP**:
+Generator refusal: `schema:generate` will not invent an ambiguous or unsupported migration. Exit 3 with a STOP code, details, and hint.
+_Avoid_: error; failure; blocked (BLOCKED is exit 5 at apply time)
+
+**Backfill**:
+Content transform that copies or maps values when the schema expands (often into a new field). Writes stage-only pending drafts and never publishes; the pending-draft gate blocks destructive post ops until every entry carries the backfilled value (or the draft is discarded).
+_Avoid_: data migration (as a synonym that hides the draft gate); content seed
+
+**Schema loop / Rehearse**:
+The edit → generate → check → PR cycle; Rehearse is the dress rehearsal that seeds from merge-base, applies all migrations on a throwaway local server, and asserts live == model == seed without touching the checkout’s own DB.
+_Avoid_: staging apply as “rehearse”; local `npm run dev` wipe/reseed as the rehearsal
