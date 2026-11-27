@@ -527,6 +527,10 @@ function homepageData(locale) {
 			? "Puglia told through places, flavours, and encounters"
 			: "Puglia raccontata attraverso luoghi, sapori e incontri",
 		book_cta_label: isEn ? "Discover the book" : "Scopri il libro",
+		// Must resolve after content.libri is seeded — keep libri before homepage in seed.content.
+		featured_books: isEn
+			? ["$ref:international", "$ref:special"]
+			: ["$ref:international-it", "$ref:special-it"],
 		book_image: {
 			$media: {
 				file: "media/copertina-libro.jpg",
@@ -558,82 +562,30 @@ function homepageData(locale) {
 	};
 }
 
-seed.content.tours = tourContent;
-seed.content.homepage = [
-	{
-		id: "home",
-		slug: "home",
-		locale: "en",
-		status: "published",
-		data: homepageData("en"),
-	},
-	{
-		id: "home-it",
-		slug: "home",
-		locale: "it",
-		translationOf: "home",
-		status: "published",
-		data: homepageData("it"),
-	},
-];
-
-seed.content.libri = [
-	{
-		id: "puglia-the-book",
-		slug: "puglia-the-book",
-		locale: "en",
-		status: "published",
-		data: {
-			title: "Puglia",
-			subtitle: "The Book",
-			excerpt:
-				"A travel story through olive groves, sea, and white towns — placeholder to replace.",
-			cover: {
-				$media: {
-					file: "media/copertina-libro.jpg",
-					alt: "Cover of the book Puglia",
-					filename: "copertina-libro.jpg",
-				},
-			},
-			content: ptBlocks(
-				[
-					"This is the canonical Libro page. The text is a placeholder: replace it from the admin with the definitive description of the volume.",
-					"Chapters, previews, and publication details will go here.",
-				],
-				"libro-en",
-			),
+// Rebuild content so key order is seed apply order. `libri` must precede
+// `homepage` or featured_books $ref: targets are skipped as unresolved.
+const existingLibri = seed.content.libri;
+seed.content = {
+	tours: tourContent,
+	libri: existingLibri,
+	homepage: [
+		{
+			id: "home",
+			slug: "home",
+			locale: "en",
+			status: "published",
+			data: homepageData("en"),
 		},
-	},
-	{
-		id: "puglia-the-book-it",
-		slug: "puglia-the-book",
-		locale: "it",
-		translationOf: "puglia-the-book",
-		status: "published",
-		data: {
-			title: "Puglia",
-			subtitle: "Il libro",
-			excerpt:
-				"Un racconto di viaggio tra oliveti, mare e borghi bianchi — placeholder da sostituire.",
-			cover: {
-				$media: {
-					file: "media/copertina-libro.jpg",
-					alt: "Copertina del libro Puglia",
-					filename: "copertina-libro.jpg",
-				},
-			},
-			content: ptBlocks(
-				[
-					"Questa è la pagina del Libro canonico. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
-					"Qui andranno capitoli, anteprime e dettagli di pubblicazione.",
-				],
-				"libro-it",
-			),
+		{
+			id: "home-it",
+			slug: "home",
+			locale: "it",
+			translationOf: "home",
+			status: "published",
+			data: homepageData("it"),
 		},
-	},
-];
-
-seed.content.training = [
+	],
+	training: [
 	{
 		id: "training",
 		slug: "training",
@@ -687,73 +639,73 @@ seed.content.training = [
 			),
 		},
 	},
-];
-
-seed.content.site_globals = [
-	{
-		id: "site",
-		slug: "site",
-		locale: "en",
-		status: "published",
-		data: {
-			calendly_url: "https://calendly.com/spaghettiabc/tailored-tour",
-			faq: [
-				{
-					question: "What happens if it rains?",
-					answer:
-						"Our tours run as planned in light rain. In case of severe weather alerts, we will contact you to reschedule or refund.",
-				},
-				{
-					question: "Can I join if I have intolerances or am vegetarian?",
-					answer:
-						"Absolutely! Note it in the booking form above and we will adapt the tour stops to your dietary needs.",
-				},
-				{
-					question: "How does payment work?",
-					answer:
-						"Once you send the request on Calendly, you will receive the direct SumUp link to pay and confirm your spots.",
-				},
-				{
-					question: "What is the cancellation policy?",
-					answer:
-						"Free cancellation and 100% refund up to 48 hours before the tour.",
-				},
-			],
+	],
+	site_globals: [
+		{
+			id: "site",
+			slug: "site",
+			locale: "en",
+			status: "published",
+			data: {
+				calendly_url: "https://calendly.com/spaghettiabc/tailored-tour",
+				faq: [
+					{
+						question: "What happens if it rains?",
+						answer:
+							"Our tours run as planned in light rain. In case of severe weather alerts, we will contact you to reschedule or refund.",
+					},
+					{
+						question: "Can I join if I have intolerances or am vegetarian?",
+						answer:
+							"Absolutely! Note it in the booking form above and we will adapt the tour stops to your dietary needs.",
+					},
+					{
+						question: "How does payment work?",
+						answer:
+							"Once you send the request on Calendly, you will receive the direct SumUp link to pay and confirm your spots.",
+					},
+					{
+						question: "What is the cancellation policy?",
+						answer:
+							"Free cancellation and 100% refund up to 48 hours before the tour.",
+					},
+				],
+			},
 		},
-	},
-	{
-		id: "site-it",
-		slug: "site",
-		locale: "it",
-		translationOf: "site",
-		status: "published",
-		data: {
-			calendly_url: "https://calendly.com/spaghettiabc/tailored-tour",
-			faq: [
-				{
-					question: "Cosa succede in caso di pioggia?",
-					answer:
-						"I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare.",
-				},
-				{
-					question: "Posso partecipare se ho intolleranze o sono vegetariano?",
-					answer:
-						"Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari.",
-				},
-				{
-					question: "Come funziona il pagamento?",
-					answer:
-						"Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti.",
-				},
-				{
-					question: "Qual è la politica di cancellazione?",
-					answer:
-						"Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour.",
-				},
-			],
+		{
+			id: "site-it",
+			slug: "site",
+			locale: "it",
+			translationOf: "site",
+			status: "published",
+			data: {
+				calendly_url: "https://calendly.com/spaghettiabc/tailored-tour",
+				faq: [
+					{
+						question: "Cosa succede in caso di pioggia?",
+						answer:
+							"I nostri tour si svolgono regolarmente anche in caso di pioggia leggera. In caso di allerte meteo gravi, ti contatteremo per riprogrammare o rimborsare.",
+					},
+					{
+						question: "Posso partecipare se ho intolleranze o sono vegetariano?",
+						answer:
+							"Assolutamente sì! Indicalo nel modulo di prenotazione qui sopra e adatteremo le tappe del tour alle tue esigenze alimentari.",
+					},
+					{
+						question: "Come funziona il pagamento?",
+						answer:
+							"Una volta inviata la richiesta su Calendly, riceverai il link diretto SumUp per saldare e confermare definitivamente i posti.",
+					},
+					{
+						question: "Qual è la politica di cancellazione?",
+						answer:
+							"Cancellazione gratuita e rimborso al 100% fino a 48 ore prima del tour.",
+					},
+				],
+			},
 		},
-	},
-];
+	],
+};
 
 seed.menus = [
 	{
@@ -762,10 +714,10 @@ seed.menus = [
 		label: "Primary Navigation",
 		locale: "en",
 		items: [
-			{ type: "custom", label: "Home", url: "/en/" },
-			{ type: "custom", label: "Tours", url: "/en/tours" },
-			{ type: "custom", label: "The book", url: "/en/puglia-the-book" },
-			{ type: "custom", label: "Training", url: "/en/training" },
+			{ type: "custom", label: "Home", url: "/" },
+			{ type: "custom", label: "Tours", url: "/tours" },
+			{ type: "custom", label: "The book", url: "/#libro" },
+			{ type: "custom", label: "Training", url: "/training" },
 		],
 	},
 	{
@@ -777,7 +729,7 @@ seed.menus = [
 		items: [
 			{ type: "custom", label: "Home", url: "/it/" },
 			{ type: "custom", label: "Tour", url: "/it/tours" },
-			{ type: "custom", label: "Il libro", url: "/it/puglia-the-book" },
+			{ type: "custom", label: "Il libro", url: "/it/#libro" },
 			{ type: "custom", label: "Formazione", url: "/it/training" },
 		],
 	},
