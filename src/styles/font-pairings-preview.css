@@ -15,7 +15,7 @@
 @import "@fontsource/tsukimi-rounded/latin.css";
 @import "@fontsource/tsukimi-rounded/latin-ext.css";
 
-:root {
+html[data-shell="site"] {
 	--font-newsreader: "Newsreader Variable", "Newsreader", Georgia,
 		"Times New Roman", serif;
 	--font-lora: "Lora Variable", "Lora", Georgia, "Times New Roman", serif;
@@ -27,51 +27,51 @@
 }
 
 /* Display — non-Fraunces faces restore the heavier title/brand weights;
-   Fraunces keeps the prod :root lightening (display 400 / brand 400) */
-html[data-font-display="newsreader"] {
+   Fraunces keeps the prod shell lightening (display 400 / brand 400) */
+html[data-shell="site"][data-font-display="newsreader"] {
 	--font-display: var(--font-newsreader);
 	--font-display-weight: 500;
 	--font-brand-weight: 500;
 }
 
-html[data-font-display="fraunces"] {
+html[data-shell="site"][data-font-display="fraunces"] {
 	--font-display: var(--font-fraunces);
 	--font-display-weight: 400;
 	--font-brand-weight: 400;
 }
 
-html[data-font-display="lora"] {
+html[data-shell="site"][data-font-display="lora"] {
 	--font-display: var(--font-lora);
 	--font-display-weight: 500;
 	--font-brand-weight: 500;
 }
 
-html[data-font-display="cormorant"] {
+html[data-shell="site"][data-font-display="cormorant"] {
 	--font-display: var(--font-cormorant);
 	--font-display-weight: 500;
 	--font-brand-weight: 500;
 }
 
 /* Body */
-html[data-font-body="source-serif-4"] {
+html[data-shell="site"][data-font-body="source-serif-4"] {
 	--font-body: var(--font-source-serif);
 	--font-sans: var(--font-body);
 }
 
-html[data-font-body="literata"] {
+html[data-shell="site"][data-font-body="literata"] {
 	--font-body: var(--font-literata);
 	--font-sans: var(--font-body);
 }
 
 /* UI — "body" follows current body stack; apply after body rules */
-html[data-font-ui="body"] {
+html[data-shell="site"][data-font-ui="body"] {
 	--font-ui: var(--font-body);
 }
 
-html[data-font-ui="tsukimi"] {
+html[data-shell="site"][data-font-ui="tsukimi"] {
 	--font-ui: var(--font-tsukimi);
 }
 
-html[data-font-ui="fira-sans"] {
+html[data-shell="site"][data-font-ui="fira-sans"] {
 	--font-ui: var(--font-fira-sans);
 }

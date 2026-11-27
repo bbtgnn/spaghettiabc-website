@@ -6,7 +6,7 @@ Where each part of the site lives, plus the rules the code cannot show. For deta
 
 - **Pages:** `src/pages/`, one per Glossary surface (Homepage, Catalogo Tour, Scheda Tour, Scheda Edizione, Formazione). `src/pages/it/**` is generated.
 - **Sections and cards:** `src/components/`.
-- **Shell:** `src/layouts/Base.astro`, `src/components/SiteHeader.astro`, and `src/styles/theme.css`, which holds the tokens and every shared layout.
+- **Shell:** `src/layouts/Base.astro`, `src/components/SiteHeader.astro`, and `src/styles/theme.css`, which holds the tokens and every shared layout. `Base` sets `data-shell="site"` on `<html>` so theme rules do not restyle EmDash admin when a prod build wrongly attaches the sheet there.
 - **Locale helpers and UI strings:** `src/i18n/`.
 - **CMS schema and demo content:** `seed/seed.json`. Admin plugins are in `plugins/`; admin nav settings are in `astro.config.mjs`.
 
