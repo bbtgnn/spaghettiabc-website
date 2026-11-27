@@ -1,7 +1,7 @@
 /* Atelier Kō visual language adapted for Spaghetti ABC (EmDash).
    Tokens, type scale, controls and motion ported without Tailwind.
 
-   One nest under html[data-shell="site"] (Base.astro). Nesting is fine; keep
+   One nest under html[data-shell="site"] (base.astro). Nesting is fine; keep
    @keyframes top-level — Lightning CSS minify rejects them inside a rule.
    Prod Astro/Rolldown can attach this sheet to /_emdash/admin; without the
    attribute, tokens and resets must not restyle the admin UI. */
@@ -19,33 +19,27 @@
 @import "@fontsource/ibm-plex-mono/400.css";
 
 html[data-shell="site"] {
-	/* Surfaces — cool gallery greys */
 	--canvas: #f4f4f2;
 	--surface: #eaeae7;
 	--surface-strong: #dededa;
 
-	/* Text */
 	--ink: #101010;
 	--muted: #5a5a56;
 
-	/* Accent — oiled walnut */
 	--accent: #8a5322;
 	--accent-ink: #ffffff;
-	/* Titles — darker walnut than accent */
+	/* Darker than accent — titles need more contrast on canvas */
 	--title: #6b3f18;
 
-	/* Hairlines */
 	--line: color-mix(in oklab, var(--ink) 13%, transparent);
 	--line-strong: color-mix(in oklab, var(--ink) 26%, transparent);
 
-	/* Geometry — architectural: square by default */
+	/* Architectural: square by default */
 	--radius: 0px;
 
-	/* Motion */
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 	--ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 
-	/* Layout */
 	--gutter: 1.5rem;
 	--shell: 80rem; /* 1280px @ 16px root */
 
@@ -219,10 +213,6 @@ html[data-shell="site"] {
 		border: 0;
 	}
 
-	/* ---------------------------------------------------------------------------
-	   Typography
-	--------------------------------------------------------------------------- */
-
 	.type-hero {
 		font-family: var(--font-display);
 		font-size: clamp(2.75rem, 4.9vw, 4.5rem);
@@ -350,10 +340,6 @@ html[data-shell="site"] {
 		)::first-letter {
 		text-transform: uppercase;
 	}
-
-	/* ---------------------------------------------------------------------------
-	   Controls
-	--------------------------------------------------------------------------- */
 
 	.btn {
 		position: relative;
@@ -634,7 +620,6 @@ html[data-shell="site"] {
 		padding-block: 0 2.5rem;
 	}
 
-	/* Homepage Sezione Tour — intro: copy left, CTA right */
 	.sezione-tour__intro {
 		margin-top: 2rem;
 		display: flex;
@@ -664,7 +649,6 @@ html[data-shell="site"] {
 		margin-left: auto;
 	}
 
-	/* Homepage Sezione Tour — highlight pair + compact rail + review strip */
 	.tour-highlight {
 		--tour-highlight-h: auto;
 		margin-top: 2.25rem;
@@ -859,7 +843,6 @@ html[data-shell="site"] {
 		}
 	}
 
-	/* Compact + legacy tour rails */
 	.tour-rail {
 		--tour-rail-item: min(72vw, 17.5rem);
 		position: relative;
@@ -953,7 +936,6 @@ html[data-shell="site"] {
 		}
 	}
 
-	/* Compact Google review strip (Sezione Tour) */
 	.review-rail {
 		margin-top: 2rem;
 		padding-top: 1.25rem;
@@ -1112,7 +1094,6 @@ html[data-shell="site"] {
 		color: var(--ink);
 	}
 
-	/* Small: summary on one line above the review rail */
 	@media (max-width: 479px) {
 		.review-rail__row {
 			flex-direction: column;
@@ -1141,10 +1122,6 @@ html[data-shell="site"] {
 		background: var(--line);
 		transform-origin: left;
 	}
-
-	/* ---------------------------------------------------------------------------
-	   Site chrome
-	--------------------------------------------------------------------------- */
 
 	.site-header {
 		position: sticky;
@@ -1247,9 +1224,7 @@ html[data-shell="site"] {
 		}
 	}
 
-	/* ---------------------------------------------------------------------------
-	   Motion
-	--------------------------------------------------------------------------- */
+	/* Motion + reduced-motion — gated by data-motion and prefers-reduced-motion */
 
 	@media (prefers-reduced-motion: no-preference) {
 		[data-motion="on"] [data-reveal] {

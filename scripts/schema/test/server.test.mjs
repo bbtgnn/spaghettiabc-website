@@ -217,7 +217,6 @@ test("apply: a refused op exits 6 and a re-run resumes where it stopped", async 
 
 test("apply: collection with content refuses deleteCollection -> exit 5 (never force)", async () => {
 	const t = tempRepo();
-	// second migration deleting `training`
 	const seed = t.seed();
 	seed.collections = seed.collections.filter((c) => c.slug !== "training");
 	delete seed.content?.training;

@@ -1,8 +1,4 @@
 ---
-/**
- * Scheda Edizione — cover as the hero object | edition copy, buy CTA, description.
- * Mobile: cover → copy → description. ≥560: hero | cover | copy |, description below.
- */
 import {
 	decodeSlug,
 	getSeoMeta,
@@ -11,7 +7,7 @@ import {
 import { Image, PortableText } from "emdash/ui";
 import ArrowLeft from "@lucide/astro/icons/arrow-left";
 import ArrowUpRight from "@lucide/astro/icons/arrow-up-right";
-import Base from "../../layouts/Base.astro";
+import Base from "../../layouts/base.astro";
 import {
 	getEmDashEntryWithFallback,
 	localePath,
@@ -158,8 +154,6 @@ const seo = getSeoMeta(book, {
 		gap: 3rem;
 	}
 
-	/* --- Cover: the hero object --- */
-
 	.scheda-edizione__cover-col {
 		margin: 0;
 		display: grid;
@@ -178,8 +172,6 @@ const seo = getSeoMeta(book, {
 		width: 100%;
 		height: auto;
 	}
-
-	/* --- Copy column --- */
 
 	.scheda-edizione__copy {
 		display: grid;
@@ -226,8 +218,6 @@ const seo = getSeoMeta(book, {
 		margin-top: 0.5rem;
 	}
 
-	/* --- Description below the hero --- */
-
 	.scheda-edizione__body {
 		margin: 2rem auto 0;
 		max-width: 65ch;
@@ -254,7 +244,6 @@ const seo = getSeoMeta(book, {
 		color: var(--title);
 	}
 
-	/* Hero: | cover | title, subtitle, button | — copy centered on the cover */
 	@media (min-width: 560px) {
 		.scheda-edizione {
 			--hero-gap: 2rem;

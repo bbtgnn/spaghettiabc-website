@@ -15,7 +15,7 @@ type PartnerLogo = {
 
 interface Props {
 	logos: PartnerLogo[];
-	/** Seconds for one full loop when marquee is needed */
+	/** Seconds for one full loop when marquee is needed. */
 	duration?: number;
 }
 
@@ -112,7 +112,6 @@ const { logos, duration = 36 } = Astro.props;
 		}
 	}
 
-	/* Overflow: seamless auto-scroll */
 	.logo-marquee.is-marquee .logo-marquee__viewport {
 		mask-image: linear-gradient(
 			to right,

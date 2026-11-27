@@ -245,7 +245,7 @@ Each item has: `collection`, `id`, `title`, `slug`, `locale`, `snippet` (sanitiz
 ```astro
 ---
 import LiveSearch from "emdash/ui/search";
-import Base from "../layouts/Base.astro";
+import Base from "../layouts/base.astro";
 
 const query = Astro.url.searchParams.get("q") || "";
 ---

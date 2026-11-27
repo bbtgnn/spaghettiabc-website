@@ -1,4 +1,4 @@
-/* DEV-only font pairing preview (#9). Imported from Base.astro when DEV.
+/* DEV-only font pairing preview (#9). Imported from base.astro when DEV.
    Prod baseline faces (Fraunces, Source Serif 4, Fira Sans) load from theme.css. */
 
 @import "@fontsource-variable/newsreader/wght.css";
@@ -52,7 +52,6 @@ html[data-shell="site"][data-font-display="cormorant"] {
 	--font-brand-weight: 500;
 }
 
-/* Body */
 html[data-shell="site"][data-font-body="source-serif-4"] {
 	--font-body: var(--font-source-serif);
 	--font-sans: var(--font-body);

@@ -1,4 +1,4 @@
-/* DEV-only color preview (#12). Imported from Base.astro when DEV.
+/* DEV-only color preview (#12). Imported from base.astro when DEV.
    Primary default = pomodoro. Ink default = cool (#101010). Prod tokens stay in theme.css. */
 
 html[data-shell="site"][data-palette="pomodoro"] {

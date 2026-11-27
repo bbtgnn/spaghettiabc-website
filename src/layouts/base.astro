@@ -2,8 +2,8 @@
 import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import DevPreviewDock from "../components/DevPreviewDock.astro";
-import SiteHeader from "../components/SiteHeader.astro";
+import DevPreviewDock from "../components/dev-preview-dock.astro";
+import SiteHeader from "../components/site-header.astro";
 import { resolveLocale, t } from "../i18n/utils";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import "../styles/theme.css";
@@ -22,7 +22,7 @@ interface Props {
 	canonical?: string | null;
 	/** Kept for call-site compatibility; header is always sticky in Atelier mode */
 	overlayHeader?: boolean;
-	/** Pass content reference for plugin page contributions on content pages */
+	/** Content ref for plugin page contributions on content pages. */
 	content?: { collection: string; id: string; slug?: string | null };
 }
 

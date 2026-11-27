@@ -209,7 +209,7 @@ When an admin is logged in and views the site, these attributes enable click-to-
 ---
 import { getEmDashCollection } from "emdash";
 import { Image } from "emdash/ui";
-import Base from "../../layouts/Base.astro";
+import Base from "../../layouts/base.astro";
 
 const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
 	orderBy: { published_at: "desc" },
@@ -234,7 +234,7 @@ if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 ---
 import { getEmDashEntry, getSeoMeta } from "emdash";
 import { Image, PortableText } from "emdash/ui";
-import Base from "../../layouts/Base.astro";
+import Base from "../../layouts/base.astro";
 
 const { slug } = Astro.params;
 if (!slug) return Astro.rewrite("/404");
@@ -275,7 +275,7 @@ const tags = post.data.terms?.tag ?? [];
 ```astro
 ---
 import { getTaxonomyTermsWithCacheHint, getEmDashCollection } from "emdash";
-import Base from "../../layouts/Base.astro";
+import Base from "../../layouts/base.astro";
 
 const { slug } = Astro.params;
 const termsResult = await getTaxonomyTermsWithCacheHint("category", { includeCounts: false });
@@ -364,7 +364,7 @@ function escapeXml(s: string): string {
 
 ```astro
 ---
-import Base from "../layouts/Base.astro";
+import Base from "../layouts/base.astro";
 ---
 <Base title="Not Found">
 	<h1>Page not found</h1>

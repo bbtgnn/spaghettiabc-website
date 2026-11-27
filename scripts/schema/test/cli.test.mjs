@@ -7,7 +7,6 @@ import { REAL_ROOT, collection, field, git, run, tempRepo } from "./util.mjs";
 const MIGRATIONS = "schema/migrations";
 const files = (t) => readdirSync(path.join(t.root, MIGRATIONS)).sort();
 
-/** run `fn` with a fresh temp repo and always clean up */
 async function withRepo(fn, opts) {
 	const t = tempRepo(opts);
 	try {
@@ -166,7 +165,6 @@ test("generate: type-changing rename writes a TODO stub; check fails until it is
 		assert.match(bad.stderr, /BACKFILL_TODO/);
 		t.write(`${MIGRATIONS}/${stub}`, "export function transform(value) {\n\treturn Number.parseFloat(value);\n}\n");
 		assert.equal(run("check", [], t.root).status, 0);
-		// missing module / orphan module
 		writeFileSync(path.join(t.root, MIGRATIONS, "0009_orphan.backfill.mjs"), "export function transform() {}\n");
 		assert.match(run("check", [], t.root).stderr, /BACKFILL_MODULE_ORPHAN/);
 	}));

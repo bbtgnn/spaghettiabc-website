@@ -375,8 +375,6 @@ function bootEmbeds(root: ParentNode = document, opts: { force?: boolean } = {})
 
 		const spinner = host.querySelector("[data-calendly-spinner]");
 
-		// PE: SSR iframe stayed visible until widget.js loaded (this boot).
-		// Now swap to initInlineWidget. Force reboot also lands here with spinner.
 		host.replaceChildren();
 		if (spinner instanceof HTMLElement) {
 			host.appendChild(spinner);
