@@ -8,6 +8,7 @@
 		"./admin": "./src/admin.tsx"
 	},
 	"peerDependencies": {
+		"@cloudflare/kumo": "2.19.0",
 		"emdash": "^1.6.0",
 		"react": "^19.0.0"
 	}
