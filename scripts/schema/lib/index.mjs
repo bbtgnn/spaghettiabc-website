@@ -1,5 +1,18 @@
 /**
- * Schema-loop core library (offline, no EmDash server, no `emdash/internal/*`).
+ * Schema-loop core library — offline barrel (no EmDash HTTP, no `emdash/internal/*`).
+ *
+ * Seams
+ *   offline (this barrel): seed → migrations → positions/chain → check/generate/differ/model
+ *     Safe for predev and unit tests. No live server.
+ *   online (import from the file, not this barrel):
+ *     ./state.mjs     loadSchemaState / loadSchemaStateOrFail  (also re-exported here; pure disk)
+ *     ./execute.mjs   executePlan                               (also re-exported here; needs a server adapter)
+ *     ./project.mjs   REST body builders                        (also re-exported here; no HTTP)
+ *     ./cli.mjs       LoopError, parseArgs, run                 — pulls `emdash/client` for error mapping
+ *     ./server.mjs    connect, normalizeUrl, ensureDevSetup     — EmDash HTTP transport
+ *     ./rehearse.mjs  rehearse(root, opts), assertModelLiveParity — boots Astro; do not import from here
+ *     ./plan.mjs      buildPlan                                 — pure; used by apply CLI
+ *     ./live-ops.mjs  applyOpLive                               — REST apply of one op
  *
  * Shapes
  *   seed collections  raw `seed.json` collections/fields.
@@ -52,6 +65,9 @@
  *
  * Exit codes shared by every schema script: 0 ok, 1 check failed, 2 usage, 3 generator STOP, 4 live DRIFT,
  * 5 blocked, 6 remote/API error. Exported as EXIT.
+ *
+ * Not exported here (online / EmDash-coupled — import from the file):
+ *   cli.mjs, server.mjs, rehearse.mjs, plan.mjs, live-ops.mjs, backfill.mjs
  */
 export const EXIT = { OK: 0, CHECK_FAILED: 1, USAGE: 2, STOP: 3, DRIFT: 4, BLOCKED: 5, REMOTE: 6 };
 
