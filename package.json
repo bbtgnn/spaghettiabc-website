@@ -25,7 +25,8 @@
     "wipe:local": "node scripts/wipe-local.mjs",
     "migrate:status": "emdash migrate --status --wrangler-config wrangler.jsonc",
     "migrate": "emdash migrate --wrangler-config wrangler.jsonc",
-    "migrate:check": "emdash migrate --check --wrangler-config wrangler.jsonc"
+    "migrate:check": "emdash migrate --check --wrangler-config wrangler.jsonc",
+    "test:google-reviews": "npm run test --prefix plugins/google-reviews"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.9",
@@ -43,6 +44,7 @@
     "@fontsource/tsukimi-rounded": "^5.3.0",
     "@lucide/astro": "^1.80.0",
     "@spaghettiabc/form-headings": "file:./plugins/form-headings",
+    "@spaghettiabc/google-reviews": "file:./plugins/google-reviews",
     "@spaghettiabc/layout-consigliato": "file:./plugins/layout-consigliato",
     "animejs": "^4.5.0",
     "astro": "^7.4.13",
