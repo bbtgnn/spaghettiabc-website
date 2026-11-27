@@ -21,6 +21,7 @@ Spaghetti ABC is Flavia Giordano's site (Tour, Libro, Formazione) built on EmDas
 - **Platform APIs:** verify against the docs MCPs in `.cursor/mcp.json` rather than memory: EmDash (`search_docs`), Astro (`search_astro_docs`), and Cloudflare for Workers, D1, R2, and Wrangler.
 - **Locales:** pages live in root `src/pages/`; `src/pages/it/**` is generated. After adding, removing, or renaming a page, update the allowlist in `scripts/sync-locale-pages.mjs` and run `npm run sync:locale-pages`.
 - **Fields:** on every field you add or change, decide whether it is per-locale copy (`translatable`, the default) or shared across EN/IT (`translatable: false` — URLs, metrics, form headings, references). Set it in `seed/seed.json`; the admin does not expose it.
+- **Schema changes:** `seed/seed.json` collections/fields are the single source of truth. After editing them (or `npm run schema:pull` from your own dev server), run `npm run schema:generate` and commit the seed with the new `schema/migrations/` file; committed migrations are immutable. Run `npm run schema:check` before committing schema or `src/` changes. The generator's STOP codes, the expand pattern for renames/type changes, and the exit-code table are in [`DEPLOY.md`](DEPLOY.md#schema-changes); read it first. Staging's admin is read-only for schema (DRIFT exit 4 means someone edited it: `schema:drift`, never overwrite). `npm run dev` refuses to wipe a `data.db` with unsaved schema edits; use `FORCE_WIPE=1` only when the user asked. Remove a field's `src/**` references before removing the field.
 - **Public pages** are server-rendered and work without JavaScript; add behaviour with a component `<script>`. When a component needs real client state, use a lazily hydrated React island (`client:visible` / `client:idle`). React is already a dependency; add no other UI framework.
 - **Local data:** `npm run dev` regenerates the `it/` pages, wipes, and reseeds `data.db` + `uploads/` on every start. Stop dev before running `npm run seed` or `npm run wipe:local`.
 
@@ -32,7 +33,7 @@ Spaghetti ABC is Flavia Giordano's site (Tour, Libro, Formazione) built on EmDas
 - **Schema, seed, queries, Portable Text, menus** → `building-emdash-site` skill (`.agents/skills/`).
 - **The `plugins/` packages** → `creating-plugins` skill.
 - **EmDash CLI (content, media, types, export)** → `emdash-cli` skill.
-- **Staging, deploy, D1 migrations** → [`DEPLOY.md`](DEPLOY.md).
+- **Staging, deploy, D1 migrations, schema loop** → [`DEPLOY.md`](DEPLOY.md).
 
 ## Invariants
 

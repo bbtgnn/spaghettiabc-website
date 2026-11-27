@@ -138,7 +138,9 @@ Workflow: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 
 On `push` to `main` and `workflow_dispatch`:
 
-`npm ci` → `build` → `emdash migrate` → `wrangler deploy` → `emdash migrate --check`
+`npm ci` → `build` → `emdash migrate` → `schema:check` → `schema:apply --phase pre` → `wrangler deploy` → (Time Travel bookmark if destructive) → `schema:apply --phase post` → `schema:verify` → `emdash migrate --check`
+
+Collections/fields are deployed by the schema loop, see [Schema changes](#schema-changes). Pull requests run [`schema.yml`](.github/workflows/schema.yml) (check, tests, rehearsal, typecheck).
 
 ### 1. Create a Cloudflare API token
 
@@ -175,6 +177,7 @@ Or: Repo → Settings → Secrets and variables → Actions → **New repository
 | `CLOUDFLARE_ACCOUNT_ID` | `npx wrangler whoami` |
 | `D1_DATABASE_ID` | `npx wrangler d1 list` → UUID for `spaghettiabc-staging` |
 | `EMDASH_TARGET_FINGERPRINT` | Short hash from migrate status (see below) — **not** the whole JSON |
+| `STAGING_URL` | Public origin of the staging Worker, no trailing slash (schema loop, see below) |
 
 ```bash
 gh variable set CLOUDFLARE_ACCOUNT_ID --body '<account-id>' --repo <owner>/<repo>
@@ -210,7 +213,7 @@ gh run watch --repo <owner>/<repo>
 
 Or Actions → **Deploy** → **Run workflow**.
 
-All steps should be green: build, inspect migrate, apply migrate, deploy, check migrate.
+All steps should be green: build, inspect migrate, apply migrate, schema check/pre, deploy, schema post/verify, check migrate.
 
 After that, every push to `main` deploys the same way.
 
@@ -237,6 +240,65 @@ npx emdash site import staging.emdash --url http://localhost:4321 --plan sha256:
 ```
 
 Treat `.emdash` packages like DB backups (they include emails). Users/passkeys are not in the package.
+
+---
+
+## Schema changes
+
+`seed/seed.json` collections + fields are the single source of truth. Migrations in `schema/migrations/` are generated from it, immutable once committed, and replayed on staging by CI. Taxonomies, menus, settings and content are out of scope (seed content is local fixtures only).
+
+### The loop
+
+1. Edit `seed/seed.json`, **or** change fields in the local admin and run `npm run schema:pull` (this checkout's server running; writes the live local schema back into the seed). `schema:pull` defaults to this worktree's dev port (`PORT` in `.env.local`, else 4321) and exits 2 if that port is served by another checkout; pass `--url` to point elsewhere.
+2. `npm run schema:generate [name]` writes `schema/migrations/NNNN_<name>.json`. Exit 3 prints a STOP (table below).
+3. `npm run schema:check` (also the pre-commit hook), then commit seed + migration together.
+4. Open a PR: `schema.yml` runs check, tests, `schema:rehearse` (base seed with content, then all migrations on a throwaway server) and typecheck. Pre-push runs the same; `SKIP_SCHEMA_REHEARSE=1 git push` skips only the rehearsal (CI still runs it). Typecheck only warns while the `astro check` baseline is red; `STRICT_TYPECHECK=1` makes it block.
+5. Merge to `main`: deploy applies **pre** ops and backfills, deploys the Worker, applies **post** ops, then `schema:verify` asserts live == seed.
+
+`npm run dev` refuses to wipe a `data.db` with unsaved local schema edits (`npx astro dev`, `schema:pull`, `schema:generate`, or `FORCE_WIPE=1 npm run dev` to discard). Never change collections/fields in the staging admin: `schema:drift --url <staging>` reports it and the next deploy stops with DRIFT.
+
+### First deploy (baseline)
+
+`0001_baseline` is the seed schema at `54fba9183fd3`, which includes the i18n change that set `translatable: false` on 16 fields (homepage chrome and refs, `tours.calendly_url`, `libri.buy_url`, `site_globals.calendly_url`). EmDash never changes `translatable` in place, so that change has no migration; as `docs/site-structure.md` says, it needs a wipe and reseed.
+
+- Staging already at the new schema: the first deploy is a no-op.
+- Staging still on the pre-i18n schema (`347671ecdbe6`): `schema:apply --phase pre` stops with DRIFT (exit 4) before the Worker deploys and before anything is written. Either wipe and reseed staging (`npx emdash export-seed` first), or, if content must be kept, add new fields with the final flags, backfill, and remove the old ones (expand pattern, `--allow-destructive`) as a normal migration. Then re-run the deploy.
+
+### Phases and policies
+
+- **pre**: everything except removals (add/update fields and collections, reorder), then backfills. **post**: `removeField` / `deleteCollection`, after the code deploy so old code never reads a missing column.
+- **Destructive** (removals) needs `--allow-destructive`; the migration is then marked `"destructive": true`. Before the post phase CI records a D1 Time Travel bookmark and prints the restore command in the job summary (`npx wrangler d1 time-travel restore DB --bookmark=<id>`; it rolls back all D1 writes since, editor edits included).
+- **Drafts are stage-only**: a backfill writes into a pending editor draft, never publishes it. Destructive post ops on a collection are blocked (exit 5) while any entry there has a pending draft without the backfilled value; publish or discard those drafts, then re-run the deploy.
+- **i18n**: backfills of non-translatable fields write the default locale only. `translatable` true to false, `required`, `unique` and field `type` (outside string/text/slug) can never change in place.
+- A removed field or collection slug is never reused.
+
+### STOP codes (`schema:generate`, exit 3) and the agent's move
+
+| STOP | Do |
+|------|----|
+| `AMBIGUOUS_FIELD_RENAME` / `AMBIGUOUS_COLLECTION_RENAME` | Real rename: `--rename coll.old=new --allow-destructive` (fields; collections need a manual content migration). Not a rename: `--resolve drop-add:coll.old,coll.new --allow-destructive` |
+| `FIELD_TYPE_CHANGE_UNSUPPORTED`, `FIELD_FLAG_CHANGE_REFUSED`, `REFERENCE_CHANGE_UNSUPPORTED` | Expand pattern: new field with the final type/flags (`required: true` is allowed at creation), `--rename coll.old=new --allow-destructive`; a type change emits a `.backfill.mjs` stub, replace its `TODO` throw with `transform(value, entry)` |
+| `PROPERTY_NOT_CLEARABLE` | Keep the property, or set an explicit new value |
+| `SLUG_REUSE` | Pick a new slug |
+| `DESTRUCTIVE_NOT_ALLOWED` | Re-run with `--allow-destructive` once data loss is intended |
+
+### Exit codes (all `schema:*` scripts)
+
+| Code | Meaning | Agent action |
+|------|---------|--------------|
+| 0 | ok | none |
+| 1 | check failed / seed differs from migrations | `npm run schema:generate`; never edit a committed migration |
+| 2 | usage error | fix arguments |
+| 3 | generator STOP (JSON `{stop, details, hint}` on stdout) | table above |
+| 4 | live DRIFT (staging schema matches no migration state; also the first deploy while staging is still pre-i18n, see [First deploy](#first-deploy-baseline)) | `schema:drift --url "$STAGING_URL"`, revert the admin edit or `schema:pull` against it, commit a migration for it; do not re-run deploy blindly |
+| 5 | blocked (pending drafts, or destructive not allowed) | resolve drafts, then re-run the deploy |
+| 6 | remote / API error | check `STAGING_URL`, `EMDASH_TOKEN`, then retry (apply is idempotent) |
+
+### One-time human setup
+
+1. As an admin user on staging, create a personal access token in the admin (prefix `ec_pat_`) with scopes `schema:read schema:write content:read content:write` (or `admin`). Store it: `gh secret set EMDASH_TOKEN --repo <owner>/<repo>`.
+2. `gh variable set STAGING_URL --body 'https://spaghettiabc-staging.<subdomain>.workers.dev' --repo <owner>/<repo>`.
+3. Locally, once per clone: `npm install` runs `prepare`, which sets `core.hooksPath=.githooks` (pre-commit `schema:check`, pre-push test + rehearse + typecheck).
 
 ---
 
@@ -275,5 +337,6 @@ Treat `.emdash` packages like DB backups (they include emails). Users/passkeys a
 - [ ] `wrangler secret put EMDASH_ENCRYPTION_KEY`  
 - [ ] Admin setup completed (empty site for client UAT)  
 - [ ] GitHub secret `CLOUDFLARE_API_TOKEN` (includes **D1 Edit**)  
-- [ ] GitHub vars `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `EMDASH_TARGET_FINGERPRINT`  
+- [ ] GitHub vars `CLOUDFLARE_ACCOUNT_ID`, `D1_DATABASE_ID`, `EMDASH_TARGET_FINGERPRINT`, `STAGING_URL`  
+- [ ] GitHub secret `EMDASH_TOKEN` (EmDash admin API token, schema loop)  
 - [ ] Manual **Deploy** workflow green  
