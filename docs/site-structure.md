@@ -27,6 +27,7 @@ The form validates on the client and sends nothing. Add a consent checkbox toget
 
 ## Seed
 
+- Each public collection’s `urlPattern` must match its Astro route (`/` homepage, `/tours/{slug}`, `/books/{slug}`, `/training`). Admin preview and “View on site” use that pattern. `site_globals` has no page, so it has neither `urlPattern` nor `preview`.
 - `libri` comes before `homepage` in `content`, so `featured_books` resolves.
 - A reference field holds one selection per translation group: seed the same `$ref`s on both locales.
 - Seed images are `$media.url` links to `seed/media/` on GitHub `main`, so a new image seeds only once it is merged. The seeder rejects URLs that point at loopback or private IPs.
