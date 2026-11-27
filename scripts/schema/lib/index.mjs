@@ -6,7 +6,10 @@
  *   canonical         { v, collections: [{slug,label,supports,hasSeo,...,fields:[{slug,label,type,required,...}]}] }
  *                     defaults filled, volatile keys stripped, collections sorted by (sortOrder, slug).
  *   migration         { id, seq, name, file, description, destructive, ops, backfills, preOps, postOps }
+ *   position          { k, n, hash, canonical, kind: base|pre|full|partial, label }
+ *                     built by one replay (`buildPositions`); coarse chain is a view (base|pre|full only).
  *   chain             { states, history, final, errors }; state = { index, migration, phase: base|pre|full, hash, canonical }
+ *                     compatibility view of positions (see buildChain / chainFromBuilt).
  *   stop              { code, details, hint }   (generator STOP, exit 3)
  *
  * Seed / live
@@ -16,10 +19,11 @@
  *   canonicalFromLive(collections) -> canonical                   array of `EmDashClient.collection(slug)` results
  *   hashSchema(canonical) -> sha256 hex ; stableStringify(v) ; diffPaths(a, b) -> [{path, a, b}]
  *
- * Migrations / chain
+ * Migrations / positions
  *   loadMigrations(root?) -> { dir, migrations, errors }          static validation incl. backfill module checks
- *   buildChain(migrations) -> chain                               replay from empty; S0, S(i,pre), S(i) with hashes
- *   locateInChain(chain, hash) -> state | null                    null == DRIFT
+ *   buildPositions(migrations) -> { positions, history, final, errors }
+ *   locate(positions, hash) / nearest(positions, canonical) / positionAt(positions, k, n)
+ *   buildChain(migrations) / locateInChain(chain, hash)           coarse view (base|pre|full)
  *
  * Model (single module: scripts/schema/lib/model.mjs; defaults table, refusal rules, op semantics)
  *   applyOps(canonical, ops, { history?, offset? }) -> canonical  throws ModelError { code, opIndex, op }
@@ -45,7 +49,9 @@ export { stableStringify, hashSchema, sha256, deepEqual } from "./hash.mjs";
 export { canonicalFromSeed, canonicalFromLive, diffPaths } from "./canonical.mjs";
 export { loadSeedSchema, lintSeedCollections, validateSeedData } from "./seed.mjs";
 export { loadMigrations, validateMigrationDoc, backfillModuleName, TODO_STUB } from "./migrations.mjs";
-export { buildChain, locateInChain } from "./chain.mjs";
+export {
+	buildPositions, locate, nearest, positionAt, buildChain, locateInChain, chainFromBuilt,
+} from "./position.mjs";
 export { diffSchemas, UsageError } from "./differ.mjs";
 export { checkImmutability } from "./git.mjs";
 export { lintRefs } from "./refs.mjs";

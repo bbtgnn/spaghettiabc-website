@@ -63,7 +63,7 @@ export async function main(argv = process.argv.slice(2)) {
 	// to decide whether to take a D1 Time Travel bookmark before the post phase.
 	result.destructive = plan.steps.some((s) => s.destructive === true);
 	result.plan = plan.steps.map((s, i) => {
-		const rec = { step: i + 1, kind: s.kind, migration: s.migration, text: describeStep(s, describeOp) };
+		const rec = { step: i + 1, kind: s.kind, migration: s.migration, text: describeStep(s) };
 		if (s.kind === "ops") Object.assign(rec, { label: s.label, destructive: s.destructive === true, ops: s.ops });
 		if (s.kind === "backfill") Object.assign(rec, { backfill: s.backfill.id, collection: s.backfill.collection, from: s.backfill.from, to: s.backfill.to, catchUp: s.catchUp });
 		if (s.kind === "gate") rec.checks = s.checks.map((c) => c.field);
@@ -75,7 +75,7 @@ export async function main(argv = process.argv.slice(2)) {
 		return finish(EXIT.OK);
 	}
 	say("plan:");
-	plan.steps.forEach((s, i) => say(`  ${i + 1}. ${describeStep(s, describeOp)}`));
+	plan.steps.forEach((s, i) => say(`  ${i + 1}. ${describeStep(s)}`));
 	for (const n of plan.notes) say(`note: ${n}`);
 	if (dryRun) {
 		say("dry run: nothing was changed");

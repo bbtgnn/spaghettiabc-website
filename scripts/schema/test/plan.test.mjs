@@ -20,7 +20,8 @@ const M = [
 const kinds = (plan) => plan.steps.map((s) => `${s.kind}:${s.migration.slice(0, 4)}${s.kind === "ops" ? `:${s.from}-${s.to}` : s.catchUp ? ":catchup" : ""}`);
 
 test("positions: complete states, pre states, interrupted prefixes; unknown hash is drift", () => {
-	const pos = buildPositions(M);
+	const { positions: pos, errors } = buildPositions(M);
+	assert.equal(errors.length, 0);
 	const at = (k, n) => pos.find((p) => p.k === k && p.n === n);
 	assert.equal(locate(pos, pos[0].hash).k, 0);
 	const pre = at(1, 1);
@@ -30,7 +31,7 @@ test("positions: complete states, pre states, interrupted prefixes; unknown hash
 	assert.deepEqual({ k: locate(pos, full.hash).k, n: locate(pos, full.hash).n }, { k: 2, n: 0 }, "applied migration normalises to the next one, not started");
 	assert.equal(locate(pos, "0".repeat(64)), null);
 	const m = [mig("0001_b", [create("t"), add("t", "a"), add("t", "b")])];
-	const p2 = buildPositions(m);
+	const { positions: p2 } = buildPositions(m);
 	const mid = locate(p2, p2.find((p) => p.n === 2).hash);
 	assert.equal(mid.exact, false, "op-prefix of a migration = interrupted apply");
 	assert.equal(nearest(p2, p2[1].canonical).diff.length, 0);

@@ -16,6 +16,8 @@
  *
  * `loc` = { k, n }: migrations[0..k-1] applied, first n ops of migrations[k] applied (see position.mjs).
  */
+import { describeOp } from "./model.mjs";
+
 
 export function buildPlan({ migrations, loc, phase }) {
 	const steps = [];
@@ -55,7 +57,7 @@ export function buildPlan({ migrations, loc, phase }) {
 }
 
 /** one-line description of a step for the human/JSON plan */
-export function describeStep(step, describeOp) {
+export function describeStep(step) {
 	switch (step.kind) {
 		case "ops":
 			return `${step.label}${step.destructive ? " [destructive]" : ""}: ${step.ops.map(describeOp).join("; ")}`;
