@@ -12,9 +12,18 @@ import { sqlite } from "emdash/db";
 // `astro build` / deploy: Cloudflare + D1 + R2.
 const isProd = import.meta.env.PROD;
 
+// Worktree PORT lives in `.env.local` (never read `.env` — secrets). An existing process.env.PORT wins.
+try {
+	process.loadEnvFile(".env.local");
+} catch {}
+
 export default defineConfig({
 	output: "server",
 	adapter: isProd ? cloudflare() : node({ mode: "standalone" }),
+	server: {
+		port: Number(process.env.PORT) || 4321,
+		strictPort: true,
+	},
 	image: {
 		layout: "constrained",
 		responsiveStyles: true,

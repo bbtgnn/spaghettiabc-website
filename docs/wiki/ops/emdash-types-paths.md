@@ -17,4 +17,4 @@ On 2026-10-23 the implementer observed:
 
 ## Agent pitfall
 
-After schema changes: do not assume CLI output alone updates `emdash-env.d.ts`. Confirm root types include new collections/fields (or run `bun dev` and re-check), especially if only `.emdash/types.ts` changed.
+After schema changes: do not assume CLI output alone updates `emdash-env.d.ts`. Confirm root types include new collections/fields (or run `npm run dev` and re-check), especially if only `.emdash/types.ts` changed.
