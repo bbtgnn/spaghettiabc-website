@@ -1,128 +1,39 @@
-This is an EmDash site -- a CMS built on Astro with a full admin UI.
+# AGENTS.md
 
-## Commands
+Spaghetti ABC is Flavia Giordano's site (Tour, Libro, Formazione) built on EmDash + Astro, in English (default) and Italian. Local dev runs on Node + SQLite + local uploads; staging and production run on Cloudflare Workers + D1 + R2.
 
-```bash
-npm install             # Install deps (Node/npm only — no Bun)
-npm run dev             # Start Astro with Node + SQLite (`./data.db`) + local uploads
-npm run wipe:local      # Wipe `data.db` + `uploads/` (stop `dev` first)
-npm run seed            # Upsert seed into `./data.db` (stop `dev` first)
-npm run deploy          # Build + wrangler deploy to spaghettiabc-staging
-npx emdash types        # Regenerate TypeScript types from a running site
-npm run migrate:status  # Inspect remote D1 migration target (needs wrangler auth)
-```
+## People
 
-Local dev uses Node + SQLite + filesystem storage so `$media.file` works. Production build/deploy stays on Cloudflare Workers + D1 + R2 (`import.meta.env.PROD` in `astro.config.mjs`).
+- **Giovanni** — tech lead and main developer. Owns architecture, toolchain, hosting, schema shape, and public URLs.
+- **Chiara** — designer, second in charge. Works directly in code; drives product decisions through grilling sessions.
+- **Flavia** — the site owner and content editor. Works only in the EmDash admin.
 
-Cursor worktrees: `.cursor/worktrees.json` runs `.cursor/setup-worktree.mjs` + `npm ci` (same on Unix and Windows). The script writes a free `PORT` (4321–5320) to `.env.local`; `astro.config.mjs` and `scripts/wipe-local.mjs` load that file (never `.env`) and fall back to `4321`. Read `PORT` from `.env.local` to find this worktree's dev URL.
+## Working here
 
-The admin UI is at `http://localhost:<PORT>/_emdash/admin` (local; `PORT` from `.env.local`, default `4321`) or `https://spaghettiabc-staging.<account>.workers.dev/_emdash/admin` (staging).
+- **Refactor, don't patch.** Before fixing or extending behaviour, judge whether the code you're touching fits the change. Special cases, flags threaded through layers, duplicated logic, or a fix that lands far from its cause mean the seam is wrong: refactor it as part of the change, and say what moved and why in your summary or PR. Keep one source of truth — shared layout lives in `src/styles/theme.css` and shared components, not page-local copies.
+- **Propose ADR-worthy changes first.** Toolchain, hosting, schema shape, public URLs, or anything that contradicts an ADR in `docs/adr/`: propose it to Giovanni with the trade-off and wait for a decision. Record the outcome as an ADR.
+- **Comments are _why_, never _what_.** Keep a comment only when deleting it would lose intent, a constraint, or a gotcha the code cannot express.
+- **Titles:** commits, PRs, and issues use [Conventional Commits](https://www.conventionalcommits.org/): `type(optional-scope): imperative summary`.
+- **Commits:** only when asked. Partition the dirty tree by independent _why_ (separately reviewable or revertable), one commit per concern, each leaving the tree buildable. Leave unrelated dirty work untouched.
+- **Branches:** one branch and PR per GitHub issue; the PR title ends with `(#N)`. In a Cursor worktree, the dev server port is `PORT` in `.env.local`.
+- **Toolchain:** npm only; Node is pinned in `mise.toml`.
+- **EmDash APIs:** verify against the EmDash docs MCP (`search_docs`) rather than memory.
+- **Locales:** pages live in root `src/pages/`; `src/pages/it/**` is generated. After adding, removing, or renaming a page, update the allowlist in `scripts/sync-locale-pages.mjs` and run `npm run sync:locale-pages`.
+- **Fields:** on every field you add or change, decide whether it is per-locale copy (`translatable`, the default) or shared across EN/IT (`translatable: false` — URLs, metrics, form headings, references). Set it in `seed/seed.json`; the admin does not expose it.
+- **Public pages** are server-rendered and work without JavaScript; add behaviour with a component `<script>`. When a component needs real client state, use a lazily hydrated React island (`client:visible` / `client:idle`). React is already a dependency; add no other UI framework.
+- **Local data:** `npm run dev` regenerates the `it/` pages, wipes, and reseeds `data.db` + `uploads/` on every start. Stop dev before running `npm run seed` or `npm run wipe:local`.
 
-## Cloudflare staging / repo deploy
+## Source guidance
 
-Stack (prod): Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`, CI: `.github/workflows/deploy.yml`.
+- **Naming a domain concept** → [`GLOSSARY.md`](GLOSSARY.md).
+- **Editing a page, section, component, or CMS collection** → [`docs/site-structure.md`](docs/site-structure.md).
+- **Why something is built this way, or before reversing it** → [`docs/adr/`](docs/adr/README.md).
+- **Schema, seed, queries, Portable Text, menus** → `building-emdash-site` skill (`.agents/skills/`).
+- **The `plugins/` packages** → `creating-plugins` skill.
+- **EmDash CLI (content, media, types, export)** → `emdash-cli` skill.
+- **Staging, deploy, D1 migrations** → [`DEPLOY.md`](DEPLOY.md).
 
-**Full guide (new Cloudflare account → first deploy → GitHub Actions):** see [`DEPLOY.md`](DEPLOY.md).
-## Key Files
+## Invariants
 
-| File                     | Purpose                                                                            |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| `astro.config.mjs`       | Astro config with `emdash()` — Node/SQLite locally, D1 + R2 on prod build          |
-| `wrangler.jsonc`         | Worker name, D1/R2 bindings, cron, Durable Objects                                 |
-| `src/worker.ts`          | Cloudflare Worker entry (fetch + scheduled)                                        |
-| `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                           |
-| `seed/seed.json`         | Schema definition + demo content (collections, fields, taxonomies, menus, widgets) |
-| `emdash-env.d.ts`        | Generated types for collections (auto-regenerated on dev server start)             |
-| `src/layouts/Base.astro` | Base layout with EmDash wiring (menus, search, page contributions)                 |
-| `src/pages/`             | Astro pages -- all server-rendered                                                 |
-
-## Skills
-
-Agent skills are in `.agents/skills/`. Load them when working on specific tasks:
-
-- **building-emdash-site** -- Querying content, rendering Portable Text, schema design, seed files, site features (menus, widgets, search, SEO, comments, bylines). Start here.
-- **creating-plugins** -- Building EmDash plugins with hooks, storage, admin UI, API routes, and Portable Text block types.
-- **emdash-cli** -- CLI commands for content management, seeding, type generation, and visual editing flow.
-
-## Documentation
-
-The EmDash docs are available as an MCP server at `https://docs.emdashcms.com/mcp`. When you need to verify an API, hook, config option, field type, or pattern, call `search_docs` against the live documentation rather than relying on training-data recall. The docs reflect current behaviour; assumptions may not.
-
-This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json` so Claude Code, Cursor, and VS Code auto-discover the docs server. Other tools (OpenCode, Windsurf, etc.) need a manual one-time setup -- see [docs.emdashcms.com/docs-mcp](https://docs.emdashcms.com/docs-mcp).
-
-## Rules
-
-- All content pages must be server-rendered (`output: "server"`). No `getStaticPaths()` for CMS content.
-- Image fields are objects (`{ src, alt }`), not strings. Use `<Image image={...} />` from `"emdash/ui"`.
-- `entry.id` is the slug (for URLs). `entry.data.id` is the database ULID (for API calls like `getEntryTerms`).
-- When Astro's cache is enabled, pass content-query hints to `Astro.cache.set(cacheHint)`. Use the `WithCacheHint` variants for site settings, menus, taxonomies, and widget areas rendered by cached routes.
-- Taxonomy names in queries must match the seed's `"name"` field exactly (e.g., `"category"` not `"categories"`).
-- **i18n (#41):** default locale **EN** unprefixed; **IT** under `/it/...`. Do **not** set Astro `prefixDefaultLocale` (breaks EmDash `/_emdash/admin`). In-scope pages live at root `src/pages/`; `src/pages/it/**` is generated by `npm run sync:locale-pages` — agents must **not** hand-edit `it/`. After add/remove/rename of allowlisted pages, update `scripts/sync-locale-pages.mjs` allowlist and re-run sync. **Locale** (site language) ≠ Tour field `language` (spoken language). See [`docs/wiki/decisions/i18n-it-en.md`](docs/wiki/decisions/i18n-it-en.md) and `GLOSSARY.md`.
-- **i18n co-location:** Keep site-facing locale modules under `src/i18n/` (`ui.ts` chrome dict, `utils.ts` path/fallback helpers). Prefer adding new i18n runtime helpers there over `src/utils/`. Leave Node tooling that only runs from npm scripts in `scripts/` (e.g. `sync-locale-pages.mjs`) — it is build/dev plumbing for `src/pages/it/**`, not importable app code.
-- **Field `translatable` (required on every schema change):** EmDash defaults to `translatable: true` (per-locale value). On **any** add/change of a collection field in `seed/seed.json` or the live schema, **decide and set** whether it is locale copy (`true` / omit) or shared across EN/IT (`translatable: false`). Do not leave shared URLs, metrics, admin chrome, or featured refs accidental. Content Types admin does **not** expose this toggle for content fields — lock it in seed (and wipe+seed / migrate when flipping on an existing DB). Locked matrix: [`docs/wiki/decisions/i18n-it-en.md`](docs/wiki/decisions/i18n-it-en.md) § Field matrix; source of truth for flags is `seed/seed.json`. Image/gallery fields stay **translatable** so alts can differ (reuse the same file by convention). Bound `reference` fields are one selection per translation group — seed the same canonical `$ref`s on both locales (see homepage `featured_*`).
-- A **Tour** is a guided food experience in one Puglia town — not multi-stop Italy travel. See `GLOSSARY.md` for Catalogo Tour / Scheda Tour / Sezione Tour / Tour.
-- **Catalogo Tour** (`/tours`, `/it/tours`) = shell intro + highlight pair (`TourLargeCard`, first two in `featured_tours` order) + remaining tours as `TourLargeCard` in shared `.tour-grid`.
-- **Scheda Tour** (`/tours/[slug]`, `/it/tours/[slug]`) = tall hero + body | booking column (separate bordered specs + Calendly cards); no related tours; effective Calendly URL = tour `calendly_url` (trim) else `site_globals`/`site` fallback else no embed. FAQ from `site_globals`/`site` (empty → hide Domande frequenti). Mobile (<768): intro→book→body (`copycol` is `display: contents` + flex `order`). ≥768: intro full width, then centered `| copycol (≤65ch) | book (≤400px) |`. Site shell max-width is 1280px (`--shell`).
-- `.tour-grid` lives in `src/styles/theme.css` — Catalogo Tour grid; do not redefine page-locally. `.tour-highlight` is shared with homepage Sezione Tour.
-- Homepage Sezione Tour uses `SezioneTour.astro`: equal vertical highlight pair (first two `featured_tours`) + compact `.tour-rail--compact` + `.review-rail`. Catalogo reuses `TourLargeCard` for highlight + grid.
-- Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
-- **Sezione Dicono di me** is homepage-only logos (`partner_logos`). Punteggio/Recensioni Google render in **Sezione Tour**. No `/collaborazioni` landing. See `GLOSSARY.md`.
-- **Libro / Edizioni**: collection `libri` (title, subtitle, cover, optional `buy_url`/`buy_label`, content). No hub page — homepage **Sezione Libro** (`/#libro`, `/it/#libro`) is the listing; **Scheda Edizione** is `/books/[slug]` and `/it/books/[slug]` (back link → locale `/#libro`). Sezione chrome: `book_title` / `book_subtitle` / `featured_books` (shared ordered refs; resolve to locale sibling) / `book_cta_label` (teaser button → scheda). Buy CTA only on the scheda. See `GLOSSARY.md`.
-
-## This Template
-
-A general-purpose starting point with posts, pages, categories, and tags. Less opinionated than the themed templates -- a base for sites that want to define their own design.
-
-There is intentionally no `theme.css`, no custom font configuration, no styled layouts beyond browser defaults. The home, posts index, post detail, page, category, and tag pages all render with minimal styling. Start here if you want full control over the visual language; start with `blog`, `portfolio`, or `marketing` if you want a designed template to customise.
-
-## Pages
-
-| Page            | Path                              | What it shows                                      |
-| --------------- | --------------------------------- | -------------------------------------------------- |
-| Home            | `/` + `/it/`                      | Locale homepage (CMS `homepage`)                   |
-| Catalogo Tour   | `/tours` + `/it/tours`            | Intro + highlight pair + `.tour-grid` cards     |
-| Scheda Tour     | `/tours/[slug]` + `/it/...`       | Hero + body \| specs/Calendly; no related          |
-| Sezione Libro   | `/#libro` + `/it/#libro`          | Homepage edition teasers                           |
-| Scheda Edizione | `/books/[slug]` + `/it/books/[slug]` | Cover + title/subtitle + content                |
-| Formazione      | `/training` + `/it/training`      | Training singleton                                 |
-| All posts       | `/posts`                          | Post list (out of scope for #41; unprefixed)       |
-| Post detail     | `/posts/[slug]`                   | Post content                                       |
-| Page            | `/[slug]`                         | Static page content (e.g. `/about`)                |
-| Category        | `/category/[slug]`                | Posts filtered by category                         |
-| Tag             | `/tag/[slug]`                     | Posts filtered by tag                              |
-
-## Schema
-
-- `posts` collection: `title`, `featured_image`, `content` (Portable Text), `excerpt` (text).
-- `pages` collection: `title`, `content` (Portable Text).
-- Taxonomies: `category`, `tag`.
-- Single `primary` menu.
-
-Site settings have `title` and `tagline`.
-
-## Visual character
-
-None imposed. Define your own.
-
-This template ships without:
-
-- `src/styles/theme.css` -- create one and import it from `Base.astro` if you want CSS-variable theming.
-- Fonts in `astro.config.mjs` -- the `fonts:` array is empty. Add Google Fonts entries with `cssVariable` bindings if you want web fonts.
-- A `components/` directory with styled cards / tag lists / etc. -- build them as needed.
-
-## What to do here
-
-If you're customising this template, the work is to add design, not to subtract it. Reasonable first moves:
-
-1. Decide on one display + one body typeface, add them to `astro.config.mjs`, bind them to `--font-display` and `--font-body` CSS variables.
-2. Create `src/styles/theme.css` with your colour palette, type scale, and spacing tokens.
-3. Import it from `Base.astro`, then add any page-specific styles in the relevant Astro page.
-4. Build page-specific styles in each Astro page's `<style>` block, referencing the CSS variables.
-
-If you want a designed template instead, switch to `blog`, `portfolio`, or `marketing` -- each ships with a full visual system you can re-skin via `theme.css`.
-
-## What not to do
-
-- Don't treat this as a finished design. The unstyled output is intentional; shipping it as-is looks unfinished because it is.
-- Don't add component libraries (Tailwind UI, shadcn, etc.) without considering what they bring with them. The template is small on purpose.
-- Don't recreate the blog template's three-column reading view here. If that's what you want, start from `blog`.
+- `src/live.config.ts` is EmDash boilerplate; leave it as is.
+- Astro `i18n.routing.prefixDefaultLocale` stays off: it makes `/_emdash/admin` return 404.
