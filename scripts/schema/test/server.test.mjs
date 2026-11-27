@@ -2,7 +2,15 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import { test } from "node:test";
-import { SCRIPTS, collection, field, liveFixture, run as runWithToken, tempRepo } from "./util.mjs";
+import {
+	SCRIPTS,
+	collection,
+	field,
+	isolatedGitEnv,
+	liveFixture,
+	run as runWithToken,
+	tempRepo,
+} from "./util.mjs";
 import { stubServer } from "./stub-server.mjs";
 import { fakeContent } from "./fake-content.mjs";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -11,7 +19,7 @@ import { runPull } from "../pull.mjs";
 
 /** sync run without EMDASH_TOKEN in the environment (a CI token must not leak into these tests) */
 function run(script, args, root) {
-	const env = { ...process.env, SCHEMA_REPO_ROOT: root };
+	const env = isolatedGitEnv({ SCHEMA_REPO_ROOT: root });
 	delete env.EMDASH_TOKEN;
 	const r = spawnSync(process.execPath, [path.join(SCRIPTS, `${script}.mjs`), ...args], { encoding: "utf8", env });
 	return { status: r.status, stdout: r.stdout, stderr: r.stderr, out: r.stdout + r.stderr };
@@ -22,7 +30,7 @@ void runWithToken;
 function runAsync(script, args, root, env = {}) {
 	return new Promise((resolve) => {
 		const child = spawn(process.execPath, [path.join(SCRIPTS, `${script}.mjs`), ...args], {
-			env: { ...process.env, SCHEMA_REPO_ROOT: root, EMDASH_TOKEN: "", ...env },
+			env: isolatedGitEnv({ SCHEMA_REPO_ROOT: root, EMDASH_TOKEN: "", ...env }),
 		});
 		let stdout = "";
 		let stderr = "";
