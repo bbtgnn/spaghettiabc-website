@@ -1,0 +1,24 @@
+---
+description: Name Cursor worktree folders clearly by purpose
+alwaysApply: true
+---
+
+# Worktree folder names
+
+When creating a Cursor worktree, name the folder so its purpose is obvious at a glance. Prefer a short kebab-case summary of the task or issue, not a generic or opaque label.
+
+```text
+# ❌ BAD
+wt-1
+fix
+temp
+giovanni-worktree
+issue-42
+
+# ✅ GOOD
+fix-tour-locale-404
+add-tourazione-cta
+refactor-menu-queries
+```
+
+If the worktree tracks a GitHub issue, include a readable slug plus the issue number when helpful (e.g. `fix-tour-locale-404-42`).
