@@ -10,7 +10,7 @@ Public URL shape: `https://spaghettiabc-staging.<subdomain>.workers.dev`
 ## What you need
 
 - A Cloudflare account ([dash.cloudflare.com](https://dash.cloudflare.com))
-- This repo cloned, Node **22+** (CI uses 22), npm
+- This repo cloned; Node from [`mise.toml`](mise.toml) (CI installs the same pin via `jdx/mise-action`), npm
 - `gh` CLI logged into GitHub (for secrets/vars), or use the GitHub UI
 - Repo already contains: `wrangler.jsonc`, `src/worker.ts`, `.github/workflows/deploy.yml`
 
@@ -35,7 +35,7 @@ R2 is **not** on by default. Without this, deploy fails with “Please enable R2
 ```bash
 cd spaghettiabc-website
 git checkout main && git pull
-npm ci --legacy-peer-deps
+npm ci
 npx wrangler login
 ```
 
@@ -224,6 +224,7 @@ After that, every push to `main` deploys the same way.
 | Task | Command / place |
 |------|------------------|
 | Local dev | `npm run dev` (Node + SQLite `./data.db` + `uploads/`; need `.env`) |
+| Workers smoke | `npm run check:workerd` (`astro build` + `astro preview` under `workerd`; empty local D1 is fine) |
 | Manual deploy | `npm run deploy` (after `wrangler login`) |
 | CI deploy | push to `main` or workflow_dispatch |
 | Admin (staging) | `https://spaghettiabc-staging.<subdomain>.workers.dev/_emdash/admin` |

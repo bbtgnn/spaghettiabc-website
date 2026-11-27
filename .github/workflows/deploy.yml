@@ -15,12 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+      - uses: jdx/mise-action@v5
+        id: mise
 
-      - run: npm ci --legacy-peer-deps
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ steps.mise.outputs.node }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-${{ steps.mise.outputs.node }}-
+
+      - run: npm ci
 
       - run: npm run build
 

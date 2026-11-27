@@ -17,7 +17,7 @@ Spaghetti ABC is Flavia Giordano's site (Tour, Libro, Formazione) built on EmDas
 - **Titles:** commits, PRs, and issues use [Conventional Commits](https://www.conventionalcommits.org/): `type(optional-scope): imperative summary`.
 - **Commits:** only when asked. Partition the dirty tree by independent _why_ (separately reviewable or revertable), one commit per concern, each leaving the tree buildable. Leave unrelated dirty work untouched.
 - **Branches:** one branch and PR per GitHub issue; the PR title ends with `(#N)`. In a Cursor worktree, the dev server port is `PORT` in `.env.local`.
-- **Toolchain:** npm only; Node is pinned in `mise.toml`.
+- **Toolchain:** npm only; Node is pinned in `mise.toml` (run commands through mise). Before merging changes to the Worker runtime, bindings, or media paths, run `npm run check:workerd`.
 - **Platform APIs:** verify against the docs MCPs in `.cursor/mcp.json` rather than memory: EmDash (`search_docs`), Astro (`search_astro_docs`), and Cloudflare for Workers, D1, R2, and Wrangler.
 - **Locales:** pages live in root `src/pages/`; `src/pages/it/**` is generated. After adding, removing, or renaming a page, update the allowlist in `scripts/sync-locale-pages.mjs` and run `npm run sync:locale-pages`.
 - **Fields:** on every field you add or change, decide whether it is per-locale copy (`translatable`, the default) or shared across EN/IT (`translatable: false` — URLs, metrics, form headings, references). Set it in `seed/seed.json`; the admin does not expose it.
