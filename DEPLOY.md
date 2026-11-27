@@ -124,7 +124,7 @@ npx wrangler secret put EMDASH_ENCRYPTION_KEY
 
 1. Open `https://spaghettiabc-staging.<subdomain>.workers.dev/_emdash/admin`
 2. Complete the wizard. **You** must finish it first (first completer = admin).
-3. For client content entry, choose **Sito vuoto** (empty site — schema from seed, no demo posts).
+3. For client content entry, choose **Sito vuoto** (empty site — schema from seed, no demo content).
 4. Register a passkey on that hostname.
 5. Settings → **Backups** → enable daily automatic backups (optional but recommended).
 
