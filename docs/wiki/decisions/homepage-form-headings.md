@@ -49,14 +49,14 @@ Markers: `type: boolean`, `required: false`, `defaultValue: false`. The widget d
 
 ## Local schema on an existing database (2026-10-28)
 
-Bundled seed (`seed/seed.json`, path from `package.json` → `emdash.seed`) applies automatically when the SQLite DB is **empty** on first dev request (`bun dev`).
+Bundled seed (`seed/seed.json`, path from `package.json` → `emdash.seed`) applies automatically when the SQLite DB is **empty** on first dev request (`npm run dev`).
 
 For a **non-empty** local `data.db`, preferred non-destructive path used on 2026-10-28:
 
 ```bash
-bunx emdash seed seed/seed.json --no-content --on-conflict=update
+npx emdash seed seed/seed.json --no-content --on-conflict=update
 ```
 
 That run created the six `form_heading_*` fields and refreshed labels/widgets. EmDash seed **appends** new fields at the end of `sort_order`; it does **not** interleave them to match `seed.json` order. On 2026-10-28 Chiara saw all headings at the bottom of the Homepage editor until `_emdash_fields.sort_order` was corrected to match the homepage field array in `seed/seed.json` (content untouched). A fresh empty DB / first-boot seed does not need that fix.
 
-Do not run destructive seed/import flows against a DB that holds content you need unless you have exported backup (`bunx emdash export-seed` per [EmDash CLI skill](../../../.agents/skills/emdash-cli/SKILL.md)).
+Do not run destructive seed/import flows against a DB that holds content you need unless you have exported backup (`npx emdash export-seed` per [EmDash CLI skill](../../../.agents/skills/emdash-cli/SKILL.md)).

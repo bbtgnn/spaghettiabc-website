@@ -31,11 +31,11 @@ A general-purpose starting point for building sites with [EmDash](https://github
 ## Getting Started
 
 ```bash
-bun install
-bun dev
+npm install
+npm run dev
 ```
 
-Open http://localhost:4321/_emdash/admin and complete the setup wizard. EmDash runs database migrations and applies the starter seed during setup. The site is available at http://localhost:4321.
+Open http://localhost:4321/_emdash/admin and complete the setup wizard (use the `PORT` from `.env.local` instead of 4321 in a Cursor worktree). EmDash runs database migrations and applies the starter seed during setup. The site is served on the same port.
 
 ## Want Cloudflare Instead?
 
