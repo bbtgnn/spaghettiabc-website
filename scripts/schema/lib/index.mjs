@@ -1,18 +1,19 @@
 /**
- * Schema-loop core library — offline barrel (no EmDash HTTP, no `emdash/internal/*`).
+ * Schema-loop core library — offline barrel (no EmDash HTTP, no `emdash/client`).
  *
  * Seams
  *   offline (this barrel): seed → migrations → positions/chain → check/generate/differ/model
- *     Safe for predev and unit tests. No live server.
- *   online (import from the file, not this barrel):
- *     ./state.mjs     loadSchemaState / loadSchemaStateOrFail  (also re-exported here; pure disk)
- *     ./execute.mjs   executePlan                               (also re-exported here; needs a server adapter)
- *     ./project.mjs   REST body builders                        (also re-exported here; no HTTP)
- *     ./cli.mjs       LoopError, parseArgs, run                 — pulls `emdash/client` for error mapping
+ *     Safe for predev and unit tests. No live server. Does not pull HTTP/apply.
+ *   file imports (not re-exported here):
+ *     ./execute.mjs   executePlan                               (needs a server adapter)
+ *     ./project.mjs   REST body builders                        (no HTTP)
+ *     ./cli.mjs       parseArgs, run (+ re-exports LoopError)    — no emdash import
+ *     ./errors.mjs    EXIT, LoopError, asLoopError               (also re-exported here)
  *     ./server.mjs    connect, normalizeUrl, ensureDevSetup     — EmDash HTTP transport
- *     ./rehearse.mjs  rehearse(root, opts), assertModelLiveParity — boots Astro; do not import from here
+ *     ./rehearse.mjs  rehearse(root, opts), assertModelLiveParity — boots Astro
  *     ./plan.mjs      buildPlan                                 — pure; used by apply CLI
  *     ./live-ops.mjs  applyOpLive                               — REST apply of one op
+ *     ./backfill.mjs  runBackfill, findBlockers                 — content HTTP
  *
  * Shapes
  *   seed collections  raw `seed.json` collections/fields.
@@ -38,21 +39,15 @@
  *   locate(positions, hash) / nearest(positions, canonical) / positionAt(positions, k, n)
  *   buildChain(migrations) / locateInChain(chain, hash)           coarse view (base|pre|full)
  *
- * Schema state (seed + migrations + positions)
+ * Schema state (seed + migrations + positions; offline disk)
  *   loadSchemaState(root?, { strictSeed? }) -> { seed, migrations, positions, built, chain, seedInSync, errors }
  *   loadSchemaStateOrFail(root?, { strictSeed? })                 throws LoopError on errors / seed drift
- *
- * Apply execution
- *   executePlan({ server, plan, positions, migrations, opts? }) -> { exit, steps, ms?, finalLive? }
  *
  * Model (single module: scripts/schema/lib/model.mjs; defaults table, refusal rules, op semantics)
  *   applyOps(canonical, ops, { history?, offset? }) -> canonical  throws ModelError { code, opIndex, op }
  *   phaseOf(op) -> "pre" | "post" ; splitOps(ops) -> { pre, post, ordered } ; isDestructive(op)
  *   normalizeCollection / normalizeField / minimizeCollection / minimizeField ; COLLECTION_DEFAULTS, FIELD_DEFAULTS
  *   CLEARABLE_COLLECTION_KEYS / CLEARABLE_FIELD_KEYS              value the REST update must send to clear a key
- *
- * REST projection (project.mjs; CLEARABLE_* stay in model)
- *   collectionCreateBodies / collectionUpdateBody / fieldCreateBody / fieldUpdateBody
  *
  * Differ
  *   diffSchemas(oldCanonical, newCanonical, { renames, dropAdd, allowDestructive, history })
@@ -64,12 +59,12 @@
  *   repoRoot() (env SCHEMA_REPO_ROOT overrides)
  *
  * Exit codes shared by every schema script: 0 ok, 1 check failed, 2 usage, 3 generator STOP, 4 live DRIFT,
- * 5 blocked, 6 remote/API error. Exported as EXIT.
+ * 5 blocked, 6 remote/API error. Exported as EXIT (from errors.mjs).
  *
- * Not exported here (online / EmDash-coupled — import from the file):
- *   cli.mjs, server.mjs, rehearse.mjs, plan.mjs, live-ops.mjs, backfill.mjs
+ * Not exported here (online / apply / EmDash-coupled — import from the file):
+ *   execute.mjs, project.mjs, cli.mjs, server.mjs, rehearse.mjs, plan.mjs, live-ops.mjs, backfill.mjs
  */
-export const EXIT = { OK: 0, CHECK_FAILED: 1, USAGE: 2, STOP: 3, DRIFT: 4, BLOCKED: 5, REMOTE: 6 };
+export { EXIT, LoopError, asLoopError } from "./errors.mjs";
 
 export { stableStringify, hashSchema, sha256, deepEqual } from "./hash.mjs";
 export { canonicalFromSeed, canonicalFromLive, diffPaths } from "./canonical.mjs";
@@ -79,7 +74,6 @@ export {
 	buildPositions, locate, nearest, positionAt, buildChain, locateInChain, chainFromBuilt,
 } from "./position.mjs";
 export { loadSchemaState, loadSchemaStateOrFail } from "./state.mjs";
-export { executePlan } from "./execute.mjs";
 export { diffSchemas, UsageError } from "./differ.mjs";
 export { checkImmutability } from "./git.mjs";
 export { lintRefs } from "./refs.mjs";
@@ -90,6 +84,3 @@ export {
 	COLLECTION_DEFAULTS, FIELD_DEFAULTS, FIELD_TYPE_TO_COLUMN, TEXT_ALIAS_TYPES, CANONICAL_VERSION,
 	CLEARABLE_COLLECTION_KEYS, CLEARABLE_FIELD_KEYS, SEED_COLLECTION_KEYS, SEED_FIELD_KEYS, OP_NAMES,
 } from "./model.mjs";
-export {
-	collectionCreateBodies, collectionUpdateBody, fieldCreateBody, fieldUpdateBody,
-} from "./project.mjs";

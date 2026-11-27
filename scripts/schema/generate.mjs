@@ -7,38 +7,48 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { parseArgs as parseCliArgs, LoopError } from "./lib/cli.mjs";
 import {
-	EXIT, UsageError, backfillModuleName, buildChain, describeOp, diffSchemas, loadSchemaState,
+	EXIT, UsageError, backfillModuleName, buildPositions, describeOp, diffSchemas, loadSchemaState,
 	migrationsDir, repoRoot, validateMigrationDoc, validateSeedData,
 } from "./lib/index.mjs";
 
-const usage = `usage: node scripts/schema/generate.mjs [name] [--rename coll.old=new ...] [--resolve drop-add:coll.old,coll.new ...] [--allow-destructive] [--description "..."]`;
+const USAGE = `node scripts/schema/generate.mjs [name] [--rename coll.old=new ...] [--resolve drop-add:coll.old,coll.new ...] [--allow-destructive] [--description "..."]`;
+const usage = `usage: ${USAGE}`;
 const die = (message, code = EXIT.USAGE) => {
 	console.error(`schema:generate: ${message}`);
 	process.exit(code);
 };
 
 function parseArgs(argv) {
-	const out = { name: undefined, renames: [], dropAdd: [], allowDestructive: false, description: undefined };
-	for (let i = 0; i < argv.length; i++) {
-		let a = argv[i];
-		let inline;
-		const eq = a.startsWith("--") ? a.indexOf("=") : -1;
-		if (eq !== -1 && ["--rename", "--resolve", "--description"].includes(a.slice(0, eq))) [a, inline] = [a.slice(0, eq), a.slice(eq + 1)];
-		const value = () => inline ?? argv[++i] ?? die(`${a} needs a value\n${usage}`);
-		if (a === "--allow-destructive") out.allowDestructive = true;
-		else if (a === "--rename") {
-			const m = /^([a-z][a-z0-9_]*)\.([a-z][a-z0-9_]*)=([a-z][a-z0-9_]*)$/.exec(value());
-			if (!m) die(`--rename expects collection.old=new\n${usage}`);
-			out.renames.push({ collection: m[1], from: m[2], to: m[3] });
-		} else if (a === "--resolve") {
-			const v = value();
-			if (!v.startsWith("drop-add:")) die(`--resolve expects drop-add:<old>,<new>\n${usage}`);
-			out.dropAdd.push(v.slice("drop-add:".length));
-		} else if (a === "--description") out.description = value();
-		else if (a.startsWith("-")) die(`unknown flag ${a}\n${usage}`);
-		else if (out.name === undefined) out.name = a;
-		else die(`unexpected argument ${a}\n${usage}`);
+	let raw;
+	try {
+		raw = parseCliArgs(argv, {
+			_: "string",
+			rename: "string[]",
+			resolve: "string[]",
+			"allow-destructive": "boolean",
+			description: "string",
+		}, USAGE);
+	} catch (e) {
+		if (e instanceof LoopError) die(e.message);
+		throw e;
+	}
+	const out = {
+		name: raw._,
+		renames: [],
+		dropAdd: [],
+		allowDestructive: Boolean(raw["allow-destructive"]),
+		description: raw.description,
+	};
+	for (const v of raw.rename) {
+		const m = /^([a-z][a-z0-9_]*)\.([a-z][a-z0-9_]*)=([a-z][a-z0-9_]*)$/.exec(v);
+		if (!m) die(`--rename expects collection.old=new\n${usage}`);
+		out.renames.push({ collection: m[1], from: m[2], to: m[3] });
+	}
+	for (const v of raw.resolve) {
+		if (!v.startsWith("drop-add:")) die(`--resolve expects drop-add:<old>,<new>\n${usage}`);
+		out.dropAdd.push(v.slice("drop-add:".length));
 	}
 	return out;
 }
@@ -86,11 +96,11 @@ if (problems.length) {
 	for (const p of problems) console.error(`  ${p.code}: ${p.message}`);
 	process.exit(EXIT.CHECK_FAILED);
 }
-const { chain, migrations } = state;
+const { built, migrations } = state;
 
 let result;
 try {
-	result = diffSchemas(chain.final.canonical, seed.canonical, { renames: opts.renames, dropAdd: opts.dropAdd, allowDestructive: opts.allowDestructive, history: chain.history });
+	result = diffSchemas(built.final.canonical, seed.canonical, { renames: opts.renames, dropAdd: opts.dropAdd, allowDestructive: opts.allowDestructive, history: built.history });
 } catch (e) {
 	if (e instanceof UsageError) die(e.message);
 	throw e;
@@ -118,7 +128,8 @@ const moduleBackfill = result.backfills.find((b) => b.transform === "module");
 // the generated migration must replay to exactly the seed schema
 const docErrors = validateMigrationDoc(doc, id, { hasModule: Boolean(moduleBackfill), moduleSource: "export function transform() {}" });
 const parsed = { id, seq, name, description, destructive, ops: doc.ops, backfills: result.backfills, preOps: result.pre, postOps: result.post };
-const verify = buildChain([...migrations, parsed]);
+// Replay existing migrations + candidate via positions (same deep path as loadSchemaState).
+const verify = buildPositions([...migrations, parsed]);
 const bad = [...docErrors, ...verify.errors];
 if (!bad.length && verify.final.hash !== seed.hash) bad.push({ code: "GENERATOR_MISMATCH", message: "generated ops do not replay to the seed schema" });
 if (bad.length) {

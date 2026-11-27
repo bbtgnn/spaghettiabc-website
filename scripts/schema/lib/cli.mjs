@@ -1,30 +1,33 @@
 /**
- * CLI harness for schema scripts: argv parsing, LoopError, and process-exit mapping.
+ * CLI harness for schema scripts: argv parsing and process-exit mapping.
  * EmDash HTTP lives in server.mjs; this module never talks to a server.
+ * LoopError / EXIT / asLoopError live in errors.mjs (re-exported here for CLI convenience).
  */
-import { EmDashApiError } from "emdash/client";
-import { EXIT } from "./index.mjs";
+import { EXIT, LoopError, asLoopError } from "./errors.mjs";
 
-/** error with an exit code; thrown by the schema scripts and mapped to `process.exit` by `run()` */
-export class LoopError extends Error {
-	constructor(exit, code, message, details) {
-		super(message);
-		this.name = "LoopError";
-		this.exit = exit;
-		this.code = code;
-		this.details = details;
-	}
-}
+export { LoopError, asLoopError };
 
-/** `--flag value` / `--flag=value` / boolean flags. Unknown flags and stray positionals are usage errors. */
+/**
+ * `--flag value` / `--flag=value` / boolean flags.
+ * Spec: flag → `"boolean"` | `"string"` | `"string[]"` (`string[]` appends each occurrence);
+ * `_`: `"string"` for one optional positional → `out._`. Unknown flags and stray positionals are usage errors.
+ */
 export function parseArgs(argv, spec, usage) {
 	const out = {};
+	for (const [k, kind] of Object.entries(spec)) {
+		if (kind === "string[]") out[k] = [];
+	}
 	const bad = (msg) => {
 		throw new LoopError(EXIT.USAGE, "USAGE", `${msg}\nusage: ${usage}`);
 	};
 	for (let i = 0; i < argv.length; i++) {
 		let a = argv[i];
-		if (!a.startsWith("--")) bad(`unexpected argument ${a}`);
+		if (!a.startsWith("--")) {
+			if (spec._ !== "string") bad(`unexpected argument ${a}`);
+			if (out._ !== undefined) bad(`unexpected argument ${a}`);
+			out._ = a;
+			continue;
+		}
 		let inline;
 		const eq = a.indexOf("=");
 		if (eq !== -1) {
@@ -33,25 +36,19 @@ export function parseArgs(argv, spec, usage) {
 		}
 		const name = a.slice(2);
 		const kind = spec[name];
-		if (!kind) bad(`unknown option ${a}`);
+		if (!kind || name === "_") bad(`unknown option ${a}`);
 		if (kind === "boolean") {
 			if (inline !== undefined) bad(`${a} does not take a value`);
 			out[name] = true;
 		} else {
 			const v = inline ?? argv[++i];
 			if (v === undefined || (inline === undefined && v.startsWith("--"))) bad(`${a} needs a value`);
-			out[name] = v;
+			if (kind === "string[]") out[name].push(v);
+			else out[name] = v;
 		}
 	}
 	return out;
 }
-
-/** map unknown / API / network errors onto LoopError (used by `run` and by server.connect) */
-export const asLoopError = (e, what) => {
-	if (e instanceof LoopError) return e;
-	if (e instanceof EmDashApiError) return new LoopError(EXIT.REMOTE, e.code ?? "API_ERROR", `${what}: ${e.status} ${e.code ?? ""} ${e.message}`.replace(/\s+/g, " "), { status: e.status, code: e.code, details: e.details });
-	return new LoopError(EXIT.REMOTE, "NETWORK", `${what}: ${e?.cause?.code ?? ""} ${e?.message ?? e}`.replace(/\s+/g, " ").trim());
-};
 
 /** run an async main, mapping LoopError / unexpected errors to exit codes; flushes stdout first */
 export async function run(main) {

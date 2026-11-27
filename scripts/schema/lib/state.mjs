@@ -2,12 +2,11 @@
  * Load seed + migrations + positions in one place (offline). Callers that only need a report use
  * `loadSchemaState`; remote CLIs that must fail fast use `loadSchemaStateOrFail`.
  */
-import { EXIT } from "./index.mjs";
+import { EXIT, LoopError } from "./errors.mjs";
 import { loadMigrations } from "./migrations.mjs";
 import { repoRoot } from "./paths.mjs";
 import { buildPositions, chainFromBuilt } from "./position.mjs";
 import { loadSeedSchema } from "./seed.mjs";
-import { LoopError } from "./cli.mjs";
 
 /**
  * -> { seed, migrations, positions, built, chain, seedInSync, errors }

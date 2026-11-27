@@ -89,16 +89,20 @@ Normalised, comparable shape of collections and fields (defaults filled, volatil
 _Avoid_: raw `seed.json`; live admin JSON as-is; “schema document”
 
 **Schema hash / hash-chain position**:
-SHA-256 of a canonical schema; a known point on the migration replay (base, after pre ops, or after a full migration). There is no separate ledger — positions are derived by replaying committed migrations.
+SHA-256 of a canonical schema at a known point on the migration replay. The full position list includes every op-prefix (base, pre, full, and partial); the coarse **chain state** view keeps only base|pre|full. Positions are derived by replaying committed migrations — there is no separate ledger.
 _Avoid_: ledger; migration log; version number as the identity of live schema
+
+**Partial position**:
+Live schema hash matches an interrupted mid-migration op-prefix (between ops of one migration), not a complete chain state. Apply resumes from there; it is not DRIFT.
+_Avoid_: DRIFT; “behind” / pending when the apply was cut mid-migration
 
 **Migration**:
 Immutable generated JSON (and optional sibling backfill module) that takes the schema from one hash-chain position to the next. Once committed, it is never edited.
 _Avoid_: schema patch; admin save; changelog entry
 
 **DRIFT**:
-Live schema hash is not any position on the committed migration chain (usually an out-of-band admin edit). Exit 4.
-_Avoid_: SEED_DRIFT; “out of date” when the live schema is simply behind pending migrations
+Live schema hash is not any position on the committed migration chain — including partials (usually an out-of-band admin edit). Exit 4.
+_Avoid_: SEED_DRIFT; “out of date” when the live schema is simply behind pending migrations; Partial position
 
 **SEED_DRIFT**:
 Working-tree `seed/seed.json` no longer matches the final hash of the committed migrations. Exit 1; fix with `schema:generate`.

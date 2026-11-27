@@ -10,11 +10,10 @@
  *
  * REST body projection lives in project.mjs; this module only sequences HTTP calls.
  */
-import { EXIT } from "./index.mjs";
+import { EXIT, LoopError } from "./errors.mjs";
 import {
 	collectionCreateBodies, collectionUpdateBody, fieldCreateBody, fieldUpdateBody,
 } from "./project.mjs";
-import { LoopError } from "./cli.mjs";
 
 const enc = encodeURIComponent;
 

@@ -43,11 +43,11 @@ async function guardUnsavedSchema() {
 	const seedHash = lib.loadSeedSchema(root).hash;
 	if (dbHash === seedHash) return;
 
-	try {
-		const chain = lib.buildChain(lib.loadMigrations(root).migrations);
-		if (!chain.errors.length && lib.locateInChain(chain, dbHash)) return;
-	} catch {
-		// Unreadable migrations: fall through to refusing (hash differs from seed).
+	const state = lib.loadSchemaState(root);
+	// Unreadable / invalid migrations (or seed): fall through to refusing (hash differs from seed).
+	if (!state.errors.length) {
+		const hit = lib.locate(state.positions, dbHash);
+		if (hit) return; // known position including partial/interrupted
 	}
 
 	console.error(`

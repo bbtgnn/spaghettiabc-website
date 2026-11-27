@@ -13,8 +13,8 @@ import net from "node:net";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { EXIT, diffPaths, loadSchemaStateOrFail } from "./index.mjs";
-import { LoopError } from "./cli.mjs";
+import { EXIT, LoopError } from "./errors.mjs";
+import { diffPaths, loadSchemaStateOrFail } from "./index.mjs";
 import { connect as defaultConnect } from "./server.mjs";
 
 const scriptsDir = path.dirname(path.dirname(fileURLToPath(import.meta.url)));

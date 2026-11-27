@@ -7,8 +7,7 @@
 import {
 	CLEARABLE_COLLECTION_KEYS, CLEARABLE_FIELD_KEYS, normalizeCollection, normalizeField,
 } from "./model.mjs";
-import { EXIT } from "./index.mjs";
-import { LoopError } from "./cli.mjs";
+import { EXIT, LoopError } from "./errors.mjs";
 
 const COLLECTION_CREATE_KEYS = [
 	"slug", "label", "labelSingular", "description", "icon", "admin", "supports", "urlPattern", "routable", "hidden",

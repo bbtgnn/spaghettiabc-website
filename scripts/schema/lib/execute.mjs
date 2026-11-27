@@ -6,11 +6,10 @@
  */
 import { defaultLocaleOf, findBlockers, runBackfill } from "./backfill.mjs";
 import { diffPaths } from "./canonical.mjs";
-import { EXIT } from "./index.mjs";
+import { EXIT, LoopError } from "./errors.mjs";
 import { applyOpLive } from "./live-ops.mjs";
 import { describeOp } from "./model.mjs";
 import { locate, positionAt } from "./position.mjs";
-import { LoopError } from "./cli.mjs";
 import { EmDashApiError } from "./server.mjs";
 
 const short = (h) => h.slice(0, 12);

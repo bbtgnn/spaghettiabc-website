@@ -3,11 +3,11 @@
  *
  * Auth: `EMDASH_TOKEN` (API token / OAuth token) for any URL, or dev-bypass for localhost/127.0.0.1/[::1].
  * Never talks to anything but the `--url` it is given.
- * CLI harness (LoopError / parseArgs / run) lives in cli.mjs.
+ * LoopError / asLoopError live in errors.mjs; CLI harness (parseArgs / run) lives in cli.mjs.
  */
 import { EmDashApiError, EmDashClient, createTransport, csrfInterceptor, devBypassInterceptor, tokenInterceptor } from "emdash/client";
-import { EXIT, canonicalFromLive, hashSchema } from "./index.mjs";
-import { LoopError, asLoopError } from "./cli.mjs";
+import { EXIT, LoopError, asLoopError } from "./errors.mjs";
+import { canonicalFromLive, hashSchema } from "./index.mjs";
 
 export { EmDashApiError };
 
