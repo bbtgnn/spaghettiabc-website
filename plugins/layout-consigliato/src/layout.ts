@@ -17,6 +17,12 @@ export const RECOMMENDED_NAV_HIDDEN = [
 	"/byline-schema",
 ] as const;
 
+/**
+ * Always keep these visible when applying the recommended layout.
+ * EmDash nav id for the Plugins manager is `/plugins-manager`.
+ */
+export const RECOMMENDED_NAV_ALWAYS_VISIBLE = ["/plugins-manager"] as const;
+
 /** Editor sidebar sections recommended for Spaghetti ABC editors (#37). */
 export const RECOMMENDED_EDITOR_HIDDEN = ["bylines", "taxonomies"] as const;
 
@@ -68,7 +74,10 @@ export function applyRecommendedLayout(layout: AdminLayout | null): AdminLayout 
 		version: 1,
 		nav: {
 			order: [...base.nav.order],
-			hidden: mergeUnique(base.nav.hidden, RECOMMENDED_NAV_HIDDEN),
+			hidden: withoutIds(
+				mergeUnique(base.nav.hidden, RECOMMENDED_NAV_HIDDEN),
+				RECOMMENDED_NAV_ALWAYS_VISIBLE,
+			),
 		},
 		editor: {
 			order: [...base.editor.order],

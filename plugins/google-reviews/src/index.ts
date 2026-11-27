@@ -105,7 +105,6 @@ export function createPlugin() {
 					path: "/sync",
 					label: "Recensioni Google",
 					icon: "star",
-					group: "Content",
 				},
 			],
 		},
