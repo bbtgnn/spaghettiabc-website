@@ -39,6 +39,25 @@ function mergeUnique(existing: string[], additions: readonly string[]): string[]
 	return merged;
 }
 
+function withoutIds(existing: string[], removals: readonly string[]): string[] {
+	const drop = new Set(removals);
+	return existing.filter((id) => !drop.has(id));
+}
+
+function includesAll(existing: string[], required: readonly string[]): boolean {
+	const present = new Set(existing);
+	return required.every((id) => present.has(id));
+}
+
+/** True when every recommended nav/editor hide is present on the layout. */
+export function isRecommendedLayoutApplied(layout: AdminLayout | null): boolean {
+	if (!layout) return false;
+	return (
+		includesAll(layout.nav.hidden, RECOMMENDED_NAV_HIDDEN) &&
+		includesAll(layout.editor.hidden, RECOMMENDED_EDITOR_HIDDEN)
+	);
+}
+
 /**
  * Merge recommended hides into an existing personal layout without wiping
  * order or other hidden IDs the user already chose.
@@ -54,6 +73,24 @@ export function applyRecommendedLayout(layout: AdminLayout | null): AdminLayout 
 		editor: {
 			order: [...base.editor.order],
 			hidden: mergeUnique(base.editor.hidden, RECOMMENDED_EDITOR_HIDDEN),
+		},
+	};
+}
+
+/**
+ * Remove only the recommended hides, keeping order and any other personal hides.
+ */
+export function removeRecommendedLayout(layout: AdminLayout | null): AdminLayout {
+	const base = layout ?? emptyLayout();
+	return {
+		version: 1,
+		nav: {
+			order: [...base.nav.order],
+			hidden: withoutIds(base.nav.hidden, RECOMMENDED_NAV_HIDDEN),
+		},
+		editor: {
+			order: [...base.editor.order],
+			hidden: withoutIds(base.editor.hidden, RECOMMENDED_EDITOR_HIDDEN),
 		},
 	};
 }
