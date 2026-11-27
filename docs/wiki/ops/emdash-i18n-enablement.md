@@ -175,7 +175,7 @@ Ordered for minimal breakage:
 
 1. `astro.config.mjs` — `i18n` block above.
 2. `src/i18n/ui.ts` — EN/IT chrome strings.
-3. `src/utils/i18n.ts` (recommended) — `currentLocale`, `localePath()`, thin wrappers over `astro:i18n`.
+3. `src/i18n/utils.ts` (recommended) — `currentLocale`, `localePath()`, thin wrappers over `astro:i18n`.
 4. `src/layouts/Base.astro` — `lang={Astro.currentLocale ?? "en"}`; pass `locale` into menu/settings calls when API supports it; optional `hreflang` hook placeholder.
 5. `src/components/SiteHeader.astro` — consume UI dict; `getRelativeLocaleUrl` for brand home; language switcher UI (paired entry when `content` prop + `getTranslations`, else locale home).
 6. `src/pages/404.astro` — localized copy + home link via `getRelativeLocaleUrl`.
@@ -199,7 +199,7 @@ Ordered for minimal breakage:
 ## Open risks and unknowns
 
 1. **Site settings monolingual API** — `getSiteSettings()` has no `locale` in 1.6.0; decision wants per-locale `title` / `tagline`. **Wave 2 workaround (2026-11-26):** keep shared `settings.title` (`Spaghetti ABC`) + EN brand `settings.tagline` (`Travel and tours`); per-locale marketing copy on `homepage` / other collections. Do not invent a locale-scoped settings API. See [issue-41-status](./issue-41-status.md).
-2. **Astro vs content fallback** — Astro `fallback: { it: "en" }` cannot express requested → EN → IT (defaultLocale cannot be a fallback key). EmDash `getFallbackChain` follows Astro. Wave 2: `getEmDashEntryWithFallback` in `src/utils/i18n.ts` for entry lookup; seed both locales fully.
+2. **Astro vs content fallback** — Astro `fallback: { it: "en" }` cannot express requested → EN → IT (defaultLocale cannot be a fallback key). EmDash `getFallbackChain` follows Astro. Wave 2: `getEmDashEntryWithFallback` in `src/i18n/utils.ts` for entry lookup; seed both locales fully.
 3. **Singleton + reference graph** — `homepage` / `site_globals` / `featured_tours` must resolve locale-consistent tour targets; wrong seed order breaks `translationOf` and reference hydration. Wave 2 seed uses same-locale `$ref`s for `featured_tours`.
 4. **Hardcoded href sweep** — Wave 2 updated in-scope pages/components to `localePath` / `t()`; out-of-scope blog routes remain unprefixed.
 5. **Tour `language` vs site locale** — Same tour row carries spoken-language copy (`language` field) and CMS `locale`; editors and templates must not conflate (see `GLOSSARY.md` **Locale**).

@@ -15,7 +15,7 @@
 - **2026-11-26** — **Wave 1 landed** (config + UI chrome + `lang` + language switcher; no seed / query rewiring). Files:
   - `astro.config.mjs` — Astro `i18n` (`defaultLocale: en`, `locales: [en, it]`, `prefixDefaultLocale` + `redirectToDefaultLocale`; Astro `fallback` is `it → en` only — defaultLocale cannot be a fallback key)
   - `src/i18n/ui.ts` — typed EN/IT UI chrome dictionary
-  - `src/utils/i18n.ts` — `t()`, `localePath()`, prefix-swap / content path helpers (`astro:i18n`)
+  - `src/i18n/utils.ts` — `t()`, `localePath()`, prefix-swap / content path helpers (`astro:i18n`)
   - `src/layouts/Base.astro` — `lang` from `Astro.currentLocale`; skip-link via dict; menu fetch with `{ locale }`
   - `src/components/SiteHeader.astro` — UI dict; locale-prefixed brand/menu hrefs; IT|EN switcher
   - `src/pages/404.astro` — locale-aware copy + home link
@@ -23,7 +23,7 @@
 - **2026-11-26** — **Wave 2 landed** (bilingual seed + locale-aware queries + hardcoded href sweep for in-scope surfaces). Files touched summary:
   - `seed/seed.json` — `defaultLocale: en`; EN canonical + IT `translationOf` for tours (16 rows), homepage, `libri`, `training`, `site_globals`; per-locale `primary` menus (`/en/...`, `/it/...`); shared settings title / EN tagline
   - Bilingual content lives in `seed/seed.json` only (Wave 2 one-shot generator removed after apply)
-  - `src/utils/i18n.ts` — `contentLocaleChain`, `getEmDashEntryWithFallback` (requested → EN → IT)
+  - `src/i18n/utils.ts` — `contentLocaleChain`, `getEmDashEntryWithFallback` (requested → EN → IT)
   - `src/i18n/ui.ts` — catalog / scheda / newsletter / empty-state chrome keys
   - Pages: `index`, `tours/index`, `tours/[slug]`, `puglia-the-book`, `training` — `{ locale }` queries, `content` → Base, `localePath` hrefs
   - Components: `SezioneTour`, `TourLargeCard`, `CompactReviewRail`, `SchedaTourHeroPrenotaSplit`, `CalendlyEmbed`

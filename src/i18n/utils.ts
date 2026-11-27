@@ -12,7 +12,7 @@ import {
 	type Locale,
 	type UiKey,
 	ui,
-} from "../i18n/ui";
+} from "./ui";
 
 const LOCALE_PREFIX = new RegExp(`^/(${locales.join("|")})(?=/|$)`, "i");
 

@@ -8,7 +8,7 @@ import {
 	localePath,
 	resolveLocale,
 	t,
-} from "../../utils/i18n";
+} from "../../i18n/utils";
 
 const locale = resolveLocale(Astro.currentLocale);
 const cursor = Astro.url.searchParams.get("cursor") || undefined;
