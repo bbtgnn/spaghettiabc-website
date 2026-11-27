@@ -1117,6 +1117,12 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	font-weight: 500;
 	min-width: 0;
 	color: color-mix(in oklab, var(--muted) 70%, transparent);
+	text-decoration: none;
+}
+
+a.review-rail__name:hover,
+a.review-rail__name:focus-visible {
+	color: var(--ink);
 }
 
 /* Small: summary on one line above the review rail */

@@ -14,6 +14,9 @@ interface Review {
 		width?: number;
 		height?: number;
 	} | null;
+	/** External photo URL from plugin sync (Google author avatar). */
+	avatarSrc?: string | null;
+	reviewUrl?: string | null;
 }
 
 interface Props {
@@ -100,12 +103,37 @@ const show = hasScore || reviews.length > 0;
 											<p>{item.quote}</p>
 										</blockquote>
 										<div class="review-rail__author">
-											{item.avatar && (
+											{item.avatarSrc ? (
 												<span class="review-rail__avatar">
-													<Image image={item.avatar} />
+													<img
+														src={item.avatarSrc}
+														alt=""
+														width="24"
+														height="24"
+														loading="lazy"
+														decoding="async"
+														referrerpolicy="no-referrer"
+													/>
 												</span>
+											) : (
+												item.avatar && (
+													<span class="review-rail__avatar">
+														<Image image={item.avatar} />
+													</span>
+												)
 											)}
-											<span class="review-rail__name">{item.author}</span>
+											{item.reviewUrl ? (
+												<a
+													class="review-rail__name"
+													href={item.reviewUrl}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													{item.author}
+												</a>
+											) : (
+												<span class="review-rail__name">{item.author}</span>
+											)}
 										</div>
 									</div>
 								</div>

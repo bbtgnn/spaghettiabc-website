@@ -12,6 +12,7 @@ import {
 	resolveLocale,
 	t,
 } from "../i18n/utils";
+import { resolveFeaturedGoogleReviews } from "../utils/featured-google-reviews";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
 const locale = resolveLocale(Astro.currentLocale);
@@ -36,10 +37,12 @@ const books = home?.references?.featured_books?.entries ?? [];
 const bookCtaLabel =
 	home?.data.book_cta_label?.trim() || t(locale, "tourDiscover");
 const partnerLogos = home?.data.partner_logos ?? [];
-const googleReviews = home?.data.google_reviews ?? [];
-const googleScore = Number(home?.data.google_score) || 0;
-const googleReviewCount = Number(home?.data.google_review_count) || 0;
-const googleProfileUrl = home?.data.google_profile_url;
+const {
+	reviews: googleReviews,
+	googleScore,
+	googleReviewCount,
+	googleProfileUrl,
+} = await resolveFeaturedGoogleReviews(Astro.locals, Astro.request, home?.data);
 const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 

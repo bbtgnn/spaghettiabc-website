@@ -3,6 +3,7 @@ import node from "@astrojs/node";
 import react from "@astrojs/react";
 import { defineConfig } from "astro/config";
 import { formHeadingsPlugin } from "@spaghettiabc/form-headings";
+import { googleReviewsPlugin } from "@spaghettiabc/google-reviews";
 import { layoutConsigliatoPlugin } from "@spaghettiabc/layout-consigliato";
 import { d1, r2 } from "@emdash-cms/cloudflare";
 import emdash, { local } from "emdash/astro";
@@ -48,7 +49,11 @@ export default defineConfig({
 						directory: "./uploads",
 						baseUrl: "/_emdash/api/media/file",
 					}),
-			plugins: [formHeadingsPlugin(), layoutConsigliatoPlugin()],
+			plugins: [
+				formHeadingsPlugin(),
+				googleReviewsPlugin(),
+				layoutConsigliatoPlugin(),
+			],
 			admin: {
 				// Keep Menus + Redirects; hide unused built-in admin areas (#31).
 				hiddenNavItems: [
