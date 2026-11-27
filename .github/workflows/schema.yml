@@ -35,8 +35,5 @@ jobs:
       - name: Schema rehearsal (throwaway server, base seed -> all migrations)
         run: npm run -s schema:rehearse
 
-      # Baseline `astro check` is red (17 pre-existing errors in legacy template pages + src/worker.ts).
-      # Non-blocking until those are fixed; then remove continue-on-error.
       - name: Typecheck
-        continue-on-error: true
         run: npm run -s typecheck

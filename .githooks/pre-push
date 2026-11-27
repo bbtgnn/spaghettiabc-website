@@ -2,7 +2,6 @@
 # pre-push: schema:test, schema:rehearse, typecheck — only when the pushed range touches relevant paths.
 # Installed by `npm install` / `npm run prepare` (git config core.hooksPath .githooks).
 # Escape hatch for the slow rehearsal: SKIP_SCHEMA_REHEARSE=1 git push   (CI still enforces)
-# typecheck warns only while the baseline is red; STRICT_TYPECHECK=1 makes it block.
 # Bypass everything: git push --no-verify
 
 root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
@@ -65,17 +64,8 @@ else
 	npm run -s schema:rehearse </dev/null || fail "schema:rehearse" $?
 fi
 
-# Baseline `astro check` is red (17 pre-existing errors in legacy template pages + src/worker.ts), so a typecheck
-# failure only warns. Flip to blocking with STRICT_TYPECHECK=1 (or delete this branch) once the baseline is clean.
 echo "pre-push: [3/3] typecheck" >&2
-npm run -s typecheck </dev/null
-tc=$?
-if [ "$tc" -ne 0 ]; then
-	if [ "${STRICT_TYPECHECK:-}" = "1" ]; then
-		fail "typecheck" "$tc"
-	fi
-	echo "pre-push: WARNING typecheck failed (exit $tc); not blocking (baseline is red). STRICT_TYPECHECK=1 makes it block." >&2
-fi
+npm run -s typecheck </dev/null || fail "typecheck" $?
 
 echo "pre-push: ok" >&2
 exit 0

@@ -584,10 +584,10 @@ const brandParts = [...siteTitle].map((char) => {
 			});
 		}
 
-		function playClose() {
+		async function playClose() {
 			cancelAnims();
 			if (reduceMotion() || !menu.animate) {
-				return Promise.resolve();
+				return;
 			}
 
 			const panel = menu.animate(

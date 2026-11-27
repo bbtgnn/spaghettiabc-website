@@ -5,7 +5,13 @@
  * which only has it → en because defaultLocale cannot be a fallback key).
  */
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { getEmDashEntry } from "emdash";
+import {
+	getEmDashEntry,
+	type EntryResult,
+	type InferCollectionData,
+	type SelectableReferences,
+	type SelectedReferences,
+} from "emdash";
 import {
 	defaultLocale,
 	locales,
@@ -46,20 +52,32 @@ export function contentLocaleChain(
  * getEmDashEntry with decision fallback: requested → EN → IT.
  * EmDash already walks Astro's it→en chain for a single call; this helper
  * adds the EN→IT safety net and retries when a locale row is absent.
+ *
+ * Generics mirror getEmDashEntry so collection literals keep emdash-env.d.ts
+ * field types (a plain `string` collection widens data to unknown).
  */
-export async function getEmDashEntryWithFallback(
-	collection: string,
+export async function getEmDashEntryWithFallback<
+	T extends string,
+	S extends SelectableReferences<T> = {},
+>(
+	collection: T,
 	slug: string,
-	options?: Parameters<typeof getEmDashEntry>[2],
-) {
+	options?: { locale?: string; references?: S },
+): Promise<EntryResult<InferCollectionData<T>, SelectedReferences<T, S>>> {
 	const chain = contentLocaleChain(options?.locale);
-	let last: Awaited<ReturnType<typeof getEmDashEntry>> | undefined;
+	let last:
+		| EntryResult<InferCollectionData<T>, SelectedReferences<T, S>>
+		| undefined;
 
 	for (const loc of chain) {
-		const result = await getEmDashEntry(collection, slug, {
-			...options,
-			locale: loc,
-		});
+		const result = await getEmDashEntry<T, InferCollectionData<T>, S>(
+			collection,
+			slug,
+			{
+				...options,
+				locale: loc,
+			},
+		);
 		last = result;
 		if (result.entry) return result;
 	}
