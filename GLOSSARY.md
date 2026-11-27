@@ -5,71 +5,71 @@ Dominio del sito di Flavia: tour e contenuti editoriali presentati tramite EmDas
 ## Language
 
 **Locale**:
-Lingua del sito (`en` | `it`): routing (EN unprefixed; IT sotto `/it/...`), traduzioni CMS e copy dell’interfaccia. Distinta dal campo Tour `language` (lingua parlata dell’esperienza). Default pubblico: EN (`/`).
-_Avoid_: confondere con Tour `language`; `_en` field duplication (scartato per #41, 2026-11-26); `prefixDefaultLocale` (rompe EmDash admin)
+Lingua del sito (inglese o italiano) in cui si legge una pagina, con le sue traduzioni dei contenuti e dell’interfaccia. Default pubblico: inglese.
+_Avoid_: confondere con la lingua parlata di un Tour
 
 **Libro**:
-L’opera di Flavia sul cibo in Puglia (il titolo “Puglia”), presentata sul sito attraverso le sue Edizioni. Non è più una singola entry/URL canonica.
+L’opera di Flavia sul cibo in Puglia (il titolo “Puglia”), presentata sul sito attraverso le sue Edizioni. Non ha una pagina propria.
 _Avoid_: blocco homepage, prodotto, merchandise; non confondere con Edizione
 
 **Edizione**:
-Una variante pubblicata del Libro (internazionale e speciale), di prima classe nel CMS (collection `libri`) e presentata sul sito.
+Una variante pubblicata del Libro (internazionale, speciale), con copertina, testi e acquisto propri.
 _Avoid_: Libro (per indicare una singola variante); version; SKU; product variant
 
 **Sezione Libro**:
-Blocco della homepage con titolo (e opz. sottotitolo), riferimento ordinato alle Edizioni (`featured_books`), e testo CTA condiviso (`book_cta_label`) verso le Schede (`/#libro`, `/it/#libro`).
-_Avoid_: caricare automaticamente tutte le Edizioni senza selezione; buy CTA (sta sulla Scheda); caricare il dettaglio completo delle Edizioni in homepage
+Blocco della homepage che presenta le Edizioni scelte dall’editor, nell’ordine scelto, e rimanda alle loro Schede.
+_Avoid_: elenco automatico di tutte le Edizioni; CTA di acquisto (sta sulla Scheda)
 
 **Scheda Edizione**:
-Pagina dettaglio di una Edizione a `/books/{slug}` o `/it/books/{slug}` (slug indipendenti per locale). Il back link torna alla Sezione Libro in homepage (`/#libro` o `/it/#libro`).
-_Avoid_: product page; pagina del Libro (come se l’opera avesse una sola URL); hub intermedio `/puglia-the-book`
+La pagina dettaglio di una Edizione, l’unico punto da cui la si acquista. Il link indietro torna alla Sezione Libro.
+_Avoid_: product page; pagina del Libro (come se l’opera avesse una sola pagina); pagina hub dei libri
 
 **Tour**:
-Esperienza cibo guidata di Flavia — di solito in un paese pugliese, a volte un formato speciale senza singolo paese (cena narrativa, MICE, su misura). Non è un itinerario di viaggio plurigiornaliero in Italia. Campo `destination` = nome del paese oppure etichetta di formato.
+Esperienza cibo guidata di Flavia: di solito in un paese pugliese, a volte un formato speciale senza singolo paese (cena narrativa, MICE, su misura). Non è un itinerario di viaggio plurigiornaliero in Italia.
 _Avoid_: viaggio, pacchetto (salvo copy marketing), itinerario (come termine definitorio)
 
 **Catalogo Tour**:
-La pagina `/tours` (e `/it/tours`) che elenca tutte le entry Tour (teaser verso le Schede Tour).
-_Avoid_: lista tour; product listing; non usare «catalogo» per indicare una collection CMS
+La pagina che elenca tutti i Tour, con teaser verso le Schede Tour.
+_Avoid_: lista tour; product listing; «catalogo» per indicare una collection CMS
 
 **Scheda Tour**:
-La pagina dettaglio di un Tour a `/tours/{slug}` o `/it/tours/{slug}` (slug indipendenti per locale): hero a immagine piena, poi corpo editoriale | colonna prenotazione (specs + Calendly) quando c’è un URL Calendly.
-_Avoid_: product page, pagina prodotto, PDP, tour detail (come nome di dominio); Add to cart; Atelier gallery|info (scartato)
+La pagina dettaglio di un Tour: racconto dell’esperienza accanto alla colonna prenotazione (dettagli pratici e Prenotazione).
+_Avoid_: product page, pagina prodotto, PDP, tour detail (come nome di dominio); Add to cart
 
 **Impostazioni sito**:
-Entry unica di impostazioni globali del sito (FAQ condivisa, URL Calendly predefinito, e simili). Non è una pagina pubblica.
-_Avoid_: site settings EmDash (titolo/tagline), impostazioni Astro, config
+Entry unica di impostazioni globali dei contenuti (FAQ condivisa, URL Calendly predefinito, e simili). Non è una pagina pubblica.
+_Avoid_: le impostazioni generali di EmDash (titolo, tagline); config
 
 **Prenotazione**:
-Richiesta su Calendly dalla colonna prenotazione della Scheda Tour. L’URL effettivo è l’override del Tour se non vuoto, altrimenti il fallback in Impostazioni sito; entrambi vuoti → niente embed. Il pagamento resta fuori sito (SumUp), dopo la richiesta.
-_Avoid_: acquisto, Add to cart, carrello, checkout, booking (come nome di dominio); sheet prenotazione (scartato)
+Richiesta su Calendly dalla colonna prenotazione della Scheda Tour. Vale l’URL Calendly del Tour, altrimenti quello predefinito in Impostazioni sito. Il pagamento resta fuori sito (SumUp), dopo la richiesta.
+_Avoid_: acquisto, Add to cart, carrello, checkout, booking (come nome di dominio)
 
 **Sezione Tour**:
-Blocco della homepage che elenca Tour in evidenza e rimanda al Catalogo Tour.
+Blocco della homepage che presenta i Tour in evidenza, con Punteggio e Recensioni Google, e rimanda al Catalogo Tour.
 _Avoid_: lista tour; chiamare questo blocco «Catalogo Tour»; product grid
 
 **Formazione**:
-L’offerta B2B di Flavia: percorsi e incontri per aziende e professionisti intorno alla cultura del cibo, presentata come una sola landing sul sito (collection `training`, URL `/training` e `/it/training`). I singoli percorsi non sono entry separate finché non si decide un catalogo.
-_Avoid_: corso, workshop (come nome di collection), education, `formazione` (come slug tecnico)
+L’offerta B2B di Flavia: percorsi e incontri per aziende e professionisti intorno alla cultura del cibo, presentata come una sola landing. I singoli percorsi non sono entry separate finché non si decide un catalogo.
+_Avoid_: corso, workshop (come nome di entità), education
 
 **Sezione Formazione**:
-Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non letti dalla landing Formazione). La CTA punta a `/training` o `/it/training`.
-_Avoid_: pagina formazione, catalogo corsi, reference alla Formazione
+Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non letti dalla landing Formazione), che rimanda alla landing.
+_Avoid_: pagina formazione, catalogo corsi
 
 **Sezione Dicono di me**:
-Blocco della homepage (titolo, sottotitolo, Loghi partner) che mostra collaborazioni intorno a Flavia. Nessuna landing dedicata né CTA verso una pagina Collaborazioni. Punteggio/Recensioni Google vivono nella Sezione Tour (stessi campi CMS sulla homepage).
-_Avoid_: Sezione Collaborazioni; Credibilità; Fiducia; trust section; testimonianze; Collaborazioni (come pagina/collection)
+Blocco della homepage (titolo, sottotitolo, Loghi partner) che mostra le collaborazioni di Flavia. Nessuna landing dedicata né CTA verso una pagina Collaborazioni.
+_Avoid_: Sezione Collaborazioni; Credibilità; Fiducia; trust section; testimonianze; Collaborazioni (come pagina)
 
 **Logo partner**:
 Marchio di un’azienda o organizzazione con cui Flavia ha collaborato, mostrato nella Sezione Dicono di me.
 _Avoid_: sponsor, cliente (salvo copy)
 
 **Punteggio Google**:
-Valutazione aggregata del profilo Google di Flavia (voto, numero di recensioni, link al profilo), mostrata nella Sezione Tour accanto allo strip Recensioni Google. Campi CMS restano sulla homepage.
+Valutazione aggregata del profilo Google di Flavia (voto, numero di recensioni, link al profilo), mostrata nella Sezione Tour accanto alle Recensioni Google.
 _Avoid_: rating globale, score widget
 
 **Recensione Google**:
-Citazione curata nello stile di una recensione Google (stelle, testo, autore, foto profilo) gestita nel CMS sulla homepage e mostrata nello strip della Sezione Tour; seed demo finché non arrivano le recensioni reali. Non è un’integrazione live con Google.
+Citazione curata nello stile di una recensione Google (stelle, testo, autore, foto profilo), scelta dall’editor e mostrata nella Sezione Tour. Non è sincronizzata con Google.
 _Avoid_: Testimonianza, testimonial, review widget Google
 
 **Newsletter**:
@@ -77,5 +77,5 @@ Canale di aggiornamento di Flavia (ricette di stagione, eventi e novità). Sul s
 _Avoid_: mailing list (come nome UI), iscriviti (come nome di entità)
 
 **Sezione Newsletter**:
-Blocco della homepage con titolo, sottotitolo e casella email per l’iscrizione (UI; invio reale deferred).
+Blocco della homepage con titolo, sottotitolo e casella email per l’iscrizione (per ora solo interfaccia, senza invio reale).
 _Avoid_: pagina newsletter, form contatti
