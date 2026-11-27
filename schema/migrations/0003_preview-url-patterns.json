@@ -1,0 +1,52 @@
+{
+	"id": "0003_preview-url-patterns",
+	"description": "updateCollection homepage; updateCollection tours; updateCollection libri; updateCollection training; updateCollection site_globals",
+	"destructive": false,
+	"ops": [
+		{
+			"op": "updateCollection",
+			"collection": "homepage",
+			"set": {
+				"urlPattern": "/"
+			}
+		},
+		{
+			"op": "updateCollection",
+			"collection": "tours",
+			"set": {
+				"supports": [
+					"drafts",
+					"no-scheduling",
+					"preview",
+					"revisions",
+					"search",
+					"seo"
+				]
+			}
+		},
+		{
+			"op": "updateCollection",
+			"collection": "libri",
+			"set": {
+				"urlPattern": "/books/{slug}"
+			}
+		},
+		{
+			"op": "updateCollection",
+			"collection": "training",
+			"set": {
+				"urlPattern": "/training"
+			}
+		},
+		{
+			"op": "updateCollection",
+			"collection": "site_globals",
+			"set": {
+				"supports": [
+					"drafts",
+					"revisions"
+				]
+			}
+		}
+	]
+}

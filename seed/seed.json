@@ -18,6 +18,7 @@
 			"icon": "house",
 			"sortOrder": 10,
 			"routable": false,
+			"urlPattern": "/",
 			"supports": [
 				"drafts",
 				"revisions",
@@ -232,7 +233,7 @@
 				"drafts",
 				"revisions",
 				"preview",
-				"scheduling",
+				"no-scheduling",
 				"search",
 				"seo"
 			],
@@ -322,6 +323,7 @@
 			"icon": "books",
 			"sortOrder": 30,
 			"routable": false,
+			"urlPattern": "/books/{slug}",
 			"supports": [
 				"drafts",
 				"revisions",
@@ -373,6 +375,7 @@
 			"icon": "graduation-cap",
 			"sortOrder": 40,
 			"routable": false,
+			"urlPattern": "/training",
 			"supports": [
 				"drafts",
 				"revisions",
@@ -422,8 +425,7 @@
 			"routable": false,
 			"supports": [
 				"drafts",
-				"revisions",
-				"preview"
+				"revisions"
 			],
 			"fields": [
 				{
