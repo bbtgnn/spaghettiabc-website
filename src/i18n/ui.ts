@@ -1,7 +1,4 @@
-/**
- * UI chrome strings (not CMS copy). Decision #9 / issue #41.
- * Wave 1 wires Base, SiteHeader, 404; remaining keys are ready for Wave 2 pages.
- */
+/** UI chrome strings (not CMS copy). Decision #9 / issue #41. */
 
 export const locales = ["en", "it"] as const;
 export type Locale = (typeof locales)[number];

@@ -75,6 +75,5 @@ export function git(root, ...args) {
 	return r.stdout.trim();
 }
 
-/** find a collection/field in a seed object */
 export const collection = (seed, slug) => seed.collections.find((c) => c.slug === slug);
 export const field = (seed, coll, slug) => collection(seed, coll).fields.find((f) => f.slug === slug);

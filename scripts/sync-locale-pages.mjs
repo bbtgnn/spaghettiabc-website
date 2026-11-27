@@ -74,7 +74,7 @@ for (const rel of ALLOWLIST) {
 	console.log(`wrote it/${rel} → ${importPath}`);
 }
 
-// Prune stale generated stubs under it/ (only files that look generated).
+// Only prune stubs we generated — leave anything hand-edited under it/ alone.
 for (const file of listGeneratedAstro(itDir)) {
 	if (written.has(path.resolve(file))) continue;
 	const text = fs.readFileSync(file, "utf8");
@@ -83,7 +83,6 @@ for (const file of listGeneratedAstro(itDir)) {
 	console.log(`pruned ${path.relative(pagesDir, file)}`);
 }
 
-// Remove empty dirs under it/
 function pruneEmpty(dir) {
 	if (!fs.existsSync(dir)) return;
 	for (const name of fs.readdirSync(dir)) {

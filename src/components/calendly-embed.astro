@@ -21,10 +21,9 @@ const CALENDLY_TEXT_COLOR = "101010";
 const CALENDLY_PRIMARY_COLOR = "c43c2c";
 
 /**
- * Calendly embed query flags — see
- * https://calendly.com/help/how-to-customize-your-embed
- * Event-type + landing/team params so either URL shape hides chrome details.
+ * Event-type + landing/team hide flags so either URL shape drops chrome details.
  * Colors are refreshed from CSS tokens on the client before initInlineWidget.
+ * https://calendly.com/help/how-to-customize-your-embed
  */
 function withCalendlyEmbedParams(raw: string, label: string): string {
 	try {

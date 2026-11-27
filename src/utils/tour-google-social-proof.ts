@@ -4,7 +4,6 @@ import {
 	type PublicPluginRuntimeLocals,
 } from "emdash/plugin-utils";
 
-/** Single review view-model for Sezione Tour / CompactReviewRail. */
 export type TourGoogleReview = {
 	author: string;
 	quote: string;

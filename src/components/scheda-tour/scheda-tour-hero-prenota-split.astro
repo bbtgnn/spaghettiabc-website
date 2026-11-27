@@ -1,7 +1,7 @@
 ---
 /**
  * Scheda Tour layout: tall hero, then body | booking column (specs + Calendly).
- * Mobile: hero → book → body. ≥768: centered | copycol (≤65ch) | book (≤400px) |.
+ * Mobile: hero → book → body (flex order). ≥768: centered | copycol (≤65ch) | book (≤400px).
  */
 import { Image } from "emdash/ui";
 import ArrowLeft from "@lucide/astro/icons/arrow-left";
@@ -11,7 +11,7 @@ import Users from "@lucide/astro/icons/users";
 import Languages from "@lucide/astro/icons/languages";
 import CircleCheck from "@lucide/astro/icons/circle-check";
 import Tag from "@lucide/astro/icons/tag";
-import CalendlyEmbed from "../CalendlyEmbed.astro";
+import CalendlyEmbed from "../calendly-embed.astro";
 import { localePath, resolveLocale, t } from "../../i18n/utils";
 
 const SPEC_ICONS: Record<
@@ -26,7 +26,6 @@ const SPEC_ICONS: Record<
 	price: Tag,
 };
 
-/** EmDash image field shape (same as featured_image / Variant A). */
 type TourImage = {
 	id: string;
 	src?: string;
@@ -89,7 +88,6 @@ const extraImages = galleryImages.slice(1);
 
 <section class="sth-prenota" aria-label={title}>
 	<div class="sth-prenota__layout">
-		{/* Hero: image as background; title + subtitle centered */}
 		<div
 			class="sth-prenota__intro"
 			data-tour-gallery={leadImage ? true : undefined}
@@ -162,9 +160,6 @@ const extraImages = galleryImages.slice(1);
 			}
 		</div>
 
-		{/* Under hero: body | book — centered as a pair on ≥768.
-		    Specs sit above Calendly in the book column.
-		    copycol is display:contents on mobile so order stays book→body. */}
 		<div class="sth-prenota__main">
 			<div class="sth-prenota__copycol">
 				<div class="sth-prenota__body">
@@ -225,10 +220,6 @@ const extraImages = galleryImages.slice(1);
 		padding-block: 0;
 	}
 
-	/*
-	 * Mobile (<768): hero → book (specs+calendly) → editorial/FAQ (flex order)
-	 * ≥768: hero full width; then centered | content | book |
-	 */
 	.sth-prenota__layout {
 		display: flex;
 		flex-direction: column;
@@ -416,11 +407,11 @@ const extraImages = galleryImages.slice(1);
 		}
 	}
 
-	/* Slotted content/FAQ: drop page-level 4rem / --measure; body gap matches copycol. */
 	.sth-prenota__body:empty {
 		display: none;
 	}
 
+	/* Slotted content/FAQ: drop page-level 4rem / --measure; body gap matches copycol. */
 	.sth-prenota__body :global(.scheda-tour__content),
 	.sth-prenota__body :global(.scheda-tour__faq) {
 		margin-top: 0;

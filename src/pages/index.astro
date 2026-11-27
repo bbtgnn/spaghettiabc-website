@@ -2,9 +2,9 @@
 import { getSiteSettings } from "emdash";
 import { Image } from "emdash/ui";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
-import Base from "../layouts/Base.astro";
-import PartnerLogoMarquee from "../components/PartnerLogoMarquee.astro";
-import SezioneTour from "../components/SezioneTour.astro";
+import Base from "../layouts/base.astro";
+import PartnerLogoMarquee from "../components/partner-logo-marquee.astro";
+import SezioneTour from "../components/sezione-tour.astro";
 import {
 	entrySlug,
 	getEmDashEntryWithFallback,
@@ -541,13 +541,11 @@ const trainingHref = localePath(locale, "/training");
 	}
 
 	/*
-	 * Default: full-bleed horizontal rail (shell gutter breakout), books close.
-	 * Two-up grid only with the desktop intro|books layout (≥900), when the
-	 * editions column is actually wide enough — not at 560px mid widths.
+	 * Default: full-bleed horizontal rail (shell gutter breakout).
+	 * Two-up from 768 — not at 560 like tour-grid (editions need more width).
 	 */
 	.sezione-libro__editions {
 		--sezione-libro-peek: var(--gutter);
-		/* Grows with the viewport until the ≥900 two-up grid takes over */
 		--sezione-libro-card: clamp(12.5rem, 42vw, 20rem);
 		/* Room for cover rotate + drop-shadow (overflow-x makes y clip too) */
 		--sezione-libro-shadow-pad: 1.1rem;
@@ -589,7 +587,6 @@ const trainingHref = localePath(locale, "/training");
 		box-sizing: border-box;
 	}
 
-	/* Two-up as before — restore growth with the window from 768 */
 	@media (min-width: 768px) {
 		.sezione-libro__editions {
 			display: grid;
@@ -629,14 +626,13 @@ const trainingHref = localePath(locale, "/training");
 
 	.sezione-libro__cover {
 		transform: rotate(-5deg);
-		/* Tight shadow: left + down */
 		filter: drop-shadow(-0.3rem 0.4rem 0.45rem color-mix(in oklab, var(--ink) 16%, transparent));
 		transition:
 			transform 700ms var(--ease-out-expo),
 			filter 700ms var(--ease-out-quart);
 	}
 
-	/* Special (second / bianca): tilt the other way */
+	/* Second / bianca: tilt the other way */
 	.sezione-libro__edition:nth-child(2) .sezione-libro__cover {
 		transform: rotate(5deg);
 	}

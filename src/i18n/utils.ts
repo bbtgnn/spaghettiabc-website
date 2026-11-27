@@ -1,8 +1,8 @@
 /**
  * Locale helpers for #41. Prefer astro:i18n over EmDash internal localizePath.
- * Wave 2: content entry fallback requested → EN → IT (Astro routing fallback
- * cannot express the full chain; EmDash getFallbackChain follows Astro config
- * which only has it → en because defaultLocale cannot be a fallback key).
+ * Content entry fallback: requested → EN → IT (Astro routing cannot express the
+ * full chain; EmDash getFallbackChain follows Astro config which only has
+ * it → en because defaultLocale cannot be a fallback key).
  */
 import { getRelativeLocaleUrl } from "astro:i18n";
 import {
@@ -32,11 +32,6 @@ export function resolveLocale(raw: string | undefined | null): Locale {
 	return defaultLocale;
 }
 
-/**
- * Entry lookup chain: requested locale, then EN, then IT (deduped).
- * Complements EmDash/Astro `fallback: { it: "en" }` which cannot list
- * defaultLocale as a fallback key (so EN → IT is not automatic).
- */
 export function contentLocaleChain(
 	locale: string | undefined | null,
 ): Locale[] {
@@ -149,7 +144,6 @@ export function localePath(
 	return `${base}${suffix}`;
 }
 
-/** Swap locale prefix on the current pathname (same path segments; EN may be unprefixed). */
 export function swapLocalePrefix(
 	pathname: string,
 	targetLocale: string | undefined | null,
@@ -161,17 +155,11 @@ export function swapLocalePrefix(
 	return getRelativeLocaleUrl(resolved, strip);
 }
 
-/**
- * Public path segment after the locale prefix (e.g. `/it/tours/foo` → `tours/foo`).
- */
 export function pathWithoutLocale(pathname: string): string {
 	const stripped = pathname.replace(LOCALE_PREFIX, "") || "/";
 	return stripped.replace(/^\//, "") || "";
 }
 
-/**
- * Strip leading locale folder segments from an EmDash entry id / slug.
- */
 export function entrySlug(raw: string | null | undefined): string {
 	let s = (raw ?? "").replace(/^\/+/, "");
 	const lead = new RegExp(`^(${locales.join("|")})/`, "i");

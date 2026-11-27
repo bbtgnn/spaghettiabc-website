@@ -16,7 +16,7 @@ import { classifyListener, listenerCwds } from "./lib/port-owner.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-// Same port as `astro dev` (worktree PORT from `.env.local`, else 4321).
+// Same port as `astro dev` so we refuse while this checkout's server is up.
 const DEV_PORT = devPort(root);
 
 const TARGETS = [

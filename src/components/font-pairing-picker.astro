@@ -1,8 +1,6 @@
 ---
 /**
  * DEV-only font pairing preview (#9). Stripped from production builds.
- * Matrix: rows = body, columns = display; separate Font UI control.
- * Mounted inside DevPreviewDock (shared chrome with color palettes).
  */
 const DISPLAY = [
 	{ id: "newsreader", label: "Newsreader" },
@@ -121,7 +119,7 @@ const UI = [
 	/** Serif UI → sentence case + metrics; sans UI → uppercase (see theme.css). */
 	const syncUiCase = () => {
 		const ui = root.getAttribute("data-font-ui") ?? DEFAULT_UI;
-		/* UI=body is always serif (Source Serif 4 / Literata); tsukimi & fira-sans are sans */
+		/* UI=body is always serif; tsukimi / fira-sans are sans */
 		const uiSerif = ui === "body";
 		root.setAttribute("data-font-ui-case", uiSerif ? "serif" : "sans");
 	};
