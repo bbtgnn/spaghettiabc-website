@@ -114,21 +114,8 @@ function LayoutConsigliatoPage() {
 					normale di lavoro, così la navigazione resta più chiara.
 				</p>
 				<p>
-					L’impostazione riguarda solo l’account con cui hai effettuato l’accesso. Gli altri utenti non
-					vengono modificati: ciascuno può attivare (o meno) il layout dal proprio account.
-				</p>
-				<p>
 					Nella navigazione laterale vengono nascoste Categorie, Tag, Tipi di contenuto e Schema dei
 					crediti. Nell’editor dei contenuti spariscono le sezioni Crediti e Tassonomie.
-				</p>
-				<p>
-					Le personalizzazioni già presenti sul tuo layout — ordine delle voci o altre voci già
-					nascoste — vengono mantenute. Il plugin aggiunge o rimuove solo queste nascoste consigliate,
-					senza azzerare il resto.
-				</p>
-				<p>
-					Completa le nascoste di sito già definite in configurazione (calendario, media, commenti e
-					simili). Puoi anche regolare le singole voci da Impostazioni → Barre laterali.
 				</p>
 			</div>
 
