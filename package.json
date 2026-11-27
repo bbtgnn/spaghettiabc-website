@@ -25,7 +25,10 @@
     "wipe:local": "node scripts/wipe-local.mjs",
     "migrate:status": "emdash migrate --status --wrangler-config wrangler.jsonc",
     "migrate": "emdash migrate --wrangler-config wrangler.jsonc",
-    "migrate:check": "emdash migrate --check --wrangler-config wrangler.jsonc"
+    "migrate:check": "emdash migrate --check --wrangler-config wrangler.jsonc",
+    "schema:check": "node scripts/schema/check.mjs",
+    "schema:generate": "node scripts/schema/generate.mjs",
+    "schema:test": "node --test \"scripts/schema/test/*.test.mjs\""
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.4.9",
