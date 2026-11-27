@@ -29,6 +29,9 @@
  *   loadSchemaState(root?, { strictSeed? }) -> { seed, migrations, positions, built, chain, seedInSync, errors }
  *   loadSchemaStateOrFail(root?, { strictSeed? })                 throws LoopError on errors / seed drift
  *
+ * Apply execution
+ *   executePlan({ server, plan, positions, migrations, opts? }) -> { exit, steps, ms?, finalLive? }
+ *
  * Model (single module: scripts/schema/lib/model.mjs; defaults table, refusal rules, op semantics)
  *   applyOps(canonical, ops, { history?, offset? }) -> canonical  throws ModelError { code, opIndex, op }
  *   phaseOf(op) -> "pre" | "post" ; splitOps(ops) -> { pre, post, ordered } ; isDestructive(op)
@@ -60,6 +63,7 @@ export {
 	buildPositions, locate, nearest, positionAt, buildChain, locateInChain, chainFromBuilt,
 } from "./position.mjs";
 export { loadSchemaState, loadSchemaStateOrFail } from "./state.mjs";
+export { executePlan } from "./execute.mjs";
 export { diffSchemas, UsageError } from "./differ.mjs";
 export { checkImmutability } from "./git.mjs";
 export { lintRefs } from "./refs.mjs";

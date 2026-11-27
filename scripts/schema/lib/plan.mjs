@@ -1,6 +1,6 @@
 /**
  * Pure planning for `schema:apply`: from a live position, the requested phase and the migrations, the ordered
- * list of steps. Executing is `apply.mjs`'s job; this file has no I/O so it is unit-testable.
+ * list of steps. Executing is `execute.mjs`'s job; this file has no I/O so it is unit-testable.
  *
  * Phases
  *   all   every remaining migration: pre ops -> backfills -> post ops.
