@@ -42,3 +42,4 @@ Keep the choice, the boundary, the reason, and the rejected alternatives that ma
 - [0005 — Prenotazione via an embedded Calendly](0005-prenotazione-calendly.md)
 - [0006 — Form headings are marker fields](0006-form-headings.md)
 - [0007 — Bilingual site on EmDash locales](0007-bilingual-site.md)
+- [0008 — Recensioni Google via Business Profile plugin](0008-google-reviews-plugin.md)

@@ -12,6 +12,7 @@ import {
 	resolveLocale,
 	t,
 } from "../i18n/utils";
+import { getTourGoogleSocialProof } from "../utils/tour-google-social-proof";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
 const locale = resolveLocale(Astro.currentLocale);
@@ -36,10 +37,10 @@ const books = home?.references?.featured_books?.entries ?? [];
 const bookCtaLabel =
 	home?.data.book_cta_label?.trim() || t(locale, "tourDiscover");
 const partnerLogos = home?.data.partner_logos ?? [];
-const googleReviews = home?.data.google_reviews ?? [];
-const googleScore = Number(home?.data.google_score) || 0;
-const googleReviewCount = Number(home?.data.google_review_count) || 0;
-const googleProfileUrl = home?.data.google_profile_url;
+const googleSocialProof = await getTourGoogleSocialProof(
+	Astro.locals,
+	Astro.request,
+);
 const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 
@@ -100,10 +101,7 @@ const trainingHref = localePath(locale, "/training");
 					subtitle={home.data.tour_subtitle}
 					ctaLabel={home.data.tour_cta_label}
 					tours={featuredTours}
-					reviews={googleReviews}
-					googleScore={googleScore}
-					googleReviewCount={googleReviewCount}
-					googleProfileUrl={googleProfileUrl}
+					googleSocialProof={googleSocialProof}
 					locale={locale}
 					edit={{
 						tour_title: home.edit.tour_title,

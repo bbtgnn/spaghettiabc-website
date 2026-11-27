@@ -65,12 +65,12 @@ Marchio di un’azienda o organizzazione con cui Flavia ha collaborato, mostrato
 _Avoid_: sponsor, cliente (salvo copy)
 
 **Punteggio Google**:
-Valutazione aggregata del profilo Google di Flavia (voto, numero di recensioni, link al profilo), mostrata nella Sezione Tour accanto alle Recensioni Google.
-_Avoid_: rating globale, score widget
+Valutazione aggregata del profilo Google di Flavia (voto, numero di recensioni, link al profilo) dal plugin `@spaghettiabc/google-reviews`, mostrata nella Sezione Tour accanto alle Recensioni Google. Non è un campo CMS sulla homepage.
+_Avoid_: rating globale, score widget; campi `google_*` sulla homepage
 
 **Recensione Google**:
-Citazione curata nello stile di una recensione Google (stelle, testo, autore, foto profilo), scelta dall’editor e mostrata nella Sezione Tour. Non è sincronizzata con Google.
-_Avoid_: Testimonianza, testimonial, review widget Google
+Citazione da Google (stelle, testo, autore, foto) sincronizzata dal plugin `@spaghettiabc/google-reviews` (Business Profile; in locale anche mock sync), con selezione «in evidenza» e testo display editabile in admin; mostrata nello strip della Sezione Tour. Non vive in una content collection né come repeater sulla homepage.
+_Avoid_: Testimonianza, testimonial, review widget Google; paste di link di condivisione Maps (#4, scartato); seed/demo quotes CMS
 
 **Newsletter**:
 Canale di aggiornamento di Flavia (ricette di stagione, eventi e novità). Sul sito è una sezione di iscrizione in homepage; non è (ancora) una landing dedicata né un provider collegato.

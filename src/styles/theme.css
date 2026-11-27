@@ -867,10 +867,10 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 
 .tour-rail--compact {
 	--tour-rail-item: min(78%, 15.5rem);
-	--tour-rail-fade: 1.25rem;
+	--rail-fade: 1.25rem;
 	margin-top: 1.5rem;
 	/* Pull fade outside the content box so cards stay flush with highlight */
-	margin-inline: calc(var(--tour-rail-fade) * -1);
+	margin-inline: calc(var(--rail-fade) * -1);
 	max-width: none;
 	min-width: 0;
 	width: auto;
@@ -892,21 +892,22 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	-ms-overflow-style: none;
 }
 
-.tour-rail--compact .tour-rail__track {
-	scroll-padding-inline: var(--tour-rail-fade);
-	padding-inline: var(--tour-rail-fade);
+/* Shared edge fade for horizontal rails (tour compact + review strip). */
+.rail-track--fade {
+	scroll-padding-inline: var(--rail-fade, 1.25rem);
+	padding-inline: var(--rail-fade, 1.25rem);
 	mask-image: linear-gradient(
 		to right,
 		transparent,
-		#000 var(--tour-rail-fade),
-		#000 calc(100% - var(--tour-rail-fade)),
+		#000 var(--rail-fade, 1.25rem),
+		#000 calc(100% - var(--rail-fade, 1.25rem)),
 		transparent
 	);
 	-webkit-mask-image: linear-gradient(
 		to right,
 		transparent,
-		#000 var(--tour-rail-fade),
-		#000 calc(100% - var(--tour-rail-fade)),
+		#000 var(--rail-fade, 1.25rem),
+		#000 calc(100% - var(--rail-fade, 1.25rem)),
 		transparent
 	);
 }
@@ -1006,7 +1007,7 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 }
 
 .review-rail__track {
-	--review-rail-fade: 1.25rem;
+	--rail-fade: 1.25rem;
 	display: flex;
 	align-items: stretch;
 	gap: 0.75rem;
@@ -1016,25 +1017,9 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	overflow-y: hidden;
 	overscroll-behavior-x: contain;
 	scroll-snap-type: x mandatory;
-	scroll-padding-inline: var(--review-rail-fade);
-	padding-inline: var(--review-rail-fade);
-	margin-inline: calc(var(--review-rail-fade) * -1);
+	margin-inline: calc(var(--rail-fade) * -1);
 	-webkit-overflow-scrolling: touch;
 	scrollbar-width: none;
-	mask-image: linear-gradient(
-		to right,
-		transparent,
-		#000 var(--review-rail-fade),
-		#000 calc(100% - var(--review-rail-fade)),
-		transparent
-	);
-	-webkit-mask-image: linear-gradient(
-		to right,
-		transparent,
-		#000 var(--review-rail-fade),
-		#000 calc(100% - var(--review-rail-fade)),
-		transparent
-	);
 }
 
 .review-rail__track::-webkit-scrollbar {
@@ -1117,6 +1102,12 @@ html[data-font-ui-case="serif"] .btn__label::first-letter {
 	font-weight: 500;
 	min-width: 0;
 	color: color-mix(in oklab, var(--muted) 70%, transparent);
+	text-decoration: none;
+}
+
+a.review-rail__name:hover,
+a.review-rail__name:focus-visible {
+	color: var(--ink);
 }
 
 /* Small: summary on one line above the review rail */

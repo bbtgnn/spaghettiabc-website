@@ -115,7 +115,8 @@ function LayoutConsigliatoPage() {
 				</p>
 				<p>
 					Nella navigazione laterale vengono nascoste Categorie, Tag, Tipi di contenuto e Schema dei
-					crediti. Nell’editor dei contenuti spariscono le sezioni Crediti e Tassonomie.
+					crediti. Plugins resta visibile (serve per impostazioni come Recensioni Google). Nell’editor
+					dei contenuti spariscono le sezioni Crediti e Tassonomie.
 				</p>
 			</div>
 
