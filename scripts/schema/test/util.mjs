@@ -36,17 +36,41 @@ export function tempRepo({ withSrc = false } = {}) {
 	};
 }
 
+/**
+ * Pre-push/pre-commit set GIT_DIR to the real worktree. Temp-repo tests must not
+ * inherit it or `git` / schema:check immutability inspect the caller instead.
+ */
+export function isolatedGitEnv(extra = {}) {
+	const env = { ...process.env, ...extra };
+	for (const key of [
+		"GIT_DIR",
+		"GIT_WORK_TREE",
+		"GIT_INDEX_FILE",
+		"GIT_OBJECT_DIRECTORY",
+		"GIT_ALTERNATE_OBJECT_DIRECTORIES",
+		"GIT_COMMON_DIR",
+		"GIT_PREFIX",
+	]) {
+		delete env[key];
+	}
+	return env;
+}
+
 /** run a schema CLI against `root`; stdout/stderr captured */
 export function run(script, args, root) {
 	const r = spawnSync(process.execPath, [path.join(SCRIPTS, `${script}.mjs`), ...args], {
 		encoding: "utf8",
-		env: { ...process.env, SCHEMA_REPO_ROOT: root },
+		env: isolatedGitEnv({ SCHEMA_REPO_ROOT: root }),
 	});
 	return { status: r.status, stdout: r.stdout, stderr: r.stderr, out: r.stdout + r.stderr };
 }
 
 export function git(root, ...args) {
-	const r = spawnSync("git", ["-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false", ...args], { cwd: root, encoding: "utf8" });
+	const r = spawnSync(
+		"git",
+		["-c", "user.email=t@t", "-c", "user.name=t", "-c", "commit.gpgsign=false", ...args],
+		{ cwd: root, encoding: "utf8", env: isolatedGitEnv() },
+	);
 	if (r.status !== 0) throw new Error(`git ${args.join(" ")}: ${r.stderr}`);
 	return r.stdout.trim();
 }

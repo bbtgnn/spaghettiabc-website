@@ -107,7 +107,7 @@ const INKS = [
 			PALETTES.map((p) => [p.id, { accent: p.accent, title: p.title }]),
 		),
 		INK_IDS: INKS.map((i) => i.id),
-		INK_COLORS: Object.fromEntries(
+		INK_BY_ID: Object.fromEntries(
 			INKS.map((i) => [i.id, { ink: i.ink, muted: i.muted }]),
 		),
 	}}
@@ -147,7 +147,7 @@ const INKS = [
 		const palette = root.getAttribute("data-palette") ?? DEFAULT_PALETTE;
 		const inkId = root.getAttribute("data-ink") ?? DEFAULT_INK;
 		const colors = PALETTE_COLORS[palette];
-		const inkColors = INK_COLORS[inkId];
+		const inkColors = INK_BY_ID[inkId];
 		if (!colors || !inkColors) return;
 
 		let style = document.getElementById(FOUC_STYLE_ID);

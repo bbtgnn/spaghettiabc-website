@@ -252,7 +252,7 @@ Treat `.emdash` packages like DB backups (they include emails). Users/passkeys a
 1. Edit `seed/seed.json`, **or** change fields in the local admin and run `npm run schema:pull` (this checkout's server running; writes the live local schema back into the seed). `schema:pull` defaults to this worktree's dev port (`PORT` in `.env.local`, else 4321) and exits 2 if that port is served by another checkout; pass `--url` to point elsewhere.
 2. `npm run schema:generate [name]` writes `schema/migrations/NNNN_<name>.json`. Exit 3 prints a STOP (table below).
 3. `npm run schema:check` (also the pre-commit hook), then commit seed + migration together.
-4. Open a PR: `schema.yml` runs check, tests, `schema:rehearse` (base seed with content, then all migrations on a throwaway server) and typecheck. Pre-push runs the same; `SKIP_SCHEMA_REHEARSE=1 git push` skips only the rehearsal (CI still runs it). Typecheck only warns while the `astro check` baseline is red; `STRICT_TYPECHECK=1` makes it block.
+4. Open a PR: `schema.yml` runs check, tests, `schema:rehearse` (base seed with content, then all migrations on a throwaway server) and typecheck. Pre-push runs the same; `SKIP_SCHEMA_REHEARSE=1 git push` skips only the rehearsal (CI still runs it).
 5. Merge to `main`: deploy applies **pre** ops and backfills, deploys the Worker, applies **post** ops, then `schema:verify` asserts live == seed.
 
 `npm run dev` refuses to wipe a `data.db` with unsaved local schema edits (`npx astro dev`, `schema:pull`, `schema:generate`, or `FORCE_WIPE=1 npm run dev` to discard). Never change collections/fields in the staging admin: `schema:drift --url <staging>` reports it and the next deploy stops with DRIFT.
