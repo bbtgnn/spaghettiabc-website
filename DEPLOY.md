@@ -220,7 +220,7 @@ After that, every push to `main` deploys the same way.
 
 | Task | Command / place |
 |------|------------------|
-| Local dev | `bun dev` or `npm run dev` (Node + SQLite `./data.db` + `uploads/`; need `.env`) |
+| Local dev | `npm run dev` (Node + SQLite `./data.db` + `uploads/`; need `.env`) |
 | Manual deploy | `npm run deploy` (after `wrangler login`) |
 | CI deploy | push to `main` or workflow_dispatch |
 | Admin (staging) | `https://spaghettiabc-staging.<subdomain>.workers.dev/_emdash/admin` |

@@ -3,7 +3,8 @@ This is an EmDash site -- a CMS built on Astro with a full admin UI.
 ## Commands
 
 ```bash
-bun dev                 # Start Astro with Node + SQLite (`./data.db`) + local uploads
+npm install             # Install deps (Node/npm only — no Bun)
+npm run dev             # Start Astro with Node + SQLite (`./data.db`) + local uploads
 npm run wipe:local      # Wipe `data.db` + `uploads/` (stop `dev` first)
 npm run seed            # Upsert seed into `./data.db` (stop `dev` first)
 npm run deploy          # Build + wrangler deploy to spaghettiabc-staging
@@ -13,7 +14,9 @@ npm run migrate:status  # Inspect remote D1 migration target (needs wrangler aut
 
 Local dev uses Node + SQLite + filesystem storage so `$media.file` works. Production build/deploy stays on Cloudflare Workers + D1 + R2 (`import.meta.env.PROD` in `astro.config.mjs`).
 
-The admin UI is at `http://localhost:4321/_emdash/admin` (local) or `https://spaghettiabc-staging.<account>.workers.dev/_emdash/admin` (staging).
+Cursor worktrees: `.cursor/worktrees.json` runs `.cursor/setup-worktree.mjs` + `npm ci` (same on Unix and Windows). The script writes a free `PORT` (4321–5320) to `.env.local`; `astro.config.mjs` and `scripts/wipe-local.mjs` load that file (never `.env`) and fall back to `4321`. Read `PORT` from `.env.local` to find this worktree's dev URL.
+
+The admin UI is at `http://localhost:<PORT>/_emdash/admin` (local; `PORT` from `.env.local`, default `4321`) or `https://spaghettiabc-staging.<account>.workers.dev/_emdash/admin` (staging).
 
 ## Cloudflare staging / repo deploy
 

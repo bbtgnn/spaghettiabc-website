@@ -1,0 +1,6 @@
+{
+	"setup-worktree": [
+		"node .cursor/setup-worktree.mjs",
+		"npm ci"
+	]
+}

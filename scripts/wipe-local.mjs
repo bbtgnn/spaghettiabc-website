@@ -13,7 +13,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const DEV_PORT = 4321;
+
+// Same port as `astro dev`: worktree PORT from `.env.local` (never `.env`), else 4321.
+try {
+	process.loadEnvFile(path.join(root, ".env.local"));
+} catch {}
+const DEV_PORT = Number(process.env.PORT) || 4321;
 
 const TARGETS = [
 	"data.db",
