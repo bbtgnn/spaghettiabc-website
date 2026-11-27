@@ -89,8 +89,8 @@ export function t(
 }
 
 /**
- * Locale-prefixed path for site-relative hrefs.
- * External URLs, hashes, and already-prefixed paths are left alone (prefix swapped if needed).
+ * Locale-aware site-relative hrefs (EN unprefixed; IT under `/it/...`).
+ * External URLs and bare hash/query are left alone; `/path#hash` keeps the hash.
  */
 export function localePath(
 	locale: string | undefined | null,
@@ -114,12 +114,24 @@ export function localePath(
 		return normalized;
 	}
 
-	const withoutLocale = normalized.replace(LOCALE_PREFIX, "") || "/";
+	const hashIndex = normalized.indexOf("#");
+	const queryIndex = normalized.indexOf("?");
+	let cut = -1;
+	if (hashIndex >= 0) cut = hashIndex;
+	if (queryIndex >= 0 && (cut < 0 || queryIndex < cut)) cut = queryIndex;
+	const suffix = cut >= 0 ? normalized.slice(cut) : "";
+	const pathOnly = cut >= 0 ? normalized.slice(0, cut) || "/" : normalized;
+
+	const withoutLocale = pathOnly.replace(LOCALE_PREFIX, "") || "/";
 	const strip = withoutLocale === "/" ? "/" : withoutLocale.replace(/^\//, "");
-	return getRelativeLocaleUrl(resolved, strip === "/" ? undefined : strip);
+	const base = getRelativeLocaleUrl(
+		resolved,
+		strip === "/" ? undefined : strip,
+	);
+	return `${base}${suffix}`;
 }
 
-/** Swap `/en/...` ↔ `/it/...` on the current pathname (same path segments). */
+/** Swap locale prefix on the current pathname (same path segments; EN may be unprefixed). */
 export function swapLocalePrefix(
 	pathname: string,
 	targetLocale: string | undefined | null,
@@ -132,7 +144,7 @@ export function swapLocalePrefix(
 }
 
 /**
- * Public path segment after the locale prefix (e.g. `/en/tours/foo` → `tours/foo`).
+ * Public path segment after the locale prefix (e.g. `/it/tours/foo` → `tours/foo`).
  */
 export function pathWithoutLocale(pathname: string): string {
 	const stripped = pathname.replace(LOCALE_PREFIX, "") || "/";
@@ -141,7 +153,6 @@ export function pathWithoutLocale(pathname: string): string {
 
 /**
  * Strip leading locale folder segments from an EmDash entry id / slug.
- * With `src/pages/en|it/...`, some hydrated ids arrive as `en/polignano-food-tour`.
  */
 export function entrySlug(raw: string | null | undefined): string {
 	let s = (raw ?? "").replace(/^\/+/, "");

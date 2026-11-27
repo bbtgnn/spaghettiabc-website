@@ -16,8 +16,8 @@ Chiara closed the grill for full bilingual site content and routing. Implementat
 
 1. **EmDash native locales** — Astro i18n plus per-entry translation records in the CMS. **Not** duplicate `_en` / `_it` fields on a single entry.
 2. **Default locale: EN**; **IT** secondary.
-3. **URL prefixes on both locales**: `/en/...` and `/it/...`. Site root `/` redirects to `/en/` via `redirectToDefaultLocale` (no unprefixed public routes for in-scope content).
-4. **No Accept-Language auto-detect** in #41 (explicit locale in path only).
+3. **URL prefixes (amended):** EN **unprefixed** (`/`, `/tours`, …); IT under `/it/...`. Both-prefixed `/en/...` + `/it/...` with `prefixDefaultLocale` was **reverted** — it 404’d EmDash `/_emdash/admin`. Do not re-enable `prefixDefaultLocale`. Static segment translation (e.g. `/tours` → `/it/tour`) deferred to [#49](https://github.com/bbtgnn/spaghettiabc-website/issues/49).
+4. **No Accept-Language auto-detect** in #41 (explicit locale in path for IT; EN has no prefix).
 5. **Content fallback order** when a field is missing in the requested locale: requested locale → EN → IT (safety net, not editorial strategy).
 
 ### Domain language
@@ -56,3 +56,4 @@ Chiara closed the grill for full bilingual site content and routing. Implementat
 
 - Accept-Language or geo-based locale detection
 - Translating blog posts, static pages, categories, or tags
+- Localized **static** path segments (`tours` / `books` / `training` → IT labels) — see [#49](https://github.com/bbtgnn/spaghettiabc-website/issues/49)

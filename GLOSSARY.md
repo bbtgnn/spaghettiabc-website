@@ -5,8 +5,8 @@ Dominio del sito di Flavia: tour e contenuti editoriali presentati tramite EmDas
 ## Language
 
 **Locale**:
-Lingua del sito (`en` | `it`): routing (`/en/...`, `/it/...`), traduzioni CMS e copy dell’interfaccia. Distinta dal campo Tour `language` (lingua parlata dell’esperienza). Default pubblico: EN (`/` → `/en/`).
-_Avoid_: confondere con Tour `language`; `_en` field duplication (scartato per #41, 2026-11-26)
+Lingua del sito (`en` | `it`): routing (EN unprefixed; IT sotto `/it/...`), traduzioni CMS e copy dell’interfaccia. Distinta dal campo Tour `language` (lingua parlata dell’esperienza). Default pubblico: EN (`/`).
+_Avoid_: confondere con Tour `language`; `_en` field duplication (scartato per #41, 2026-11-26); `prefixDefaultLocale` (rompe EmDash admin)
 
 **Libro**:
 L’opera di Flavia sul cibo in Puglia (il titolo “Puglia”), presentata sul sito attraverso le sue Edizioni. Non è più una singola entry/URL canonica.
@@ -17,11 +17,11 @@ Una variante pubblicata del Libro (internazionale e speciale), di prima classe n
 _Avoid_: Libro (per indicare una singola variante); version; SKU; product variant
 
 **Sezione Libro**:
-Blocco della homepage con titolo (e opz. sottotitolo), riferimento ordinato alle Edizioni (`featured_books`), e testo CTA condiviso (`book_cta_label`) verso le Schede (`/en/#libro`, `/it/#libro`).
+Blocco della homepage con titolo (e opz. sottotitolo), riferimento ordinato alle Edizioni (`featured_books`), e testo CTA condiviso (`book_cta_label`) verso le Schede (`/#libro`, `/it/#libro`).
 _Avoid_: caricare automaticamente tutte le Edizioni senza selezione; buy CTA (sta sulla Scheda); caricare il dettaglio completo delle Edizioni in homepage
 
 **Scheda Edizione**:
-Pagina dettaglio di una Edizione a `/en/books/{slug}` o `/it/books/{slug}` (slug indipendenti per locale). Il back link torna alla Sezione Libro in homepage (`/en/#libro` o `/it/#libro`).
+Pagina dettaglio di una Edizione a `/books/{slug}` o `/it/books/{slug}` (slug indipendenti per locale). Il back link torna alla Sezione Libro in homepage (`/#libro` o `/it/#libro`).
 _Avoid_: product page; pagina del Libro (come se l’opera avesse una sola URL); hub intermedio `/puglia-the-book`
 
 **Tour**:
@@ -29,11 +29,11 @@ Esperienza cibo guidata di Flavia — di solito in un paese pugliese, a volte un
 _Avoid_: viaggio, pacchetto (salvo copy marketing), itinerario (come termine definitorio)
 
 **Catalogo Tour**:
-La pagina `/en/tours` (e `/it/tours`) che elenca tutte le entry Tour (teaser verso le Schede Tour).
+La pagina `/tours` (e `/it/tours`) che elenca tutte le entry Tour (teaser verso le Schede Tour).
 _Avoid_: lista tour; product listing; non usare «catalogo» per indicare una collection CMS
 
 **Scheda Tour**:
-La pagina dettaglio di un Tour a `/en/tours/{slug}` o `/it/tours/{slug}` (slug indipendenti per locale): hero a immagine piena, poi corpo editoriale | colonna prenotazione (specs + Calendly) quando c’è un URL Calendly.
+La pagina dettaglio di un Tour a `/tours/{slug}` o `/it/tours/{slug}` (slug indipendenti per locale): hero a immagine piena, poi corpo editoriale | colonna prenotazione (specs + Calendly) quando c’è un URL Calendly.
 _Avoid_: product page, pagina prodotto, PDP, tour detail (come nome di dominio); Add to cart; Atelier gallery|info (scartato)
 
 **Impostazioni sito**:
@@ -49,11 +49,11 @@ Blocco della homepage che elenca Tour in evidenza e rimanda al Catalogo Tour.
 _Avoid_: lista tour; chiamare questo blocco «Catalogo Tour»; product grid
 
 **Formazione**:
-L’offerta B2B di Flavia: percorsi e incontri per aziende e professionisti intorno alla cultura del cibo, presentata come una sola landing sul sito (collection `training`, URL `/en/training` e `/it/training`). I singoli percorsi non sono entry separate finché non si decide un catalogo.
+L’offerta B2B di Flavia: percorsi e incontri per aziende e professionisti intorno alla cultura del cibo, presentata come una sola landing sul sito (collection `training`, URL `/training` e `/it/training`). I singoli percorsi non sono entry separate finché non si decide un catalogo.
 _Avoid_: corso, workshop (come nome di collection), education, `formazione` (come slug tecnico)
 
 **Sezione Formazione**:
-Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non letti dalla landing Formazione). La CTA punta a `/en/training` o `/it/training`.
+Blocco della homepage con titolo, sottotitolo, foto e testo CTA *propri* (non letti dalla landing Formazione). La CTA punta a `/training` o `/it/training`.
 _Avoid_: pagina formazione, catalogo corsi, reference alla Formazione
 
 **Sezione Dicono di me**:

@@ -5,7 +5,6 @@ import {
 	contentPublicPath,
 	localePath,
 	resolveLocale,
-	swapLocalePrefix,
 	t,
 } from "../utils/i18n";
 
@@ -49,11 +48,9 @@ const isActive = (url: string) => {
 };
 
 /**
- * Wave 1 switcher:
+ * Language switcher:
  * 1. Paired entry when Base passes `content` and getTranslations finds a locale row
- * 2. Locale home when `content` is set but no pair exists (decision #8)
- * 3. Otherwise prefix-swap current pathname (same segments; may 404 until Wave 2
- *    bilingual seed / independent slugs)
+ * 2. Otherwise locale home (`/` EN, `/it/` IT) — avoid prefix-swap on independent slugs
  */
 async function switchHref(target: Locale): Promise<string> {
 	if (target === locale) return currentPath;
@@ -76,10 +73,9 @@ async function switchHref(target: Locale): Promise<string> {
 		} catch {
 			/* no translation group yet */
 		}
-		return localePath(target, "/");
 	}
 
-	return swapLocalePrefix(currentPath, target);
+	return localePath(target, "/");
 }
 
 const langLinks = await Promise.all(

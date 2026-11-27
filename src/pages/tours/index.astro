@@ -1,14 +1,14 @@
 ---
 import { getEmDashCollection } from "emdash";
-import Base from "../../../layouts/Base.astro";
-import TourLargeCard from "../../../components/TourLargeCard.astro";
+import Base from "../../layouts/Base.astro";
+import TourLargeCard from "../../components/TourLargeCard.astro";
 import {
 	getEmDashEntryWithFallback,
 	entrySlug,
 	localePath,
 	resolveLocale,
 	t,
-} from "../../../utils/i18n";
+} from "../../utils/i18n";
 
 const locale = resolveLocale(Astro.currentLocale);
 const cursor = Astro.url.searchParams.get("cursor") || undefined;

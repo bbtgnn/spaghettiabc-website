@@ -1,14 +1,14 @@
 ---
 import { getSeoMeta, getSiteSettings } from "emdash";
 import { Image, PortableText } from "emdash/ui";
-import Base from "../../layouts/Base.astro";
+import Base from "../layouts/Base.astro";
 import {
 	getEmDashEntryWithFallback,
 	localePath,
 	resolveLocale,
 	t,
-} from "../../utils/i18n";
-import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+} from "../utils/i18n";
+import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
 const locale = resolveLocale(Astro.currentLocale);
 const { entry: training, cacheHint } = await getEmDashEntryWithFallback(

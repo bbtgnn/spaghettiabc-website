@@ -14,6 +14,8 @@
   },
   "scripts": {
     "predev": "node scripts/predev.mjs",
+    "prebuild": "npm run sync:locale-pages",
+    "sync:locale-pages": "node scripts/sync-locale-pages.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
