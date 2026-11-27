@@ -103,9 +103,13 @@
 					"type": "string"
 				},
 				{
-					"slug": "book_image",
-					"label": "Immagine",
-					"type": "image"
+					"slug": "featured_books",
+					"label": "Edizioni in evidenza",
+					"type": "reference",
+					"validation": {
+						"targetCollection": "libri",
+						"multiple": true
+					}
 				},
 				{
 					"slug": "book_cta_label",
@@ -386,10 +390,14 @@
 					"type": "image"
 				},
 				{
-					"slug": "excerpt",
-					"label": "Excerpt",
-					"type": "text",
-					"searchable": true
+					"slug": "buy_url",
+					"label": "Buy URL",
+					"type": "url"
+				},
+				{
+					"slug": "buy_label",
+					"label": "Buy label",
+					"type": "string"
 				},
 				{
 					"slug": "content",
@@ -1295,13 +1303,6 @@
 					"book_title": "The book",
 					"book_subtitle": "Puglia told through places, flavours, and encounters",
 					"book_cta_label": "Discover the book",
-					"book_image": {
-						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro.jpg",
-							"alt": "Cover of the book Puglia",
-							"filename": "copertina-libro.jpg"
-						}
-					},
 					"training_title": "Training",
 					"training_subtitle": "Paths and meetings for companies and professionals, around food culture",
 					"training_image": {
@@ -1449,7 +1450,11 @@
 					"newsletter_title": "Newsletter",
 					"newsletter_subtitle": "Seasonal recipes, events, and news — straight from Flavia’s kitchen",
 					"newsletter_button_label": "Subscribe",
-					"newsletter_email_placeholder": "Your email"
+					"newsletter_email_placeholder": "Your email",
+					"featured_books": [
+						"$ref:international",
+						"$ref:special"
+					]
 				}
 			},
 			{
@@ -1484,13 +1489,6 @@
 					"book_title": "Il libro",
 					"book_subtitle": "Puglia raccontata attraverso luoghi, sapori e incontri",
 					"book_cta_label": "Scopri il libro",
-					"book_image": {
-						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro.jpg",
-							"alt": "Copertina del libro Puglia",
-							"filename": "copertina-libro.jpg"
-						}
-					},
 					"training_title": "Formazione",
 					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
 					"training_image": {
@@ -1638,27 +1636,32 @@
 					"newsletter_title": "Newsletter",
 					"newsletter_subtitle": "Ricette di stagione, eventi e novità — direttamente dalla cucina di Flavia",
 					"newsletter_button_label": "Iscriviti",
-					"newsletter_email_placeholder": "La tua email"
+					"newsletter_email_placeholder": "La tua email",
+					"featured_books": [
+						"$ref:international-it",
+						"$ref:special-it"
+					]
 				}
 			}
 		],
 		"libri": [
 			{
-				"id": "puglia-the-book",
-				"slug": "puglia-the-book",
+				"id": "international",
+				"slug": "international",
 				"locale": "en",
 				"status": "published",
 				"data": {
-					"title": "Puglia",
-					"subtitle": "The Book",
-					"excerpt": "A travel story through olive groves, sea, and white towns — placeholder to replace.",
+					"title": "Puglia – International edition",
+					"subtitle": "A culinary journey through a land and its unique ingredients",
 					"cover": {
 						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro.jpg",
-							"alt": "Cover of the book Puglia",
-							"filename": "copertina-libro.jpg"
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-international.webp",
+							"alt": "Cover of the book Puglia — international edition (purple)",
+							"filename": "copertina-libro-international.webp"
 						}
 					},
+					"buy_url": "https://example.com/shop/puglia-international",
+					"buy_label": "Buy",
 					"content": [
 						{
 							"_type": "block",
@@ -1666,11 +1669,11 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "This is the canonical Libro page. The text is a placeholder: replace it from the admin with the definitive description of the volume.",
-									"_key": "libro-en-s0"
+									"text": "This is the International edition page for the Libro. The text is a placeholder: replace it from the admin with the definitive description of the volume.",
+									"_key": "libro-intl-en-s0"
 								}
 							],
-							"_key": "libro-en-b0"
+							"_key": "libro-intl-en-b0"
 						},
 						{
 							"_type": "block",
@@ -1679,31 +1682,32 @@
 								{
 									"_type": "span",
 									"text": "Chapters, previews, and publication details will go here.",
-									"_key": "libro-en-s1"
+									"_key": "libro-intl-en-s1"
 								}
 							],
-							"_key": "libro-en-b1"
+							"_key": "libro-intl-en-b1"
 						}
 					]
 				}
 			},
 			{
-				"id": "puglia-the-book-it",
-				"slug": "puglia-the-book",
+				"id": "international-it",
+				"slug": "international",
 				"locale": "it",
-				"translationOf": "puglia-the-book",
+				"translationOf": "international",
 				"status": "published",
 				"data": {
-					"title": "Puglia",
-					"subtitle": "Il libro",
-					"excerpt": "Un racconto di viaggio tra oliveti, mare e borghi bianchi — placeholder da sostituire.",
+					"title": "Puglia – Edizione internazionale",
+					"subtitle": "Un viaggio di cucina attraverso una terra e i suoi ingredienti unici",
 					"cover": {
 						"$media": {
-							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro.jpg",
-							"alt": "Copertina del libro Puglia",
-							"filename": "copertina-libro.jpg"
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-international.webp",
+							"alt": "Copertina del libro Puglia — edizione internazionale (viola)",
+							"filename": "copertina-libro-international.webp"
 						}
 					},
+					"buy_url": "https://example.com/shop/puglia-international",
+					"buy_label": "Acquista",
 					"content": [
 						{
 							"_type": "block",
@@ -1711,11 +1715,11 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Questa è la pagina del Libro canonico. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
-									"_key": "libro-it-s0"
+									"text": "Questa è la Scheda Edizione internazionale del Libro. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
+									"_key": "libro-intl-it-s0"
 								}
 							],
-							"_key": "libro-it-b0"
+							"_key": "libro-intl-it-b0"
 						},
 						{
 							"_type": "block",
@@ -1724,10 +1728,77 @@
 								{
 									"_type": "span",
 									"text": "Qui andranno capitoli, anteprime e dettagli di pubblicazione.",
-									"_key": "libro-it-s1"
+									"_key": "libro-intl-it-s1"
 								}
 							],
-							"_key": "libro-it-b1"
+							"_key": "libro-intl-it-b1"
+						}
+					]
+				}
+			},
+			{
+				"id": "special",
+				"slug": "special",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Puglia – Special edition",
+					"subtitle": "Stories of ingredients, cooking, and territory in a collector’s volume",
+					"cover": {
+						"$media": {
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-special.webp",
+							"alt": "Cover of the book Puglia — special edition (white)",
+							"filename": "copertina-libro-special.webp"
+						}
+					},
+					"buy_url": "https://example.com/shop/puglia-special",
+					"buy_label": "Buy the special edition",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This is the Special edition page. Placeholder: replace title and content from the admin when the edition is ready.",
+									"_key": "libro-spec-en-s0"
+								}
+							],
+							"_key": "libro-spec-en-b0"
+						}
+					]
+				}
+			},
+			{
+				"id": "special-it",
+				"slug": "special",
+				"locale": "it",
+				"translationOf": "special",
+				"status": "published",
+				"data": {
+					"title": "Puglia – Edizione speciale",
+					"subtitle": "Storie di ingredienti, cucina e territorio in un volume da collezione",
+					"cover": {
+						"$media": {
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-special.webp",
+							"alt": "Copertina del libro Puglia — edizione speciale (bianca)",
+							"filename": "copertina-libro-special.webp"
+						}
+					},
+					"buy_url": "https://example.com/shop/puglia-special",
+					"buy_label": "Acquista l’edizione speciale",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Questa è la Scheda Edizione speciale. Placeholder: sostituisci titolo e contenuto dall’admin quando l’edizione è pronta.",
+									"_key": "libro-spec-it-s0"
+								}
+							],
+							"_key": "libro-spec-it-b0"
 						}
 					]
 				}

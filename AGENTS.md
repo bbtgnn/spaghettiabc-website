@@ -3,26 +3,28 @@ This is an EmDash site -- a CMS built on Astro with a full admin UI.
 ## Commands
 
 ```bash
-bun dev                 # Start Astro with local D1 + R2 (via Wrangler)
-npm run wipe:local      # Wipe local Wrangler D1/R2 (stop `dev` first); next boot re-seeds
-npm run seed            # Upsert seed into ./data.db (does not delete missing taxonomies)
+bun dev                 # Start Astro with Node + SQLite (`./data.db`) + local uploads
+npm run wipe:local      # Wipe `data.db` + `uploads/` (stop `dev` first)
+npm run seed            # Upsert seed into `./data.db` (stop `dev` first)
 npm run deploy          # Build + wrangler deploy to spaghettiabc-staging
 npx emdash types        # Regenerate TypeScript types from a running site
-npm run migrate:status  # Inspect D1 migration target (needs wrangler auth)
+npm run migrate:status  # Inspect remote D1 migration target (needs wrangler auth)
 ```
+
+Local dev uses Node + SQLite + filesystem storage so `$media.file` works. Production build/deploy stays on Cloudflare Workers + D1 + R2 (`import.meta.env.PROD` in `astro.config.mjs`).
 
 The admin UI is at `http://localhost:4321/_emdash/admin` (local) or `https://spaghettiabc-staging.<account>.workers.dev/_emdash/admin` (staging).
 
 ## Cloudflare staging / repo deploy
 
-Stack: Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`, CI: `.github/workflows/deploy.yml`.
+Stack (prod): Workers + D1 (`DB`) + R2 (`MEDIA`). Config: `wrangler.jsonc`, entry `src/worker.ts`, CI: `.github/workflows/deploy.yml`.
 
 **Full guide (new Cloudflare account → first deploy → GitHub Actions):** see [`DEPLOY.md`](DEPLOY.md).
 ## Key Files
 
 | File                     | Purpose                                                                            |
 | ------------------------ | ---------------------------------------------------------------------------------- |
-| `astro.config.mjs`       | Astro config with `emdash()` integration, D1 + R2                                  |
+| `astro.config.mjs`       | Astro config with `emdash()` — Node/SQLite locally, D1 + R2 on prod build          |
 | `wrangler.jsonc`         | Worker name, D1/R2 bindings, cron, Durable Objects                                 |
 | `src/worker.ts`          | Cloudflare Worker entry (fetch + scheduled)                                        |
 | `src/live.config.ts`     | EmDash loader registration (boilerplate -- don't modify)                           |
@@ -60,6 +62,7 @@ This template ships with `.mcp.json`, `.cursor/mcp.json`, and `.vscode/mcp.json`
 - Homepage Sezione Tour uses `SezioneTour.astro`: equal vertical highlight pair (first two `featured_tours`) + compact `.tour-rail--compact` + `.review-rail`. Catalogo reuses `TourLargeCard` for highlight + grid.
 - Site chrome header + Atelier-style mobile menu live in `src/components/SiteHeader.astro` (EmDash `primary` menu; no cart). Do not re-inline the header in `Base.astro`.
 - **Sezione Dicono di me** is homepage-only logos (`partner_logos`). Punteggio/Recensioni Google render in **Sezione Tour**. No `/collaborazioni` landing. See `GLOSSARY.md`.
+- **Libro / Edizioni**: collection `libri` (title, subtitle, cover, optional `buy_url`/`buy_label`, content). No hub page — homepage **Sezione Libro** (`/en/#libro`, `/it/#libro`) is the listing; **Scheda Edizione** is `/en/books/[slug]` and `/it/books/[slug]` (back link → locale `/#libro`). Sezione chrome: `book_title` / `book_subtitle` / `featured_books` (ordered refs to same-locale `libri`) / `book_cta_label` (teaser button → scheda). Buy CTA only on the scheda. See `GLOSSARY.md`.
 
 ## This Template
 
@@ -69,18 +72,19 @@ There is intentionally no `theme.css`, no custom font configuration, no styled l
 
 ## Pages
 
-| Page          | Path                         | What it shows                                      |
-| ------------- | ---------------------------- | -------------------------------------------------- |
-| Home          | `/` → `/en/`; also `/it/`    | Locale homepage (CMS `homepage`)                   |
-| Catalogo Tour | `/en/tours`, `/it/tours`     | Intro + highlight pair + `.tour-grid` cards     |
-| Scheda Tour   | `/en/tours/[slug]`, `/it/...`| Hero + body \| specs/Calendly; no related          |
-| Libro         | `/en/puglia-the-book`, `/it/...` | Canonical Libro page                          |
-| Formazione    | `/en/training`, `/it/...`    | Training singleton                                 |
-| All posts     | `/posts`                     | Post list (out of scope for #41; unprefixed)       |
-| Post detail   | `/posts/[slug]`              | Post content                                       |
-| Page          | `/[slug]`                    | Static page content (e.g. `/about`)                |
-| Category      | `/category/[slug]`           | Posts filtered by category                         |
-| Tag           | `/tag/[slug]`                | Posts filtered by tag                              |
+| Page            | Path                              | What it shows                                      |
+| --------------- | --------------------------------- | -------------------------------------------------- |
+| Home            | `/` → `/en/`; also `/it/`         | Locale homepage (CMS `homepage`)                   |
+| Catalogo Tour   | `/en/tours`, `/it/tours`          | Intro + highlight pair + `.tour-grid` cards     |
+| Scheda Tour     | `/en/tours/[slug]`, `/it/...`     | Hero + body \| specs/Calendly; no related          |
+| Sezione Libro   | `/en/#libro`, `/it/#libro`        | Homepage edition teasers                           |
+| Scheda Edizione | `/en/books/[slug]`, `/it/...`     | Cover + title/subtitle + content                   |
+| Formazione      | `/en/training`, `/it/...`         | Training singleton                                 |
+| All posts       | `/posts`                          | Post list (out of scope for #41; unprefixed)       |
+| Post detail     | `/posts/[slug]`                   | Post content                                       |
+| Page            | `/[slug]`                         | Static page content (e.g. `/about`)                |
+| Category        | `/category/[slug]`                | Posts filtered by category                         |
+| Tag             | `/tag/[slug]`                     | Posts filtered by tag                              |
 
 ## Schema
 

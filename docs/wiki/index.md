@@ -4,7 +4,8 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 
 ## Decisions
 
-- [Libro CMS model](./decisions/libro-cms-model.md) — collection `book` (→ `libri` per #41, 2026-11-26), Sezione Libro duplicata in homepage, URL `/puglia-the-book` (2026-10-23)
+- [Books / Edizioni CMS model](./decisions/books-editions-cms-model.md) — Libro = work; Edizioni first-class (`libri`); Sezione Libro + Scheda Edizione; Sezione loads editions ([#42](https://github.com/bbtgnn/spaghettiabc-website/issues/42), 2026-11-26)
+- [Libro CMS model](./decisions/libro-cms-model.md) — **partially superseded 2026-11-26** by Edizioni model; historical one-canonical `book` / `/puglia-the-book` (2026-10-23)
 - [Formazione CMS model](./decisions/formazione-cms-model.md) — collection `training`, Sezione Formazione duplicata, URL `/training` (2026-10-23)
 - [Sezione Dicono di me](./decisions/dicono-di-me-section.md) — homepage logos; Google proof UI moved to Sezione Tour (2026-11-06 / 2026-11-18)
 - [Collaborazioni CMS model](./decisions/collaborazioni-cms-model.md) — **superseded 2026-11-06** by Dicono di me; historical landing `collaborations` / `/collaborazioni` (2026-10-23 / 2026-11-05)
@@ -22,13 +23,14 @@ Tribal knowledge for agents and future sessions. Historical record — date or c
 ## Operations
 
 - [EmDash types paths](./ops/emdash-types-paths.md) — `emdash-env.d.ts` vs `.emdash/types.ts` (2026-10-23)
-- [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — Libro/Formazione pattern; Collaborazioni logos claim **superseded 2026-11-06** (2026-10-23 / 2026-11-05 / 2026-11-06)
+- [Homepage chrome + landing lists](./ops/homepage-chrome-landing-lists.md) — Formazione still chrome-duplicated; Sezione Libro pattern **superseded 2026-11-26** (loads Edizioni); Collaborazioni logos claim **superseded 2026-11-06** (2026-10-23 / 2026-11-05 / 2026-11-06 / 2026-11-26)
 - [Collaborazioni logos ingest](./ops/collaborazioni-logos-ingest.md) — 6 partner webps now seeded on homepage `partner_logos` (2026-10-28 / 2026-11-05 / 2026-11-06; loopback SSRF noted 2026-10-23)
 - [Issue #15 status](./ops/issue-15-status.md) — Scheda Tour Calendly delivery notes (2026-11-10 / 2026-11-11)
 - [Issue #23 status](./ops/issue-23-status.md) — Impostazioni sito FAQ globale (2026-11-16)
 - [Issue #22 status](./ops/issue-22-status.md) — global Calendly fallback; stacked after #23 (2026-11-16)
-- [Issue #41 status](./ops/issue-41-status.md) — full IT/EN i18n on `feat/41-full-i18n`; grill closed 2026-11-26; implementation pending
+- [Issue #41 status](./ops/issue-41-status.md) — full IT/EN i18n on `feat/41-full-i18n`; grill closed 2026-11-26
 - [EmDash i18n enablement](./ops/emdash-i18n-enablement.md) — Astro + EmDash 1.6.0 APIs, seed pattern, Wave 1/2 file list ([#41](https://github.com/bbtgnn/spaghettiabc-website/issues/41), 2026-11-26)
+- [Issue #42 status](./ops/issue-42-status.md) — Books / Edizioni grill locked; points at decision (2026-11-26)
 
 ## Domain language
 

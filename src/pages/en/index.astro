@@ -6,6 +6,7 @@ import Base from "../../layouts/Base.astro";
 import PartnerLogoMarquee from "../../components/PartnerLogoMarquee.astro";
 import SezioneTour from "../../components/SezioneTour.astro";
 import {
+	entrySlug,
 	getEmDashEntryWithFallback,
 	localePath,
 	resolveLocale,
@@ -19,7 +20,7 @@ const { entry: home, cacheHint } = await getEmDashEntryWithFallback(
 	"home",
 	{
 		locale,
-		references: { featured_tours: true },
+		references: { featured_tours: true, featured_books: true },
 	},
 );
 if (Astro.cache?.enabled) {
@@ -31,6 +32,9 @@ const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 );
 
 const featuredTours = home?.references?.featured_tours?.entries ?? [];
+const books = home?.references?.featured_books?.entries ?? [];
+const bookCtaLabel =
+	home?.data.book_cta_label?.trim() || t(locale, "tourDiscover");
 const partnerLogos = home?.data.partner_logos ?? [];
 const googleReviews = home?.data.google_reviews ?? [];
 const googleScore = Number(home?.data.google_score) || 0;
@@ -40,7 +44,7 @@ const pageTitle = home?.data.hero_title ?? siteTitle;
 const pageDescription = home?.data.hero_subtitle ?? siteTagline;
 
 const toursHref = localePath(locale, "/tours");
-const bookHref = localePath(locale, "/puglia-the-book");
+const bookHref = `${localePath(locale, "/")}#libro`;
 const trainingHref = localePath(locale, "/training");
 ---
 
@@ -108,39 +112,76 @@ const trainingHref = localePath(locale, "/training");
 					}}
 				/>
 
-				<section class="shell section feature">
+				<section
+					id="libro"
+					class="shell section sezione-libro"
+					aria-labelledby="book-heading"
+				>
 					<div class="rule" data-reveal="line" />
-					<div class="feature__layout">
-						{home.data.book_image && (
-							<a
-								href={bookHref}
-								class="feature__media"
-								data-reveal="mask"
-								aria-label={home.data.book_title ?? t(locale, "heroBookCta")}
-							>
-								<div {...home.edit.book_image}>
-									<Image image={home.data.book_image} />
+					<div class="sezione-libro__layout">
+						<div class="sezione-libro__intro" data-reveal>
+							<div class="sezione-libro__stack">
+								{home.data.book_title && (
+									<h2 class="type-h2" id="book-heading" {...home.edit.book_title}>
+										{home.data.book_title}
+									</h2>
+								)}
+								{home.data.book_subtitle && (
+									<p class="type-lead sezione-libro__lede" {...home.edit.book_subtitle}>
+										{home.data.book_subtitle}
+									</p>
+								)}
+								<div class="sezione-libro__illust" aria-hidden="true">
+									<img
+										class="sezione-libro__illust-img"
+										src="/illustrations/pomodori.svg"
+										alt=""
+										width="373"
+										height="160"
+										loading="lazy"
+										decoding="async"
+									/>
 								</div>
-							</a>
-						)}
-						<div class="feature__copy" data-reveal>
-							{home.data.book_title && (
-								<h2 class="type-h2" {...home.edit.book_title}>
-									{home.data.book_title}
-								</h2>
-							)}
-							{home.data.book_subtitle && (
-								<p class="type-lead" {...home.edit.book_subtitle}>
-									{home.data.book_subtitle}
-								</p>
-							)}
-							{home.data.book_cta_label && (
-								<a class="btn btn-outline btn--arrow" href={bookHref} {...home.edit.book_cta_label}>
-									<span class="btn__label">{home.data.book_cta_label}</span>
-									<ArrowRight class="btn__icon" size={16} stroke-width={1.75} aria-hidden="true" />
-								</a>
-							)}
+							</div>
 						</div>
+
+						{books.length > 0 && (
+							<ul
+								class="sezione-libro__editions"
+								aria-label={t(locale, "libroEditionsList")}
+							>
+								{books.map((book) => {
+									const label = book.data.title;
+									const href = localePath(
+										locale,
+										`/books/${entrySlug(book.id)}`,
+									);
+									return (
+										<li class="sezione-libro__edition">
+											{book.data.cover && (
+												<a
+													class="sezione-libro__cover-link"
+													href={href}
+													aria-label={label}
+												>
+													<div class="sezione-libro__cover" {...book.edit.cover}>
+														<Image image={book.data.cover} />
+													</div>
+												</a>
+											)}
+											<h3 class="sezione-libro__edition-title">
+												{label.split(" – ").flatMap((line, i) =>
+													i === 0 ? [line] : [<br />, line],
+												)}
+											</h3>
+											<a class="btn btn-primary" href={href}>
+												<span {...home.edit.book_cta_label}>{bookCtaLabel}</span>
+											</a>
+										</li>
+									);
+								})}
+							</ul>
+						)}
 					</div>
 				</section>
 
@@ -407,6 +448,231 @@ const trainingHref = localePath(locale, "/training");
 
 	.feature__copy .type-lead {
 		text-wrap: balance;
+	}
+
+	.sezione-libro {
+		scroll-margin-top: 5rem;
+		position: relative;
+		overflow: visible;
+	}
+
+	.sezione-libro__layout {
+		margin-top: 2.5rem;
+		display: grid;
+		gap: 2.5rem;
+		align-items: start;
+		position: relative;
+		z-index: 1;
+		overflow: visible;
+	}
+
+	@media (min-width: 900px) {
+		.sezione-libro__layout {
+			grid-template-columns: minmax(12rem, 0.9fr) minmax(0, 2.1fr);
+			gap: 3rem 2.5rem;
+			align-items: stretch;
+		}
+	}
+
+	.sezione-libro__intro {
+		display: grid;
+		justify-items: center;
+		text-align: center;
+	}
+
+	.sezione-libro__stack {
+		display: grid;
+		gap: 1rem;
+		justify-items: center;
+	}
+
+	.sezione-libro__intro .type-h2 {
+		color: var(--title);
+	}
+
+	.sezione-libro__lede {
+		max-width: 22rem;
+		text-wrap: balance;
+		color: var(--muted);
+	}
+
+	.sezione-libro__illust {
+		display: none;
+	}
+
+	.sezione-libro__illust-img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	/*
+	 * Desktop: center title + lede + vine as one block.
+	 * Vine is absolute (width must not grow the intro column);
+	 * stack padding-bottom reserves its height for the middle align.
+	 */
+	@media (min-width: 900px) {
+		.sezione-libro__intro {
+			justify-items: start;
+			align-content: center;
+			text-align: left;
+			min-height: 100%;
+			overflow: visible;
+		}
+
+		.sezione-libro__stack {
+			position: relative;
+			width: 100%;
+			justify-items: start;
+			/* gap (3rem) + vine height: 27rem × (160/373) */
+			padding-bottom: calc(3rem + 27rem * 160 / 373);
+		}
+
+		.sezione-libro__illust {
+			display: block;
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			width: 27rem;
+			max-width: none;
+			margin: 0;
+			pointer-events: none;
+			transform: rotate(-8deg);
+			transform-origin: right center;
+		}
+	}
+
+	/*
+	 * Default: full-bleed horizontal rail (shell gutter breakout), books close.
+	 * Two-up grid only with the desktop intro|books layout (≥900), when the
+	 * editions column is actually wide enough — not at 560px mid widths.
+	 */
+	.sezione-libro__editions {
+		--sezione-libro-peek: var(--gutter);
+		/* Grows with the viewport until the ≥900 two-up grid takes over */
+		--sezione-libro-card: clamp(12.5rem, 42vw, 20rem);
+		/* Room for cover rotate + drop-shadow (overflow-x makes y clip too) */
+		--sezione-libro-shadow-pad: 1.1rem;
+		margin: 0;
+		margin-inline: calc(var(--gutter) * -1);
+		list-style: none;
+		display: flex;
+		align-items: start;
+		justify-content: safe center;
+		gap: 1.25rem;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scroll-padding-inline: var(--sezione-libro-peek);
+		padding-block: var(--sezione-libro-shadow-pad);
+		padding-inline: var(--sezione-libro-peek);
+		-webkit-overflow-scrolling: touch;
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+		touch-action: pan-x;
+		min-width: 0;
+		width: auto;
+		max-width: none;
+	}
+
+	.sezione-libro__editions::-webkit-scrollbar {
+		display: none;
+	}
+
+	.sezione-libro__edition {
+		flex: 0 0 var(--sezione-libro-card);
+		width: var(--sezione-libro-card);
+		scroll-snap-align: start;
+		display: grid;
+		justify-items: center;
+		align-content: start;
+		gap: 1rem;
+		text-align: center;
+		box-sizing: border-box;
+	}
+
+	/* Two-up as before — restore growth with the window from 768 */
+	@media (min-width: 768px) {
+		.sezione-libro__editions {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			align-items: start;
+			gap: 2rem 2.5rem;
+			margin-inline: 0;
+			overflow: visible;
+			scroll-snap-type: none;
+			scroll-padding-inline: 0;
+			padding-inline: 0;
+			padding-block: var(--sezione-libro-shadow-pad);
+			touch-action: auto;
+		}
+
+		.sezione-libro__edition {
+			flex: none;
+			width: auto;
+			scroll-snap-align: none;
+		}
+	}
+
+	.sezione-libro__cover-link {
+		display: block;
+		width: 100%;
+		max-width: 22rem;
+		margin-bottom: 0.35rem;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	@media (min-width: 900px) {
+		.sezione-libro__cover-link {
+			max-width: min(100%, 26rem);
+		}
+	}
+
+	.sezione-libro__cover {
+		transform: rotate(-5deg);
+		/* Tight shadow: left + down */
+		filter: drop-shadow(-0.3rem 0.4rem 0.45rem color-mix(in oklab, var(--ink) 16%, transparent));
+		transition:
+			transform 700ms var(--ease-out-expo),
+			filter 700ms var(--ease-out-quart);
+	}
+
+	/* Special (second / bianca): tilt the other way */
+	.sezione-libro__edition:nth-child(2) .sezione-libro__cover {
+		transform: rotate(5deg);
+	}
+
+	.sezione-libro__cover :global(img) {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	.sezione-libro__cover-link:hover .sezione-libro__cover,
+	.sezione-libro__cover-link:focus-visible .sezione-libro__cover {
+		transform: rotate(-2deg) translateY(-0.25rem);
+		filter: drop-shadow(-0.35rem 0.5rem 0.55rem color-mix(in oklab, var(--ink) 20%, transparent));
+	}
+
+	.sezione-libro__edition:nth-child(2) .sezione-libro__cover-link:hover .sezione-libro__cover,
+	.sezione-libro__edition:nth-child(2)
+		.sezione-libro__cover-link:focus-visible
+		.sezione-libro__cover {
+		transform: rotate(2deg) translateY(-0.25rem);
+	}
+
+	.sezione-libro__edition-title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: var(--font-display-weight);
+		font-size: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
+		line-height: 1.2;
+		color: var(--title);
+	}
+
+	.sezione-libro__edition .btn {
+		margin-top: 0.35rem;
 	}
 
 	.newsletter {

@@ -164,7 +164,7 @@ export function contentPublicPath(
 		case "homepage":
 			return "";
 		case "libri":
-			return "puglia-the-book";
+			return s ? `books/${s}` : "";
 		case "training":
 			return "training";
 		default:
