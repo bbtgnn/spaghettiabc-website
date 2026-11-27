@@ -26,5 +26,6 @@ function runNpmScript(script) {
 	}
 }
 
+runNpmScript("sync:locale-pages");
 runNpmScript("wipe:local");
 runNpmScript("seed");

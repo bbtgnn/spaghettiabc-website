@@ -1,14 +1,22 @@
 ---
-import { getEmDashCollection, getEmDashEntry } from "emdash";
+import { getEmDashCollection } from "emdash";
 import Base from "../../layouts/Base.astro";
 import TourLargeCard from "../../components/TourLargeCard.astro";
+import {
+	getEmDashEntryWithFallback,
+	entrySlug,
+	localePath,
+	resolveLocale,
+	t,
+} from "../../i18n/utils";
 
+const locale = resolveLocale(Astro.currentLocale);
 const cursor = Astro.url.searchParams.get("cursor") || undefined;
-const { entry: home, cacheHint: homeCacheHint } = await getEmDashEntry(
-	"homepage",
-	"home",
-	{ references: { featured_tours: true } },
-);
+const { entry: home, cacheHint: homeCacheHint } =
+	await getEmDashEntryWithFallback("homepage", "home", {
+		locale,
+		references: { featured_tours: true },
+	});
 const {
 	entries: tourEntries,
 	cacheHint,
@@ -17,6 +25,7 @@ const {
 	orderBy: { published_at: "asc" },
 	limit: 40,
 	cursor,
+	locale,
 });
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
@@ -34,15 +43,18 @@ const tours = [...tourEntries].sort((a, b) => {
 	const rankA = featuredOrder.get(a.id) ?? Number.POSITIVE_INFINITY;
 	const rankB = featuredOrder.get(b.id) ?? Number.POSITIVE_INFINITY;
 	if (rankA !== rankB) return rankA - rankB;
-	return (a.data.title ?? "").localeCompare(b.data.title ?? "", "it");
+	return (a.data.title ?? "").localeCompare(
+		b.data.title ?? "",
+		locale === "it" ? "it" : "en",
+	);
 });
 
 const highlightTours = tours.slice(0, 2);
 const gridTours = tours.slice(2);
 
-const pageTitle = "Catalogo tour";
-const pageDescription =
-	"Tour guidati in Puglia, un paese alla volta, per scoprire i sapori locali.";
+const pageTitle = t(locale, "tourCatalogTitle");
+const pageDescription = t(locale, "tourCatalogLede");
+const toursIndexHref = localePath(locale, "/tours");
 ---
 
 <Base title={pageTitle} description={pageDescription}>
@@ -55,8 +67,11 @@ const pageDescription =
 		{
 			tours.length === 0 ? (
 				<p class="type-body tours-catalog__empty">
-					Nessun tour ancora.{" "}
-					<a class="link" href="/_emdash/admin/content/tours/new">Creane uno</a>.
+					{t(locale, "tourCatalogEmpty")}{" "}
+					<a class="link" href="/_emdash/admin/content/tours/new">
+						{t(locale, "tourCatalogCreate")}
+					</a>
+					.
 				</p>
 			) : (
 				<>
@@ -64,12 +79,13 @@ const pageDescription =
 						<div class="tour-highlight">
 							{highlightTours.map((tour, index) => (
 								<TourLargeCard
-									href={`/tours/${tour.id}`}
+									href={localePath(locale, `/tours/${entrySlug(tour.id)}`)}
 									title={tour.data.title}
 									excerpt={tour.data.excerpt}
 									image={tour.data.featured_image}
 									showCta={false}
 									index={index}
+									locale={locale}
 								/>
 							))}
 						</div>
@@ -79,12 +95,13 @@ const pageDescription =
 						<div class="tour-grid">
 							{gridTours.map((tour, index) => (
 								<TourLargeCard
-									href={`/tours/${tour.id}`}
+									href={localePath(locale, `/tours/${entrySlug(tour.id)}`)}
 									title={tour.data.title}
 									excerpt={tour.data.excerpt}
 									image={tour.data.featured_image}
 									showCta={false}
 									index={index + highlightTours.length}
+									locale={locale}
 								/>
 							))}
 						</div>
@@ -95,11 +112,18 @@ const pageDescription =
 
 		{
 			(cursor || nextCursor) && (
-				<nav class="tours-catalog__pager" aria-label="Paginazione">
-					{cursor && <a class="text-link" href="/tours">Prima pagina</a>}
+				<nav class="tours-catalog__pager" aria-label={t(locale, "tourPagination")}>
+					{cursor && (
+						<a class="text-link" href={toursIndexHref}>
+							{t(locale, "tourFirstPage")}
+						</a>
+					)}
 					{nextCursor && (
-						<a class="text-link" href={`/tours?cursor=${encodeURIComponent(nextCursor)}`}>
-							Pagina successiva
+						<a
+							class="text-link"
+							href={`${toursIndexHref}?cursor=${encodeURIComponent(nextCursor)}`}
+						>
+							{t(locale, "tourNextPage")}
 						</a>
 					)}
 				</nav>

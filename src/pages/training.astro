@@ -1,24 +1,36 @@
 ---
-import { getEmDashEntry, getSeoMeta, getSiteSettings } from "emdash";
+import { getSeoMeta, getSiteSettings } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import Base from "../layouts/Base.astro";
+import {
+	getEmDashEntryWithFallback,
+	localePath,
+	resolveLocale,
+	t,
+} from "../i18n/utils";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 
-const { entry: training, cacheHint } = await getEmDashEntry("training", "training");
+const locale = resolveLocale(Astro.currentLocale);
+const { entry: training, cacheHint } = await getEmDashEntryWithFallback(
+	"training",
+	"training",
+	{ locale },
+);
 if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
 
 const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const trainingPath = localePath(locale, "/training");
 
 const seo = training
 	? getSeoMeta(training, {
 			siteTitle,
 			siteUrl: Astro.url.origin,
-			path: "/training",
+			path: trainingPath,
 		})
 	: {
-			title: `Formazione · ${siteTitle}`,
-			ogTitle: "Formazione",
-			description: "Formazione per aziende — contenuto non ancora disponibile.",
+			title: `${t(locale, "trainingEmptyTitle")} · ${siteTitle}`,
+			ogTitle: t(locale, "trainingEmptyTitle"),
+			description: t(locale, "trainingEmptyBody"),
 			canonical: undefined,
 			ogImage: undefined,
 		};
@@ -68,10 +80,10 @@ const seo = training
 			</article>
 		) : (
 			<section class="training-page training-page--empty">
-				<h1>Formazione</h1>
+				<h1>{t(locale, "trainingEmptyTitle")}</h1>
 				<p>
-					La Formazione non è ancora disponibile.{" "}
-					<a href="/_emdash/admin/content/training">Apri l’admin</a>.
+					{t(locale, "trainingEmptyBody")}{" "}
+					<a href="/_emdash/admin/content/training">{t(locale, "openAdmin")}</a>.
 				</p>
 			</section>
 		)

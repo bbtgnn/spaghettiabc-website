@@ -4,6 +4,7 @@ import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
 import DevPreviewDock from "../components/DevPreviewDock.astro";
 import SiteHeader from "../components/SiteHeader.astro";
+import { resolveLocale, t } from "../i18n/utils";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
 import "../styles/theme.css";
 
@@ -33,9 +34,10 @@ const {
 	canonical,
 	content,
 } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
 const [settingsResult, menuResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
-	getMenuWithCacheHint("primary"),
+	getMenuWithCacheHint("primary", { locale }),
 ]);
 if (Astro.cache?.enabled) {
 	Astro.cache.set(settingsResult.cacheHint);
@@ -70,7 +72,7 @@ const pageCtx = createPublicPageContext({
 
 <!doctype html>
 <html
-	lang="it"
+	lang={locale}
 	data-font-ui-case="sans"
 	data-palette={isDev ? "pomodoro" : undefined}
 	data-ink={isDev ? "cool" : undefined}
@@ -185,13 +187,15 @@ const pageCtx = createPublicPageContext({
 	<body>
 		<EmDashBodyStart page={pageCtx} />
 
-		<a class="sr-only" href="#main-content">Vai al contenuto</a>
+		<a class="sr-only" href="#main-content">{t(locale, "skipToContent")}</a>
 
 		<SiteHeader
 			siteTitle={siteTitle}
 			siteLogo={siteLogo}
 			items={menu?.items}
 			currentPath={currentPath}
+			locale={locale}
+			content={content}
 		/>
 
 		<main class="site-main" id="main-content">

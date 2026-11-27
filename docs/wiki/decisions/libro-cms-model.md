@@ -32,7 +32,9 @@ As of `spaghettiabc-website@51eaca3` (2026-10-23): collection `book`, homepage S
 
 *(Supersedes earlier same-day note that book work was still uncommitted.)*
 
-Wiki decision ingest for #42 (2026-11-26) does **not** claim code has moved to `libri` yet — that is implementation work after the grill.
+## Collection name alignment (2026-11-26)
+
+On **2026-11-26** the grill for [#41](https://github.com/bbtgnn/spaghettiabc-website/issues/41) aligned the **technical** CMS collection name to **`libri`** (per seed), not `book`. [#42](https://github.com/bbtgnn/spaghettiabc-website/issues/42) then made Edizioni the published CMS units in `libri`. Details: [Full IT/EN i18n](./i18n-it-en.md), [Books / Edizioni CMS model](./books-editions-cms-model.md).
 
 ## Explicitly out of scope (2026-10-23)
 

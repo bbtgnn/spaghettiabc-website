@@ -8,7 +8,7 @@
 	},
 	"settings": {
 		"title": "Spaghetti ABC",
-		"tagline": "Viaggi e tour"
+		"tagline": "Travel and tours"
 	},
 	"collections": [
 		{
@@ -32,7 +32,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "hero_image",
@@ -57,7 +58,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "tour_title",
@@ -77,7 +79,8 @@
 					"validation": {
 						"targetCollection": "tours",
 						"multiple": true
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "tour_cta_label",
@@ -90,7 +93,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "book_title",
@@ -109,7 +113,8 @@
 					"validation": {
 						"targetCollection": "libri",
 						"multiple": true
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "book_cta_label",
@@ -122,7 +127,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "training_title",
@@ -150,7 +156,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "dicono_title",
@@ -180,22 +187,26 @@
 								"type": "string"
 							}
 						]
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "google_score",
 					"label": "Punteggio Google",
-					"type": "number"
+					"type": "number",
+					"translatable": false
 				},
 				{
 					"slug": "google_review_count",
 					"label": "Numero recensioni",
-					"type": "integer"
+					"type": "integer",
+					"translatable": false
 				},
 				{
 					"slug": "google_profile_url",
 					"label": "Link profilo Google",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "google_reviews",
@@ -232,7 +243,8 @@
 								"type": "url"
 							}
 						]
-					}
+					},
+					"translatable": false
 				},
 				{
 					"slug": "form_heading_newsletter",
@@ -240,7 +252,8 @@
 					"type": "boolean",
 					"required": false,
 					"defaultValue": false,
-					"widget": "form-headings:heading"
+					"widget": "form-headings:heading",
+					"translatable": false
 				},
 				{
 					"slug": "newsletter_title",
@@ -332,7 +345,8 @@
 				{
 					"slug": "calendly_url",
 					"label": "URL Calendly",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "gallery",
@@ -392,7 +406,8 @@
 				{
 					"slug": "buy_url",
 					"label": "Buy URL",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "buy_label",
@@ -470,7 +485,8 @@
 				{
 					"slug": "calendly_url",
 					"label": "URL Calendly predefinito",
-					"type": "url"
+					"type": "url",
+					"translatable": false
 				},
 				{
 					"slug": "faq",
@@ -499,8 +515,10 @@
 	"taxonomies": [],
 	"menus": [
 		{
+			"id": "menu-primary-en",
 			"name": "primary",
 			"label": "Primary Navigation",
+			"locale": "en",
 			"items": [
 				{
 					"type": "custom",
@@ -509,8 +527,47 @@
 				},
 				{
 					"type": "custom",
-					"label": "Tour",
+					"label": "Tours",
 					"url": "/tours"
+				},
+				{
+					"type": "custom",
+					"label": "The book",
+					"url": "/#libro"
+				},
+				{
+					"type": "custom",
+					"label": "Training",
+					"url": "/training"
+				}
+			]
+		},
+		{
+			"id": "menu-primary-it",
+			"name": "primary",
+			"label": "Navigazione principale",
+			"locale": "it",
+			"translationOf": "menu-primary-en",
+			"items": [
+				{
+					"type": "custom",
+					"label": "Home",
+					"url": "/it/"
+				},
+				{
+					"type": "custom",
+					"label": "Tour",
+					"url": "/it/tours"
+				},
+				{
+					"type": "custom",
+					"label": "Il libro",
+					"url": "/it/#libro"
+				},
+				{
+					"type": "custom",
+					"label": "Formazione",
+					"url": "/it/training"
 				}
 			]
 		}
@@ -534,17 +591,103 @@
 			{
 				"id": "tour-polignano",
 				"slug": "polignano-food-tour",
+				"locale": "en",
 				"status": "published",
 				"data": {
 					"title": "Polignano food tour",
 					"excerpt": "Discover Apulian cuisine with all your senses",
+					"destination": "Polignano a Mare",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "5 tastings + drinks",
+					"price": "€60 / person",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1697310904924-ec1c03c8ba9b?w=1600&h=1067&fit=crop",
+							"alt": "Aerial view of Polignano a Mare on the sea",
+							"filename": "polignano-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "A gastronomic stroll through the heart of Polignano to uncover the typical products of Puglia and its artisan shops, guided by Flavia Giordano, cookbook author, taster, and food educator.",
+									"_key": "tour-polignano-en-s0"
+								}
+							],
+							"_key": "tour-polignano-en-b0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "A sensory experience dedicated to those who want to delve into the culture of Apulian food, its agricultural excellences (PDO, DOC, Slow Food presidia), and gastronomic traditions.",
+									"_key": "tour-polignano-en-s1"
+								}
+							],
+							"_key": "tour-polignano-en-b1"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "From coffee to “caffè speciale”, passing through caciocavallo and mozzarella, traditional breads, and the finest EVO oils from the best local olive mills, artisanal cold cuts, focaccias, preserves, and wines from native grape varieties – the sensory food tour is a roaming masterclass on Apulian cuisine.",
+									"_key": "tour-polignano-en-s2"
+								}
+							],
+							"_key": "tour-polignano-en-b2"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Flavia Giordano – who for several years managed the first Italian cooking school in Malmö, Sweden – will also share golden rules and tips with guests on how to shop and choose quality products, as well as recipes and cooking techniques.",
+									"_key": "tour-polignano-en-s3"
+								}
+							],
+							"_key": "tour-polignano-en-b3"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "As a taster of oil, cheese, and wines, the sensory food tour will be a way to savor Apulian cuisine with all your senses.",
+									"_key": "tour-polignano-en-s4"
+								}
+							],
+							"_key": "tour-polignano-en-b4"
+						}
+					],
+					"calendly_url": "https://calendly.com/spaghettiabc/polignano-sensory-food-tour"
+				}
+			},
+			{
+				"id": "tour-polignano-it",
+				"slug": "tour-enogastronomico-polignano",
+				"locale": "it",
+				"status": "published",
+				"data": {
+					"title": "Tour enogastronomico di Polignano",
+					"excerpt": "Scopri la cucina pugliese con tutti i sensi",
 					"destination": "Polignano a Mare",
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
 					"included": "5 degustazioni + bevande",
 					"price": "60 € / persona",
-					"calendly_url": "https://calendly.com/spaghettiabc/polignano-sensory-food-tour",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1697310904924-ec1c03c8ba9b?w=1600&h=1067&fit=crop",
@@ -559,11 +702,11 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "A gastronomic stroll through the heart of Polignano to uncover the typical products of Puglia and its artisan shops, guided by Flavia Giordano, cookbook author, taster, and food educator.",
-									"_key": "pol-c1"
+									"text": "Una passeggiata gastronomica nel cuore di Polignano per scoprire i prodotti tipici della Puglia e le botteghe artigiane, guidata da Flavia Giordano, autrice di libri di cucina, assaggiatrice ed educatrice alimentare.",
+									"_key": "tour-polignano-it-s0"
 								}
 							],
-							"_key": "pol-c0"
+							"_key": "tour-polignano-it-b0"
 						},
 						{
 							"_type": "block",
@@ -571,11 +714,11 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "A sensory experience dedicated to those who want to delve into the culture of Apulian food, its agricultural excellences (PDO, DOC, Slow Food presidia), and gastronomic traditions.",
-									"_key": "pol-c3"
+									"text": "Un’esperienza sensoriale dedicata a chi vuole approfondire la cultura del cibo pugliese, le eccellenze agricole (DOP, DOC, Presìdi Slow Food) e le tradizioni gastronomiche.",
+									"_key": "tour-polignano-it-s1"
 								}
 							],
-							"_key": "pol-c2"
+							"_key": "tour-polignano-it-b1"
 						},
 						{
 							"_type": "block",
@@ -583,11 +726,11 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "From coffee to “caffe speciale”, passing through caciocavallo and mozzarella, traditional breads, and the finest EVO oils from the best local olive mills, artisanal cold cuts, focaccias, preserves, and wines from native grape varieties – the sensory food tour is a roaming masterclass on Apulian cuisine.",
-									"_key": "pol-c5"
+									"text": "Dal caffè al “caffè speciale”, passando per caciocavallo e mozzarella, pani tradizionali e i migliori oli EVO dei frantoi locali, salumi artigianali, focacce, conserve e vini di vitigni autoctoni: il sensory food tour è una masterclass itinerante sulla cucina pugliese.",
+									"_key": "tour-polignano-it-s2"
 								}
 							],
-							"_key": "pol-c4"
+							"_key": "tour-polignano-it-b2"
 						},
 						{
 							"_type": "block",
@@ -595,11 +738,11 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Flavia Giordano – who for several years managed the first Italian cooking school in Malmö, Sweden – will also share golden rules and tips with guests on how to shop and choose quality products, as well as recipes and cooking techniques.",
-									"_key": "pol-c7"
+									"text": "Flavia Giordano – che per diversi anni ha diretto la prima scuola di cucina italiana a Malmö, in Svezia – condividerà anche regole d’oro e consigli su come fare la spesa e scegliere prodotti di qualità, oltre a ricette e tecniche di cucina.",
+									"_key": "tour-polignano-it-s3"
 								}
 							],
-							"_key": "pol-c6"
+							"_key": "tour-polignano-it-b3"
 						},
 						{
 							"_type": "block",
@@ -607,21 +750,61 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "As a taster of oil, cheese, and wines, the sensory food tour will be a way to savor Apulian cuisine with all your senses.",
-									"_key": "pol-c9"
+									"text": "Come assaggiatrice di olio, formaggi e vini, il tour sarà un modo per assaporare la cucina pugliese con tutti i sensi.",
+									"_key": "tour-polignano-it-s4"
 								}
 							],
-							"_key": "pol-c8"
+							"_key": "tour-polignano-it-b4"
+						}
+					],
+					"calendly_url": "https://calendly.com/spaghettiabc/polignano-sensory-food-tour"
+				},
+				"translationOf": "tour-polignano"
+			},
+			{
+				"id": "tour-bari",
+				"slug": "bari-food-tour",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Bari food tour",
+					"excerpt": "Between Bari Vecchia and the markets: focaccia, orecchiette, and street food of the Apulian capital.",
+					"destination": "Bari",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "5 tastings + drinks",
+					"price": "€60 / person",
+					"featured_image": {
+						"$media": {
+							"url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Bari_-_Lungomare_Araldo_di_Crollalanza.jpg",
+							"alt": "Bari waterfront",
+							"filename": "bari-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Explore the local market stalls and the alleys of Bari Vecchia and taste the best artisanal specialties. An intimate experience for small groups, guided by local experts.",
+									"_key": "tour-bari-en-s0"
+								}
+							],
+							"_key": "tour-bari-en-b0"
 						}
 					]
 				}
 			},
 			{
-				"id": "tour-bari",
-				"slug": "bari-food-tour",
+				"id": "tour-bari-it",
+				"slug": "tour-enogastronomico-bari",
+				"locale": "it",
 				"status": "published",
 				"data": {
-					"title": "Bari food tour",
+					"title": "Tour enogastronomico di Bari",
 					"excerpt": "Tra Bari Vecchia e i mercati: focaccia, orecchiette e street food del capoluogo pugliese.",
 					"destination": "Bari",
 					"duration": "3 ore",
@@ -643,21 +826,60 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Esplora i banchi del mercato locale e i vicoli di Bari Vecchia ed assaggia le migliori specialità artigianali. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
-									"_key": "ba-c1"
+									"text": "Esplora i banchi del mercato locale e i vicoli di Bari Vecchia ed assaggia le migliori specialità artigianali. Un’esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "tour-bari-it-s0"
 								}
 							],
-							"_key": "ba-c0"
+							"_key": "tour-bari-it-b0"
+						}
+					]
+				},
+				"translationOf": "tour-bari"
+			},
+			{
+				"id": "tour-ostuni",
+				"slug": "ostuni-food-tour",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Ostuni food tour",
+					"excerpt": "In the White City: olives, cheeses, and flavours of the Brindisi countryside among whitewashed alleys.",
+					"destination": "Ostuni",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "5 tastings + drinks",
+					"price": "€60 / person",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1634561527613-172d7489214b?w=1600&h=1067&fit=crop",
+							"alt": "Aerial view of Ostuni and olive groves",
+							"filename": "ostuni-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Walk among Ostuni’s white houses and taste specialties of the Brindisi Murgia. An intimate experience for small groups, guided by local experts.",
+									"_key": "tour-ostuni-en-s0"
+								}
+							],
+							"_key": "tour-ostuni-en-b0"
 						}
 					]
 				}
 			},
 			{
-				"id": "tour-ostuni",
-				"slug": "ostuni-food-tour",
+				"id": "tour-ostuni-it",
+				"slug": "tour-enogastronomico-ostuni",
+				"locale": "it",
 				"status": "published",
 				"data": {
-					"title": "Ostuni food tour",
+					"title": "Tour enogastronomico di Ostuni",
 					"excerpt": "Nella Città Bianca: olive, formaggi e sapori della campagna brindisina tra i vicoli imbiancati.",
 					"destination": "Ostuni",
 					"duration": "3 ore",
@@ -679,21 +901,60 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Cammina tra le case bianche di Ostuni e assaggia le specialità della Murgia brindisina. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
-									"_key": "os-c1"
+									"text": "Cammina tra le case bianche di Ostuni e assaggia le specialità della Murgia brindisina. Un’esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "tour-ostuni-it-s0"
 								}
 							],
-							"_key": "os-c0"
+							"_key": "tour-ostuni-it-b0"
+						}
+					]
+				},
+				"translationOf": "tour-ostuni"
+			},
+			{
+				"id": "tour-altamura",
+				"slug": "altamura-food-tour",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Altamura food tour",
+					"excerpt": "PDO bread, wood-fired ovens, and Murgia flavours in Altamura’s historic centre.",
+					"destination": "Altamura",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "5 tastings + drinks",
+					"price": "€60 / person",
+					"featured_image": {
+						"$media": {
+							"url": "https://upload.wikimedia.org/wikipedia/commons/9/92/Puglia_Altamura1_tango7174.jpg",
+							"alt": "Cathedral and historic centre of Altamura",
+							"filename": "altamura-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Discover the historic bakeries and shops of Altamura, the city of PDO bread. An intimate experience for small groups, guided by local experts.",
+									"_key": "tour-altamura-en-s0"
+								}
+							],
+							"_key": "tour-altamura-en-b0"
 						}
 					]
 				}
 			},
 			{
-				"id": "tour-altamura",
-				"slug": "altamura-food-tour",
+				"id": "tour-altamura-it",
+				"slug": "tour-enogastronomico-altamura",
+				"locale": "it",
 				"status": "published",
 				"data": {
-					"title": "Altamura food tour",
+					"title": "Tour enogastronomico di Altamura",
 					"excerpt": "Pane DOP, forni a legna e sapori della Murgia nel centro storico di Altamura.",
 					"destination": "Altamura",
 					"duration": "3 ore",
@@ -715,21 +976,60 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Scopri i panifici storici e le botteghe di Altamura, città del pane DOP. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
-									"_key": "al-c1"
+									"text": "Scopri i panifici storici e le botteghe di Altamura, città del pane DOP. Un’esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "tour-altamura-it-s0"
 								}
 							],
-							"_key": "al-c0"
+							"_key": "tour-altamura-it-b0"
+						}
+					]
+				},
+				"translationOf": "tour-altamura"
+			},
+			{
+				"id": "tour-monopoli",
+				"slug": "monopoli-food-tour",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Monopoli food tour",
+					"excerpt": "From the old harbour to the shops: fish, fritters, and specialties of Monopoli’s historic centre.",
+					"destination": "Monopoli",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "5 tastings + drinks",
+					"price": "€60 / person",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1682347641333-b9080bfe7af3?w=1600&h=1067&fit=crop",
+							"alt": "Aerial view of Monopoli on the sea",
+							"filename": "monopoli-food-tour.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Explore Monopoli’s alleys and harbour and taste the best artisanal specialties. An intimate experience for small groups, guided by local experts.",
+									"_key": "tour-monopoli-en-s0"
+								}
+							],
+							"_key": "tour-monopoli-en-b0"
 						}
 					]
 				}
 			},
 			{
-				"id": "tour-monopoli",
-				"slug": "monopoli-food-tour",
+				"id": "tour-monopoli-it",
+				"slug": "tour-enogastronomico-monopoli",
+				"locale": "it",
 				"status": "published",
 				"data": {
-					"title": "Monopoli food tour",
+					"title": "Tour enogastronomico di Monopoli",
 					"excerpt": "Dal porto antico alle botteghe: pesce, fritti e specialità del centro storico di Monopoli.",
 					"destination": "Monopoli",
 					"duration": "3 ore",
@@ -751,23 +1051,62 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Esplora i vicoli e il porto di Monopoli ed assaggia le migliori specialità artigianali. Un'esperienza intima per piccoli gruppi guidata da esperti locali.",
-									"_key": "mo-c1"
+									"text": "Esplora i vicoli e il porto di Monopoli ed assaggia le migliori specialità artigianali. Un’esperienza intima per piccoli gruppi guidata da esperti locali.",
+									"_key": "tour-monopoli-it-s0"
 								}
 							],
-							"_key": "mo-c0"
+							"_key": "tour-monopoli-it-b0"
+						}
+					]
+				},
+				"translationOf": "tour-monopoli"
+			},
+			{
+				"id": "tour-narrative-dinner",
+				"slug": "narrative-dinner",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Narrative dinner",
+					"excerpt": "A storytelling dinner: dishes, stories, and Apulian landscapes at the table, in an intimate evening experience.",
+					"destination": "Narrative dinner",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "Tasting menu + drinks",
+					"price": "€60 / person",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1672636401322-b909b15b7c57?w=1600&h=1067&fit=crop",
+							"alt": "Table with a plate and a glass of wine",
+							"filename": "narrative-dinner.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "An evening at the table where every course opens a story about Puglia. An intimate experience for small groups, guided by Flavia.",
+									"_key": "tour-narrative-dinner-en-s0"
+								}
+							],
+							"_key": "tour-narrative-dinner-en-b0"
 						}
 					]
 				}
 			},
 			{
-				"id": "tour-narrative-dinner",
-				"slug": "narrative-dinner",
+				"id": "tour-narrative-dinner-it",
+				"slug": "cena-narrata",
+				"locale": "it",
 				"status": "published",
 				"data": {
-					"title": "Narrative dinner",
-					"excerpt": "Una cena raccontata: piatti, storie e paesaggi pugliesi a tavola, in un'esperienza serale intima.",
-					"destination": "Narrative dinner",
+					"title": "Cena narrata",
+					"excerpt": "Una cena raccontata: piatti, storie e paesaggi pugliesi a tavola, in un’esperienza serale intima.",
+					"destination": "Cena narrata",
 					"duration": "3 ore",
 					"group_size": "Max 8 persone",
 					"language": "Italiano / Inglese",
@@ -787,21 +1126,60 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Una serata a tavola in cui ogni portata apre un racconto sulla Puglia. Un'esperienza intima per piccoli gruppi, guidata da Flavia.",
-									"_key": "nd-c1"
+									"text": "Una serata a tavola in cui ogni portata apre un racconto sulla Puglia. Un’esperienza intima per piccoli gruppi, guidata da Flavia.",
+									"_key": "tour-narrative-dinner-it-s0"
 								}
 							],
-							"_key": "nd-c0"
+							"_key": "tour-narrative-dinner-it-b0"
+						}
+					]
+				},
+				"translationOf": "tour-narrative-dinner"
+			},
+			{
+				"id": "tour-mice-sensory",
+				"slug": "mice-sensory-food-quiz",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "MICE and team building — Sensory food quiz",
+					"excerpt": "A sensory food quiz for teams and corporate groups: taste, storytelling, and collaboration around the table.",
+					"destination": "MICE & team building",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "Sensory activity + tastings",
+					"price": "€60 / person",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1600&h=1067&fit=crop",
+							"alt": "Group at the table during a shared experience",
+							"filename": "mice-sensory-food-quiz.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "A MICE and team-building format that uses food as a tool for play and listening: sensory quizzes, tastings, and group exchange.",
+									"_key": "tour-mice-sensory-en-s0"
+								}
+							],
+							"_key": "tour-mice-sensory-en-b0"
 						}
 					]
 				}
 			},
 			{
-				"id": "tour-mice-sensory",
-				"slug": "mice-sensory-food-quiz",
+				"id": "tour-mice-sensory-it",
+				"slug": "mice-quiz-sensoriale",
+				"locale": "it",
 				"status": "published",
 				"data": {
-					"title": "MICE and team building — Sensory food quiz",
+					"title": "MICE e team building — Quiz sensoriale",
 					"excerpt": "Quiz sensoriale sul cibo per team e gruppi aziendali: gusto, racconto e collaborazione intorno alla tavola.",
 					"destination": "MICE & team building",
 					"duration": "3 ore",
@@ -812,7 +1190,7 @@
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=1600&h=1067&fit=crop",
-							"alt": "Gruppo a tavola durante un'esperienza condivisa",
+							"alt": "Gruppo a tavola durante un’esperienza condivisa",
 							"filename": "mice-sensory-food-quiz.jpg"
 						}
 					},
@@ -824,31 +1202,33 @@
 								{
 									"_type": "span",
 									"text": "Un formato MICE e team building che usa il cibo come strumento di gioco e ascolto: quiz sensoriali, assaggi e confronto in gruppo.",
-									"_key": "mi-c1"
+									"_key": "tour-mice-sensory-it-s0"
 								}
 							],
-							"_key": "mi-c0"
+							"_key": "tour-mice-sensory-it-b0"
 						}
 					]
-				}
+				},
+				"translationOf": "tour-mice-sensory"
 			},
 			{
 				"id": "tour-customized",
 				"slug": "customized-experience",
+				"locale": "en",
 				"status": "published",
 				"data": {
-					"title": "Customized Experience",
-					"excerpt": "Un'esperienza su misura intorno al cibo pugliese: itinerario, ritmo e degustazioni costruiti insieme a te.",
-					"destination": "Su misura",
-					"duration": "3 ore",
-					"group_size": "Max 8 persone",
-					"language": "Italiano / Inglese",
-					"included": "Percorso e degustazioni personalizzati",
-					"price": "60 € / persona",
+					"title": "Customized experience",
+					"excerpt": "A tailored experience around Apulian food: itinerary, pace, and tastings built together with you.",
+					"destination": "Tailored",
+					"duration": "3 hours",
+					"group_size": "Max 8 people",
+					"language": "Italian / English",
+					"included": "Custom path and tastings",
+					"price": "€60 / person",
 					"featured_image": {
 						"$media": {
 							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
-							"alt": "Tavola apparecchiata per un'esperienza gastronomica",
+							"alt": "Set table for a gastronomic experience",
 							"filename": "customized-experience.jpg"
 						}
 					},
@@ -859,27 +1239,112 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Parti da un'idea — famiglia, team, ospiti internazionali — e costruiamo insieme il formato giusto: luoghi, tempi e sapori della Puglia.",
-									"_key": "cu-c1"
+									"text": "Start from an idea — family, team, international guests — and we build the right format together: places, timing, and flavours of Puglia.",
+									"_key": "tour-customized-en-s0"
 								}
 							],
-							"_key": "cu-c0"
+							"_key": "tour-customized-en-b0"
 						}
 					]
 				}
+			},
+			{
+				"id": "tour-customized-it",
+				"slug": "esperienza-su-misura",
+				"locale": "it",
+				"status": "published",
+				"data": {
+					"title": "Esperienza su misura",
+					"excerpt": "Un’esperienza su misura intorno al cibo pugliese: itinerario, ritmo e degustazioni costruiti insieme a te.",
+					"destination": "Su misura",
+					"duration": "3 ore",
+					"group_size": "Max 8 persone",
+					"language": "Italiano / Inglese",
+					"included": "Percorso e degustazioni personalizzati",
+					"price": "60 € / persona",
+					"featured_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
+							"alt": "Tavola apparecchiata per un’esperienza gastronomica",
+							"filename": "customized-experience.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Parti da un’idea — famiglia, team, ospiti internazionali — e costruiamo insieme il formato giusto: luoghi, tempi e sapori della Puglia.",
+									"_key": "tour-customized-it-s0"
+								}
+							],
+							"_key": "tour-customized-it-b0"
+						}
+					]
+				},
+				"translationOf": "tour-customized"
 			}
 		],
 		"libri": [
 			{
 				"id": "international",
 				"slug": "international",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Puglia – International edition",
+					"subtitle": "A culinary journey through a land and its unique ingredients",
+					"cover": {
+						"$media": {
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-international.webp",
+							"alt": "Cover of the book Puglia — international edition (purple)",
+							"filename": "copertina-libro-international.webp"
+						}
+					},
+					"buy_url": "https://example.com/shop/puglia-international",
+					"buy_label": "Buy",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This is the International edition page for the Libro. The text is a placeholder: replace it from the admin with the definitive description of the volume.",
+									"_key": "libro-intl-en-s0"
+								}
+							],
+							"_key": "libro-intl-en-b0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Chapters, previews, and publication details will go here.",
+									"_key": "libro-intl-en-s1"
+								}
+							],
+							"_key": "libro-intl-en-b1"
+						}
+					]
+				}
+			},
+			{
+				"id": "international-it",
+				"slug": "international",
+				"locale": "it",
+				"translationOf": "international",
 				"status": "published",
 				"data": {
 					"title": "Puglia – Edizione internazionale",
 					"subtitle": "Un viaggio di cucina attraverso una terra e i suoi ingredienti unici",
 					"cover": {
 						"$media": {
-							"file": "media/copertina-libro-international.webp",
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-international.webp",
 							"alt": "Copertina del libro Puglia — edizione internazionale (viola)",
 							"filename": "copertina-libro-international.webp"
 						}
@@ -894,10 +1359,10 @@
 								{
 									"_type": "span",
 									"text": "Questa è la Scheda Edizione internazionale del Libro. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione definitiva del volume.",
-									"_key": "k1"
+									"_key": "libro-intl-it-s0"
 								}
 							],
-							"_key": "k0"
+							"_key": "libro-intl-it-b0"
 						},
 						{
 							"_type": "block",
@@ -906,10 +1371,10 @@
 								{
 									"_type": "span",
 									"text": "Qui andranno capitoli, anteprime e dettagli di pubblicazione.",
-									"_key": "k3"
+									"_key": "libro-intl-it-s1"
 								}
 							],
-							"_key": "k2"
+							"_key": "libro-intl-it-b1"
 						}
 					]
 				}
@@ -917,13 +1382,48 @@
 			{
 				"id": "special",
 				"slug": "special",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Puglia – Special edition",
+					"subtitle": "Stories of ingredients, cooking, and territory in a collector’s volume",
+					"cover": {
+						"$media": {
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-special.webp",
+							"alt": "Cover of the book Puglia — special edition (white)",
+							"filename": "copertina-libro-special.webp"
+						}
+					},
+					"buy_url": "https://example.com/shop/puglia-special",
+					"buy_label": "Buy the special edition",
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This is the Special edition page. Placeholder: replace title and content from the admin when the edition is ready.",
+									"_key": "libro-spec-en-s0"
+								}
+							],
+							"_key": "libro-spec-en-b0"
+						}
+					]
+				}
+			},
+			{
+				"id": "special-it",
+				"slug": "special",
+				"locale": "it",
+				"translationOf": "special",
 				"status": "published",
 				"data": {
 					"title": "Puglia – Edizione speciale",
 					"subtitle": "Storie di ingredienti, cucina e territorio in un volume da collezione",
 					"cover": {
 						"$media": {
-							"file": "media/copertina-libro-special.webp",
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/copertina-libro-special.webp",
 							"alt": "Copertina del libro Puglia — edizione speciale (bianca)",
 							"filename": "copertina-libro-special.webp"
 						}
@@ -938,10 +1438,10 @@
 								{
 									"_type": "span",
 									"text": "Questa è la Scheda Edizione speciale. Placeholder: sostituisci titolo e contenuto dall’admin quando l’edizione è pronta.",
-									"_key": "k1"
+									"_key": "libro-spec-it-s0"
 								}
 							],
-							"_key": "k0"
+							"_key": "libro-spec-it-b0"
 						}
 					]
 				}
@@ -950,13 +1450,201 @@
 		"homepage": [
 			{
 				"id": "home",
+				"slug": "home",
+				"locale": "en",
 				"status": "published",
 				"data": {
 					"hero_title": "Puglia: Beyond the Plate",
 					"hero_subtitle": "Culinary Experiences Curated by Flavia Giordano",
 					"hero_image": {
 						"$media": {
-							"file": "media/cover-newsletter-ingredient.jpg",
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/cover-newsletter-ingredient.jpg",
+							"alt": "Ingredients and oil — Spaghetti ABC homepage hero",
+							"filename": "cover-newsletter-ingredient.jpg"
+						}
+					},
+					"tour_title": "Flavia’s tours",
+					"tour_subtitle": "Guided experiences in one Puglia town, among local flavours and encounters",
+					"tour_cta_label": "See all tours",
+					"featured_tours": [
+						"$ref:tour-polignano",
+						"$ref:tour-bari",
+						"$ref:tour-ostuni",
+						"$ref:tour-altamura",
+						"$ref:tour-monopoli",
+						"$ref:tour-narrative-dinner",
+						"$ref:tour-mice-sensory",
+						"$ref:tour-customized"
+					],
+					"book_title": "The book",
+					"book_subtitle": "Puglia told through places, flavours, and encounters",
+					"book_cta_label": "Discover the book",
+					"training_title": "Training",
+					"training_subtitle": "Paths and meetings for companies and professionals, around food culture",
+					"training_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
+							"alt": "Set table — training section on Spaghetti ABC homepage",
+							"filename": "training-homepage.jpg"
+						}
+					},
+					"training_cta_label": "Discover training",
+					"dicono_title": "They say about me",
+					"dicono_subtitle": "Partners and reviews from those who shared table, markets, and stories with Flavia",
+					"partner_logos": [
+						{
+							"name": "Ciccolella",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_ciccolella.webp",
+									"alt": "Ciccolella logo",
+									"filename": "logo_ciccolella.webp"
+								}
+							}
+						},
+						{
+							"name": "Evolio Expo",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_evolio_expo.webp",
+									"alt": "Evolio Expo logo",
+									"filename": "logo_evolio_expo.webp"
+								}
+							}
+						},
+						{
+							"name": "FIOI",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_fioi.webp",
+									"alt": "FIOI logo",
+									"filename": "logo_fioi.webp"
+								}
+							}
+						},
+						{
+							"name": "Gambero Rosso",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_gambero_rosso.webp",
+									"alt": "Gambero Rosso logo",
+									"filename": "logo_gambero_rosso.webp"
+								}
+							}
+						},
+						{
+							"name": "Slow Food",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_slow_food.webp",
+									"alt": "Slow Food logo",
+									"filename": "logo_slow_food.webp"
+								}
+							}
+						},
+						{
+							"name": "TEDx",
+							"logo": {
+								"$media": {
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_tedx.webp",
+									"alt": "TEDx logo",
+									"filename": "logo_tedx.webp"
+								}
+							}
+						}
+					],
+					"google_score": 5,
+					"google_review_count": 48,
+					"google_profile_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+Flavia+Giordano",
+					"google_reviews": [
+						{
+							"author": "Chiara R.",
+							"quote": "Un’esperienza bellissima: Flavia ci ha fatto conoscere la Puglia attraverso i sapori, con calma e competenza. Consigliatissima!",
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Chiara",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop&crop=face",
+									"alt": "Chiara R. profile photo",
+									"filename": "review-avatar-chiara.jpg"
+								}
+							}
+						},
+						{
+							"author": "Marco D.",
+							"quote": "Tour impeccabile. Prodotti locali, storie vere e una guida che sa davvero di cosa parla. Torneremo senz’altro.",
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Marco",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&h=128&fit=crop&crop=face",
+									"alt": "Marco D. profile photo",
+									"filename": "review-avatar-marco.jpg"
+								}
+							}
+						},
+						{
+							"author": "Elena B.",
+							"quote": "Atmosfera familiare e contenuti di qualità. Si sente la cura in ogni dettaglio, dal mercato alla tavola.",
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Elena",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=128&h=128&fit=crop&crop=face",
+									"alt": "Elena B. profile photo",
+									"filename": "review-avatar-elena.jpg"
+								}
+							}
+						},
+						{
+							"author": "Luca P.",
+							"quote": "Non è turismo di massa: è un viaggio guloso e intelligente. Vorremmo solo che durasse più a lungo!",
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Luca",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=128&h=128&fit=crop&crop=face",
+									"alt": "Luca P. profile photo",
+									"filename": "review-avatar-luca.jpg"
+								}
+							}
+						},
+						{
+							"author": "Sofia M.",
+							"quote": "Flavia racconta la Puglia con grazia e precisione. Ogni assaggio ha una storia: ce ne siamo innamorati.",
+							"rating": 5,
+							"review_url": "https://www.google.com/maps/search/?api=1&query=Spaghetti+ABC+recensione+Sofia",
+							"avatar": {
+								"$media": {
+									"url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&h=128&fit=crop&crop=face",
+									"alt": "Sofia M. profile photo",
+									"filename": "review-avatar-sofia.jpg"
+								}
+							}
+						}
+					],
+					"newsletter_title": "Newsletter",
+					"newsletter_subtitle": "Seasonal recipes, events, and news — straight from Flavia’s kitchen",
+					"newsletter_button_label": "Subscribe",
+					"newsletter_email_placeholder": "Your email",
+					"featured_books": [
+						"$ref:international",
+						"$ref:special"
+					]
+				}
+			},
+			{
+				"id": "home-it",
+				"slug": "home",
+				"locale": "it",
+				"translationOf": "home",
+				"status": "published",
+				"data": {
+					"hero_title": "Puglia: oltre il piatto",
+					"hero_subtitle": "Esperienze culinarie a cura di Flavia Giordano",
+					"hero_image": {
+						"$media": {
+							"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/cover-newsletter-ingredient.jpg",
 							"alt": "Ingredienti e olio — hero homepage Spaghetti ABC",
 							"filename": "cover-newsletter-ingredient.jpg"
 						}
@@ -974,15 +1662,18 @@
 						"$ref:tour-mice-sensory",
 						"$ref:tour-customized"
 					],
-					"book_title": "Il Libro",
-					"book_subtitle": "La mia Puglia, attraverso gli ingredienti, le ricette e le storie di chi porta in tavola.",
-					"featured_books": [
-						"$ref:international",
-						"$ref:special"
-					],
-					"book_cta_label": "Scopri",
+					"book_title": "Il libro",
+					"book_subtitle": "Puglia raccontata attraverso luoghi, sapori e incontri",
+					"book_cta_label": "Scopri il libro",
 					"training_title": "Formazione",
 					"training_subtitle": "Percorsi e incontri per aziende e professionisti, intorno alla cultura del cibo",
+					"training_image": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
+							"alt": "Tavola apparecchiata — sezione formazione homepage Spaghetti ABC",
+							"filename": "training-homepage.jpg"
+						}
+					},
 					"training_cta_label": "Scopri la formazione",
 					"dicono_title": "Dicono di me",
 					"dicono_subtitle": "Partner e recensioni di chi ha condiviso tavola, mercati e storie con Flavia",
@@ -991,7 +1682,7 @@
 							"name": "Ciccolella",
 							"logo": {
 								"$media": {
-									"file": "media/collaborazioni-logos/logo_ciccolella.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_ciccolella.webp",
 									"alt": "Logo Ciccolella",
 									"filename": "logo_ciccolella.webp"
 								}
@@ -1001,7 +1692,7 @@
 							"name": "Evolio Expo",
 							"logo": {
 								"$media": {
-									"file": "media/collaborazioni-logos/logo_evolio_expo.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_evolio_expo.webp",
 									"alt": "Logo Evolio Expo",
 									"filename": "logo_evolio_expo.webp"
 								}
@@ -1011,7 +1702,7 @@
 							"name": "FIOI",
 							"logo": {
 								"$media": {
-									"file": "media/collaborazioni-logos/logo_fioi.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_fioi.webp",
 									"alt": "Logo FIOI",
 									"filename": "logo_fioi.webp"
 								}
@@ -1021,7 +1712,7 @@
 							"name": "Gambero Rosso",
 							"logo": {
 								"$media": {
-									"file": "media/collaborazioni-logos/logo_gambero_rosso.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_gambero_rosso.webp",
 									"alt": "Logo Gambero Rosso",
 									"filename": "logo_gambero_rosso.webp"
 								}
@@ -1031,7 +1722,7 @@
 							"name": "Slow Food",
 							"logo": {
 								"$media": {
-									"file": "media/collaborazioni-logos/logo_slow_food.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_slow_food.webp",
 									"alt": "Logo Slow Food",
 									"filename": "logo_slow_food.webp"
 								}
@@ -1041,7 +1732,7 @@
 							"name": "TEDx",
 							"logo": {
 								"$media": {
-									"file": "media/collaborazioni-logos/logo_tedx.webp",
+									"url": "https://raw.githubusercontent.com/bbtgnn/spaghettiabc-website/main/seed/media/collaborazioni-logos/logo_tedx.webp",
 									"alt": "Logo TEDx",
 									"filename": "logo_tedx.webp"
 								}
@@ -1060,7 +1751,7 @@
 							"avatar": {
 								"$media": {
 									"url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&h=128&fit=crop&crop=face",
-									"alt": "Foto profilo di Chiara R.",
+									"alt": "Chiara R. profile photo",
 									"filename": "review-avatar-chiara.jpg"
 								}
 							}
@@ -1073,7 +1764,7 @@
 							"avatar": {
 								"$media": {
 									"url": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&h=128&fit=crop&crop=face",
-									"alt": "Foto profilo di Marco D.",
+									"alt": "Marco D. profile photo",
 									"filename": "review-avatar-marco.jpg"
 								}
 							}
@@ -1086,7 +1777,7 @@
 							"avatar": {
 								"$media": {
 									"url": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=128&h=128&fit=crop&crop=face",
-									"alt": "Foto profilo di Elena B.",
+									"alt": "Elena B. profile photo",
 									"filename": "review-avatar-elena.jpg"
 								}
 							}
@@ -1099,7 +1790,7 @@
 							"avatar": {
 								"$media": {
 									"url": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=128&h=128&fit=crop&crop=face",
-									"alt": "Foto profilo di Luca P.",
+									"alt": "Luca P. profile photo",
 									"filename": "review-avatar-luca.jpg"
 								}
 							}
@@ -1112,7 +1803,7 @@
 							"avatar": {
 								"$media": {
 									"url": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&h=128&fit=crop&crop=face",
-									"alt": "Foto profilo di Sofia M.",
+									"alt": "Sofia M. profile photo",
 									"filename": "review-avatar-sofia.jpg"
 								}
 							}
@@ -1121,7 +1812,11 @@
 					"newsletter_title": "Newsletter",
 					"newsletter_subtitle": "Ricette di stagione, eventi e novità — direttamente dalla cucina di Flavia",
 					"newsletter_button_label": "Iscriviti",
-					"newsletter_email_placeholder": "La tua email"
+					"newsletter_email_placeholder": "La tua email",
+					"featured_books": [
+						"$ref:international",
+						"$ref:special"
+					]
 				}
 			}
 		],
@@ -1129,6 +1824,52 @@
 			{
 				"id": "training",
 				"slug": "training",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"title": "Training for companies",
+					"subtitle": "Food culture for teams and professionals",
+					"excerpt": "Paths and meetings built around food culture — placeholder to replace.",
+					"cover": {
+						"$media": {
+							"url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&h=1067&fit=crop",
+							"alt": "Set table, training placeholder",
+							"filename": "training-cover.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "This is the Training landing. The text is a placeholder: replace it from the admin with the description of paths for companies and professionals.",
+									"_key": "training-en-s0"
+								}
+							],
+							"_key": "training-en-b0"
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Formats, audiences, and contact details will go here.",
+									"_key": "training-en-s1"
+								}
+							],
+							"_key": "training-en-b1"
+						}
+					]
+				}
+			},
+			{
+				"id": "training-it",
+				"slug": "training",
+				"locale": "it",
+				"translationOf": "training",
 				"status": "published",
 				"data": {
 					"title": "Formazione per aziende",
@@ -1149,10 +1890,10 @@
 								{
 									"_type": "span",
 									"text": "Questa è la landing Formazione. Il testo è un placeholder: sostituiscilo dall’admin con la descrizione dei percorsi per aziende e professionisti.",
-									"_key": "k1"
+									"_key": "training-it-s0"
 								}
 							],
-							"_key": "k0"
+							"_key": "training-it-b0"
 						},
 						{
 							"_type": "block",
@@ -1161,10 +1902,10 @@
 								{
 									"_type": "span",
 									"text": "Qui andranno formato degli incontri, pubblici di riferimento e modalità di contatto.",
-									"_key": "k3"
+									"_key": "training-it-s1"
 								}
 							],
-							"_key": "k2"
+							"_key": "training-it-b1"
 						}
 					]
 				}
@@ -1174,6 +1915,35 @@
 			{
 				"id": "site",
 				"slug": "site",
+				"locale": "en",
+				"status": "published",
+				"data": {
+					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
+					"faq": [
+						{
+							"question": "What happens if it rains?",
+							"answer": "Our tours run as planned in light rain. In case of severe weather alerts, we will contact you to reschedule or refund."
+						},
+						{
+							"question": "Can I join if I have intolerances or am vegetarian?",
+							"answer": "Absolutely! Note it in the booking form above and we will adapt the tour stops to your dietary needs."
+						},
+						{
+							"question": "How does payment work?",
+							"answer": "Once you send the request on Calendly, you will receive the direct SumUp link to pay and confirm your spots."
+						},
+						{
+							"question": "What is the cancellation policy?",
+							"answer": "Free cancellation and 100% refund up to 48 hours before the tour."
+						}
+					]
+				}
+			},
+			{
+				"id": "site-it",
+				"slug": "site",
+				"locale": "it",
+				"translationOf": "site",
 				"status": "published",
 				"data": {
 					"calendly_url": "https://calendly.com/spaghettiabc/tailored-tour",
@@ -1198,5 +1968,6 @@
 				}
 			}
 		]
-	}
+	},
+	"defaultLocale": "en"
 }

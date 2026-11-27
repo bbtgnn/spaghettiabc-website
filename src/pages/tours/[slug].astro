@@ -3,7 +3,6 @@
  * Scheda Tour — hero + body | booking column (specs + Calendly).
  */
 import {
-	getEmDashEntry,
 	getSeoMeta,
 	decodeSlug,
 	getSiteSettings,
@@ -13,22 +12,32 @@ import ChevronDown from "@lucide/astro/icons/chevron-down";
 import Base from "../../layouts/Base.astro";
 import SchedaTourHeroPrenotaSplit from "../../components/scheda-tour/SchedaTourHeroPrenotaSplit.astro";
 import { resolveTourCalendlyUrl } from "../../utils/resolve-tour-calendly-url";
+import {
+	getEmDashEntryWithFallback,
+	resolveLocale,
+	t,
+} from "../../i18n/utils";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 
+const locale = resolveLocale(Astro.currentLocale);
 const slug = decodeSlug(Astro.params.slug);
 
 if (!slug) {
 	return Astro.rewrite("/404");
 }
 
-const { entry: tour, cacheHint } = await getEmDashEntry("tours", slug);
+const { entry: tour, cacheHint } = await getEmDashEntryWithFallback(
+	"tours",
+	slug,
+	{ locale },
+);
 
 if (!tour) {
 	return Astro.rewrite("/404");
 }
 
 const { entry: siteGlobals, cacheHint: siteGlobalsCacheHint } =
-	await getEmDashEntry("site_globals", "site");
+	await getEmDashEntryWithFallback("site_globals", "site", { locale });
 
 if (Astro.cache?.enabled) {
 	Astro.cache.set(cacheHint);
@@ -52,48 +61,55 @@ const galleryImages: TourImage[] = [
 ];
 
 const specs: {
+	key: "place" | "duration" | "group" | "language" | "included" | "price";
 	term: string;
 	value: string;
 	edit?: Record<string, unknown>;
 }[] = [];
 if (tour.data.destination) {
 	specs.push({
-		term: "Luogo",
+		key: "place",
+		term: t(locale, "specPlace"),
 		value: tour.data.destination,
 		edit: tour.edit.destination,
 	});
 }
 if (tour.data.duration) {
 	specs.push({
-		term: "Durata",
+		key: "duration",
+		term: t(locale, "specDuration"),
 		value: tour.data.duration,
 		edit: tour.edit.duration,
 	});
 }
 if (tour.data.group_size) {
 	specs.push({
-		term: "Gruppo",
+		key: "group",
+		term: t(locale, "specGroup"),
 		value: tour.data.group_size,
 		edit: tour.edit.group_size,
 	});
 }
 if (tour.data.language) {
 	specs.push({
-		term: "Lingua",
+		key: "language",
+		term: t(locale, "specLanguage"),
 		value: tour.data.language,
 		edit: tour.edit.language,
 	});
 }
 if (tour.data.included) {
 	specs.push({
-		term: "Incluso",
+		key: "included",
+		term: t(locale, "specIncluded"),
 		value: tour.data.included,
 		edit: tour.edit.included,
 	});
 }
 if (tour.data.price) {
 	specs.push({
-		term: "Prezzo",
+		key: "price",
+		term: t(locale, "specPrice"),
 		value: tour.data.price,
 		edit: tour.edit.price,
 	});
@@ -117,6 +133,7 @@ const heroProps = {
 	galleryImages,
 	specs,
 	calendlyUrl,
+	locale,
 	edit: {
 		title: tour.edit.title,
 		destination: tour.edit.destination,
@@ -146,7 +163,7 @@ const heroProps = {
 						{...tour.edit.content}
 					>
 						<h2 id="tour-content-heading" class="type-h3 scheda-tour__content-title">
-							Il tour
+							{t(locale, "tourBodyHeading")}
 						</h2>
 						<PortableText value={tour.data.content} />
 					</section>
@@ -160,7 +177,7 @@ const heroProps = {
 						{...(siteGlobals?.edit.faq ?? {})}
 					>
 						<h2 id="tour-faq-heading" class="type-h3 scheda-tour__faq-title">
-							Domande frequenti
+							{t(locale, "faqHeading")}
 						</h2>
 						<div class="scheda-tour__faq-list">
 							{faqItems.map((item) => (

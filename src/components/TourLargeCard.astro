@@ -1,6 +1,7 @@
 ---
 import ChevronRight from "@lucide/astro/icons/chevron-right";
 import { Image } from "emdash/ui";
+import { resolveLocale, t } from "../i18n/utils";
 
 interface Props {
 	href: string;
@@ -15,9 +16,10 @@ interface Props {
 	} | null;
 	/** Compact thumb + title for the secondary rail */
 	compact?: boolean;
-	/** Scopri CTA on the media (homepage highlight). Off on Catalogo Tour. */
+	/** Discover CTA on the media (homepage highlight). Off on Catalogo Tour. */
 	showCta?: boolean;
 	index?: number;
+	locale?: string;
 }
 
 const {
@@ -28,7 +30,9 @@ const {
 	compact = false,
 	showCta = true,
 	index = 0,
+	locale: localeProp,
 } = Astro.props;
+const locale = resolveLocale(localeProp ?? Astro.currentLocale);
 ---
 
 <article class:list={["tour-card", compact && "tour-card--compact"]}>
@@ -48,7 +52,7 @@ const {
 					</div>
 					{!compact && showCta && (
 						<span class="btn btn-primary btn--arrow tour-card__cta">
-							<span class="btn__label">Scopri</span>
+							<span class="btn__label">{t(locale, "tourDiscover")}</span>
 							<ChevronRight
 								class="btn__icon"
 								size={16}

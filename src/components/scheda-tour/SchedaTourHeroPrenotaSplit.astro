@@ -12,17 +12,18 @@ import Languages from "@lucide/astro/icons/languages";
 import CircleCheck from "@lucide/astro/icons/circle-check";
 import Tag from "@lucide/astro/icons/tag";
 import CalendlyEmbed from "../CalendlyEmbed.astro";
+import { localePath, resolveLocale, t } from "../../i18n/utils";
 
 const SPEC_ICONS: Record<
-	string,
+	"place" | "duration" | "group" | "language" | "included" | "price",
 	typeof MapPin
 > = {
-	Luogo: MapPin,
-	Durata: Clock,
-	Gruppo: Users,
-	Lingua: Languages,
-	Incluso: CircleCheck,
-	Prezzo: Tag,
+	place: MapPin,
+	duration: Clock,
+	group: Users,
+	language: Languages,
+	included: CircleCheck,
+	price: Tag,
 };
 
 /** EmDash image field shape (same as featured_image / Variant A). */
@@ -51,12 +52,14 @@ interface Props {
 	excerpt?: string | null;
 	galleryImages: TourImage[];
 	specs: Array<{
+		key: "place" | "duration" | "group" | "language" | "included" | "price";
 		term: string;
 		value: string;
 		edit?: Record<string, unknown>;
 	}>;
 	/** Empty string = muted empty state (no embed). */
 	calendlyUrl: string;
+	locale?: string;
 	edit: {
 		title?: Record<string, unknown>;
 		destination?: Record<string, unknown>;
@@ -73,9 +76,12 @@ const {
 	galleryImages,
 	specs,
 	calendlyUrl,
+	locale: localeProp,
 	edit,
 } = Astro.props;
 
+const locale = resolveLocale(localeProp ?? Astro.currentLocale);
+const toursHref = localePath(locale, "/tours");
 const hasPrenota = Boolean(calendlyUrl);
 const leadImage = galleryImages[0];
 const extraImages = galleryImages.slice(1);
@@ -114,10 +120,10 @@ const extraImages = galleryImages.slice(1);
 				}
 				<div class="sth-prenota__scrim" aria-hidden="true"></div>
 
-				<nav class="sth-prenota__back" aria-label="Breadcrumb">
-					<a class="btn btn-surface btn--arrow btn--sm" href="/tours">
+				<nav class="sth-prenota__back" aria-label={t(locale, "schedaBreadcrumb")}>
+					<a class="btn btn-surface btn--arrow btn--sm" href={toursHref}>
 						<ArrowLeft class="btn__icon" size={14} stroke-width={1.75} aria-hidden="true" />
-						<span class="btn__label">Catalogo tour</span>
+						<span class="btn__label">{t(locale, "schedaBackCatalog")}</span>
 					</a>
 				</nav>
 
@@ -138,14 +144,14 @@ const extraImages = galleryImages.slice(1);
 					<div
 						class="sth-prenota__thumbs"
 						role="group"
-						aria-label="Choose an image"
+						aria-label={t(locale, "schedaChooseImage")}
 					>
 						{galleryImages.map((image, index) => (
 							<button
 								type="button"
 								class="gallery-thumb"
 								data-gallery-thumb={index}
-								aria-label={`Show view ${index + 1}`}
+								aria-label={t(locale, "schedaShowView", { n: index + 1 })}
 								aria-pressed={index === 0 ? "true" : "false"}
 							>
 								<Image image={image} />
@@ -169,7 +175,7 @@ const extraImages = galleryImages.slice(1);
 			<aside
 				id={hasPrenota ? "prenota-calendly" : undefined}
 				class="sth-prenota__book"
-				aria-label="Prenota"
+				aria-label={t(locale, "schedaBook")}
 				aria-live={hasPrenota ? undefined : "polite"}
 				{...(hasPrenota ? edit.calendly_url : {})}
 			>
@@ -177,8 +183,8 @@ const extraImages = galleryImages.slice(1);
 					specs.length > 0 && (
 						<div class="sth-prenota__data">
 							<dl class="mono sth-prenota__specs">
-								{specs.map(({ term, value, edit: specEdit }) => {
-									const Icon = SPEC_ICONS[term];
+								{specs.map(({ key, term, value, edit: specEdit }) => {
+									const Icon = SPEC_ICONS[key];
 									return (
 										<div class="sth-prenota__spec" {...specEdit}>
 											<dt>
@@ -202,9 +208,11 @@ const extraImages = galleryImages.slice(1);
 				}
 				{
 					hasPrenota ? (
-						<CalendlyEmbed url={calendlyUrl} />
+						<CalendlyEmbed url={calendlyUrl} locale={locale} />
 					) : (
-						<p class="mono sth-prenota__empty">Prenotazione non disponibile</p>
+						<p class="mono sth-prenota__empty">
+							{t(locale, "schedaBookingUnavailable")}
+						</p>
 					)
 				}
 			</aside>

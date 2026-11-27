@@ -20,6 +20,14 @@ try {
 export default defineConfig({
 	output: "server",
 	adapter: isProd ? cloudflare() : node({ mode: "standalone" }),
+	i18n: {
+		defaultLocale: "en",
+		locales: ["en", "it"],
+		// Default prefix-other-locales: EN unprefixed, IT under /it/...
+		// Do not set prefixDefaultLocale — it 404s EmDash /_emdash/admin.
+		// No Astro URL fallback: IT paths must stay on /it/... Content
+		// fallback (requested → EN → IT) is getEmDashEntryWithFallback only.
+	},
 	server: {
 		port: Number(process.env.PORT) || 4321,
 		strictPort: true,
