@@ -9,8 +9,7 @@
  * Exit: 0 ok · 1 seed/migrations inconsistent · 2 usage · 4 DRIFT / state mismatch · 5 blocked · 6 API error.
  */
 import { pathToFileURL } from "node:url";
-import { EXIT, describeOp, diffPaths } from "./lib/index.mjs";
-import { loadChainOrFail } from "./lib/context.mjs";
+import { EXIT, describeOp, diffPaths, loadSchemaStateOrFail } from "./lib/index.mjs";
 import { defaultLocaleOf, findBlockers, runBackfill } from "./lib/backfill.mjs";
 import { applyOpLive } from "./lib/live-ops.mjs";
 import { buildPlan, describeStep } from "./lib/plan.mjs";
@@ -39,7 +38,7 @@ export async function main(argv = process.argv.slice(2)) {
 		return exit;
 	};
 
-	const { migrations, chain, positions } = loadChainOrFail();
+	const { migrations, chain, positions } = loadSchemaStateOrFail();
 	const server = await connect({ url: opts.url });
 	result.url = server.baseUrl;
 	result.auth = server.auth;

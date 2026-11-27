@@ -5,8 +5,7 @@
  * Exit 0 live schema is a known chain state (possibly behind: pending migrations are listed) · 4 DRIFT (not in the
  * chain) · 1 seed/migrations invalid · 2 usage · 6 API error.
  */
-import { EXIT, canonicalFromSeed, diffPaths, hashSchema } from "./lib/index.mjs";
-import { loadChainOrFail } from "./lib/context.mjs";
+import { EXIT, canonicalFromSeed, diffPaths, hashSchema, loadSchemaStateOrFail } from "./lib/index.mjs";
 import { locate, nearest } from "./lib/position.mjs";
 import { LoopError, parseArgs, run } from "./lib/cli.mjs";
 import { connect } from "./lib/server.mjs";
@@ -16,7 +15,7 @@ const USAGE = "node scripts/schema/drift.mjs --url <url> [--json]";
 export async function main(argv = process.argv.slice(2)) {
 	const opts = parseArgs(argv, { url: "string", json: "boolean" }, USAGE);
 	if (!opts.url) throw new LoopError(EXIT.USAGE, "USAGE", `--url is required\nusage: ${USAGE}`);
-	const { seed, migrations, chain, positions, seedInSync } = loadChainOrFail(undefined, { strictSeed: false });
+	const { seed, migrations, chain, positions, seedInSync } = loadSchemaStateOrFail(undefined, { strictSeed: false });
 	const server = await connect({ url: opts.url });
 	const live = await server.readLiveSchema();
 	const seedCanonical = canonicalFromSeed(seed.collections);

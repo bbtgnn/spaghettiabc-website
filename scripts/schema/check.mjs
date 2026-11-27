@@ -4,7 +4,7 @@
  * Exit 0 ok · 1 check failed · 2 usage.
  */
 import {
-	EXIT, buildChain, checkImmutability, diffPaths, lintRefs, loadMigrations, loadSeedSchema, validateSeedData,
+	EXIT, checkImmutability, diffPaths, lintRefs, loadSchemaState, validateSeedData,
 } from "./lib/index.mjs";
 import { repoRoot } from "./lib/paths.mjs";
 
@@ -17,37 +17,23 @@ if (unknown.length) {
 const asJson = args.includes("--json");
 const t0 = performance.now();
 const root = repoRoot();
-const errors = [];
+
+const state = loadSchemaState(root);
+const errors = [...state.errors];
 const notes = [];
-let seed;
-let chain;
-let count = 0;
+const seed = state.seed;
+const chain = state.chain;
+const count = state.migrations.length;
 
-try {
-	seed = loadSeedSchema(root);
-} catch (e) {
-	errors.push({ code: "SEED_INVALID", message: `seed/seed.json: ${e.message}` });
-}
-if (seed) {
-	errors.push(...seed.errors);
-	errors.push(...(await validateSeedData(seed.seed)));
-}
-
-const loaded = loadMigrations(root);
-errors.push(...loaded.errors);
-count = loaded.migrations.length;
-const structural = loaded.errors.some((e) => ["MIGRATION_INVALID", "MIGRATION_UNKNOWN_OP", "MIGRATION_FILENAME", "MIGRATION_SEQUENCE", "MIGRATION_OP_ORDER"].includes(e.code));
-if (!structural) {
-	chain = buildChain(loaded.migrations);
-	errors.push(...chain.errors);
-}
+if (seed) errors.push(...(await validateSeedData(seed.seed)));
 
 let drift;
-if (seed && chain && !chain.errors.length) {
-	if (chain.final.hash !== seed.hash) {
-		drift = diffPaths(chain.final.canonical, seed.canonical).slice(0, 20);
-		errors.push({ code: "SEED_DRIFT", message: `seed/seed.json differs from the migrations (replay ${chain.final.hash.slice(0, 12)} != seed ${seed.hash.slice(0, 12)}). run: npm run schema:generate` });
-	}
+if (seed && chain?.final && !state.built.errors.length && chain.final.hash !== seed.hash) {
+	drift = diffPaths(chain.final.canonical, seed.canonical).slice(0, 20);
+	errors.push({
+		code: "SEED_DRIFT",
+		message: `seed/seed.json differs from the migrations (replay ${chain.final.hash.slice(0, 12)} != seed ${seed.hash.slice(0, 12)}). run: npm run schema:generate`,
+	});
 }
 
 const imm = checkImmutability(root);
@@ -59,7 +45,7 @@ if (chain) errors.push(...lintRefs(chain.history, root));
 const ms = Math.round(performance.now() - t0);
 const ok = errors.length === 0;
 if (asJson) {
-	console.log(JSON.stringify({ ok, migrations: count, hash: seed?.hash, replayHash: chain?.final.hash, errors, drift, notes, ms }, null, 2));
+	console.log(JSON.stringify({ ok, migrations: count, hash: seed?.hash, replayHash: chain?.final?.hash, errors, drift, notes, ms }, null, 2));
 } else if (ok) {
 	console.log(`schema:check ok: ${count} migration${count === 1 ? "" : "s"}, schema ${seed.hash.slice(0, 12)} (${ms} ms)`);
 	for (const n of notes) console.log(`  note: ${n}`);

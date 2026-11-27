@@ -21,7 +21,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { EXIT, diffPaths } from "./lib/index.mjs";
-import { loadChainOrFail } from "./lib/context.mjs";
+import { loadSchemaStateOrFail } from "./lib/index.mjs";
 import { repoRoot } from "./lib/paths.mjs";
 import { LoopError, parseArgs, run } from "./lib/cli.mjs";
 import { connect } from "./lib/server.mjs";
@@ -115,7 +115,7 @@ export async function main(argv = process.argv.slice(2)) {
 	};
 
 	try {
-		const { seed, chain, migrations } = loadChainOrFail(root);
+		const { seed, chain, migrations } = loadSchemaStateOrFail(root);
 		const statusBefore = git(root, ["status", "--porcelain", "--untracked-files=no"]).out;
 		envBackup = existsSync(envFile) ? readFileSync(envFile, "utf8") : undefined;
 		desiredEnv = envBackup;

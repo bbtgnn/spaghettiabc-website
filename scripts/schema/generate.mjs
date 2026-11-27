@@ -8,7 +8,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import {
-	EXIT, UsageError, backfillModuleName, buildChain, describeOp, diffSchemas, loadMigrations, loadSeedSchema,
+	EXIT, UsageError, backfillModuleName, buildChain, describeOp, diffSchemas, loadSchemaState,
 	migrationsDir, repoRoot, validateMigrationDoc, validateSeedData,
 } from "./lib/index.mjs";
 
@@ -74,21 +74,19 @@ const opts = parseArgs(process.argv.slice(2));
 if (opts.name !== undefined && kebab(opts.name) !== opts.name) die(`name "${opts.name}" must be kebab-case (a-z, 0-9, hyphens)`);
 
 const root = repoRoot();
-let seed;
-try {
-	seed = loadSeedSchema(root);
-} catch (e) {
-	die(`seed/seed.json: ${e.message}`, EXIT.CHECK_FAILED);
+const state = loadSchemaState(root);
+const seed = state.seed;
+if (!seed) {
+	const seedErr = state.errors.find((e) => e.code === "SEED_INVALID");
+	die(seedErr?.message ?? "seed/seed.json is unreadable", EXIT.CHECK_FAILED);
 }
-const seedErrors = [...seed.errors, ...(await validateSeedData(seed.seed))];
-const loaded = loadMigrations(root);
-const chain = loaded.errors.length ? null : buildChain(loaded.migrations);
-const problems = [...seedErrors, ...loaded.errors, ...(chain?.errors ?? [])];
+const problems = [...state.errors, ...(await validateSeedData(seed.seed))];
 if (problems.length) {
 	console.error("schema:generate: cannot diff, fix these first (npm run schema:check):");
 	for (const p of problems) console.error(`  ${p.code}: ${p.message}`);
 	process.exit(EXIT.CHECK_FAILED);
 }
+const { chain, migrations } = state;
 
 let result;
 try {
@@ -109,18 +107,18 @@ if (!result.ops.length) {
 }
 if (result.backfills.filter((b) => b.transform === "module").length > 1) die("more than one type-changing rename in one migration: generate them one at a time");
 
-const seq = loaded.migrations.length + 1;
-const name = opts.name ?? (loaded.migrations.length ? deriveName(result.ops, result.backfills) : "baseline");
+const seq = migrations.length + 1;
+const name = opts.name ?? (migrations.length ? deriveName(result.ops, result.backfills) : "baseline");
 const id = `${String(seq).padStart(4, "0")}_${name}`;
 const destructive = result.post.length > 0;
-const description = opts.description ?? (loaded.migrations.length ? result.ops.map(describeOp).join("; ") : "Baseline: create the seed schema from empty");
+const description = opts.description ?? (migrations.length ? result.ops.map(describeOp).join("; ") : "Baseline: create the seed schema from empty");
 const doc = { id, description, destructive, ops: result.ops, ...(result.backfills.length ? { backfills: result.backfills } : {}) };
 const moduleBackfill = result.backfills.find((b) => b.transform === "module");
 
 // the generated migration must replay to exactly the seed schema
 const docErrors = validateMigrationDoc(doc, id, { hasModule: Boolean(moduleBackfill), moduleSource: "export function transform() {}" });
 const parsed = { id, seq, name, description, destructive, ops: doc.ops, backfills: result.backfills, preOps: result.pre, postOps: result.post };
-const verify = buildChain([...loaded.migrations, parsed]);
+const verify = buildChain([...migrations, parsed]);
 const bad = [...docErrors, ...verify.errors];
 if (!bad.length && verify.final.hash !== seed.hash) bad.push({ code: "GENERATOR_MISMATCH", message: "generated ops do not replay to the seed schema" });
 if (bad.length) {
