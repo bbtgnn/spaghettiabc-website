@@ -11,14 +11,13 @@ import { rm } from "node:fs/promises";
 import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { devPort } from "./lib/dev-port.mjs";
+import { classifyListener, listenerCwds } from "./lib/port-owner.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-// Same port as `astro dev`: worktree PORT from `.env.local` (never `.env`), else 4321.
-try {
-	process.loadEnvFile(path.join(root, ".env.local"));
-} catch {}
-const DEV_PORT = Number(process.env.PORT) || 4321;
+// Same port as `astro dev` (worktree PORT from `.env.local`, else 4321).
+const DEV_PORT = devPort(root);
 
 const TARGETS = [
 	"data.db",
@@ -43,10 +42,16 @@ function isPortInUse(port) {
 }
 
 if (await isPortInUse(DEV_PORT)) {
-	console.error(
-		`Port ${DEV_PORT} is in use. Stop \`npm run dev\` first, then re-run.`,
-	);
-	process.exit(1);
+	const listener = listenerCwds(DEV_PORT);
+	const { cwds, unknown } = listener;
+	const ours = classifyListener(listener, root) !== "foreign";
+	if (ours) {
+		console.error(
+			`Port ${DEV_PORT} is in use${unknown ? " (cannot tell which checkout owns it)" : " by this checkout's dev server"}. Stop \`npm run dev\` first, then re-run.`,
+		);
+		process.exit(1);
+	}
+	console.log(`Port ${DEV_PORT} is held by another checkout (${cwds.join(", ")}); continuing.`);
 }
 
 let removed = 0;

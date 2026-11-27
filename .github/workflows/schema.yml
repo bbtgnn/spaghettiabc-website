@@ -1,0 +1,42 @@
+name: Schema
+
+on:
+  pull_request:
+
+concurrency:
+  group: schema-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # schema:check compares migrations against `git merge-base HEAD origin/main`.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci --legacy-peer-deps
+
+      - name: Schema check (seed == migrations)
+        run: npm run -s schema:check
+
+      - name: Schema unit tests
+        run: npm run -s schema:test
+
+      - name: Schema rehearsal (throwaway server, base seed -> all migrations)
+        run: npm run -s schema:rehearse
+
+      # Baseline `astro check` is red (17 pre-existing errors in legacy template pages + src/worker.ts).
+      # Non-blocking until those are fixed; then remove continue-on-error.
+      - name: Typecheck
+        continue-on-error: true
+        run: npm run -s typecheck

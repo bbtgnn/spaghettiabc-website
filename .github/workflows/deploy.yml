@@ -42,11 +42,88 @@ jobs:
             --d1 "${{ vars.D1_DATABASE_ID }}" \
             --expected-target-fingerprint "$EMDASH_TARGET_FINGERPRINT"
 
+      - name: Schema check (seed == migrations)
+        env:
+          STAGING_URL: ${{ vars.STAGING_URL }}
+        run: |
+          : "${STAGING_URL:?set the STAGING_URL repository variable}"
+          echo "### Schema deploy to $STAGING_URL" >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          npm run -s schema:check 2>&1 | tee schema-check.log
+          code=${PIPESTATUS[0]}
+          { echo "#### schema:check (exit $code)"; echo '```'; cat schema-check.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Schema apply (phase pre, before code deploy)
+        env:
+          EMDASH_TOKEN: ${{ secrets.EMDASH_TOKEN }}
+          STAGING_URL: ${{ vars.STAGING_URL }}
+        run: |
+          : "${EMDASH_TOKEN:?set the EMDASH_TOKEN repository secret}"
+          set +e
+          npm run -s schema:apply -- --url "$STAGING_URL" --phase pre 2>&1 | tee schema-pre.log
+          code=${PIPESTATUS[0]}
+          { echo "#### schema:apply --phase pre (exit $code)"; echo '```'; cat schema-pre.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
       - name: Deploy Worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler deploy
+
+      # Destructive post ops (removeField / deleteCollection) get a D1 Time Travel bookmark first.
+      # The dry run also fails early on DRIFT (exit 4) or pending editor drafts (exit 5).
+      - name: Plan schema post phase + Time Travel bookmark
+        env:
+          EMDASH_TOKEN: ${{ secrets.EMDASH_TOKEN }}
+          STAGING_URL: ${{ vars.STAGING_URL }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -uo pipefail
+          npm run -s schema:apply -- --url "$STAGING_URL" --phase post --dry-run --json > schema-post-plan.json
+          code=$?
+          if [ "$code" -ne 0 ]; then
+            { echo "#### schema:apply --phase post --dry-run (exit $code)"; echo '```'; cat schema-post-plan.json; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            exit "$code"
+          fi
+          if grep -Eq '"(removeField|deleteCollection)"|"destructive"[[:space:]]*:[[:space:]]*true' schema-post-plan.json; then
+            npx wrangler d1 time-travel info DB --json > time-travel.json || exit 1
+            bookmark=$(node -e 'const t=require("fs").readFileSync("time-travel.json","utf8");const m=t.match(/"bookmark"\s*:\s*"([^"]+)"/);if(!m){console.error("no bookmark in wrangler output");process.exit(1)}process.stdout.write(m[1])') || exit 1
+            {
+              echo "#### Destructive post ops pending"
+              echo "D1 Time Travel bookmark taken before they run. To roll back the whole database to this point:"
+              echo '```'
+              echo "npx wrangler d1 time-travel restore DB --bookmark=$bookmark"
+              echo '```'
+              echo "Restore discards every D1 write after the bookmark, editor changes included."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No destructive post ops pending; no Time Travel bookmark needed." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Schema apply (phase post, after code deploy)
+        env:
+          EMDASH_TOKEN: ${{ secrets.EMDASH_TOKEN }}
+          STAGING_URL: ${{ vars.STAGING_URL }}
+        run: |
+          set +e
+          npm run -s schema:apply -- --url "$STAGING_URL" --phase post 2>&1 | tee schema-post.log
+          code=${PIPESTATUS[0]}
+          { echo "#### schema:apply --phase post (exit $code)"; echo '```'; cat schema-post.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
+
+      - name: Schema verify (live == seed)
+        env:
+          EMDASH_TOKEN: ${{ secrets.EMDASH_TOKEN }}
+          STAGING_URL: ${{ vars.STAGING_URL }}
+        run: |
+          set +e
+          npm run -s schema:verify -- --url "$STAGING_URL" 2>&1 | tee schema-verify.log
+          code=${PIPESTATUS[0]}
+          { echo "#### schema:verify (exit $code)"; echo '```'; cat schema-verify.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit "$code"
 
       - name: Check EmDash migrations
         env:

@@ -1,0 +1,32 @@
+#!/bin/sh
+# pre-commit: run `schema:check` (offline, <1s) only when schema-relevant paths are staged.
+# Installed by `npm install` / `npm run prepare` (git config core.hooksPath .githooks).
+# Bypass for a single commit: git commit --no-verify (CI still enforces).
+
+root=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+cd "$root" || exit 0
+
+# Deletions and renames count: removing a committed migration must be caught.
+staged=$(git diff --cached --name-only --no-renames) || exit 0
+
+relevant=$(printf '%s\n' "$staged" | grep -E '^(seed/seed\.json|schema/|scripts/schema/|src/|package\.json$)')
+if [ -z "$relevant" ]; then
+	exit 0
+fi
+
+if ! command -v npm >/dev/null 2>&1; then
+	echo "pre-commit: npm not found on PATH; skipping schema:check (CI will enforce)." >&2
+	exit 0
+fi
+
+echo "pre-commit: schema-relevant paths staged, running schema:check" >&2
+npm run -s schema:check </dev/null
+status=$?
+if [ "$status" -ne 0 ]; then
+	echo "" >&2
+	echo "pre-commit: schema:check failed (exit $status). Commit blocked." >&2
+	echo "  Seed edited?    npm run schema:generate   (then stage schema/migrations/*)" >&2
+	echo "  STOP code?      see DEPLOY.md > Schema changes" >&2
+	echo "  Bypass (CI still enforces): git commit --no-verify" >&2
+fi
+exit "$status"
